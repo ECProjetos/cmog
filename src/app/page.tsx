@@ -1,3 +1,4 @@
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function Home() {
@@ -8,13 +9,19 @@ export default function Home() {
       <div className="flex felx-col items-center space-x-4">
         <Link
           href="/login"
-          className="mt-4 text-2xl text-blue-500 hover:underline"
+          className={buttonVariants({
+            variant: "default",
+            size: "lg",
+          })}
         >
           Login
         </Link>
         <Link
           href="/register"
-          className="mt-4 text-2xl text-blue-500 hover:underline"
+          className={buttonVariants({
+            variant: "default",
+            size: "lg",
+          })}
         >
           Cadastro
         </Link>
