@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Eye, EyeOff } from "lucide-react"; // 👈 Certifique-se de que tem isso instalado
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,12 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+import { signup } from "../actions"; // Importa a função de ação para registrar o usuário
 
 import { toast } from "sonner";
 import { registerSchema } from "../zod-types";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/esconder
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para mostrar/esconder
 
@@ -41,38 +45,34 @@ export default function RegisterForm() {
       phone: "",
     },
   });
+  const signupMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      return signup(formData);
+    },
+    onSuccess: (data) => {
+      if (data.error) {
+        toast("Erro", {
+          description: data.error,
+        });
+      } else if (data.success) {
+        toast("Sucesso", {
+          description: data.success,
+        });
+        router.push("/login");
+      }
+    },
+  });
 
-  function onSubmit(data: z.infer<typeof registerSchema>) {
-    if (data.password !== data.confirmPassword) {
-      <Alert>
-        <AlertTitle>Senhas não coincidem</AlertTitle>{" "}
-        <AlertDescription>
-          As senhas fornecidas não coincidem. Por favor, tente novamente.
-        </AlertDescription>
-        return;
-      </Alert>;
-    }
-    if (!data.cpf && !data.cnpj) {
-      <Alert>
-        <AlertTitle>CPF ou CNPJ obrigatório</AlertTitle>{" "}
-        <AlertDescription>
-          Você deve fornecer pelo menos um CPF ou CNPJ.
-        </AlertDescription>
-        return;
-      </Alert>;
-      return;
-    }
-    toast.success("Cadastro realizado com sucesso!", {
-      description: (
-        <span className="text-zinc-700 dark:text-zinc-200">
-          Redirecionando você para o painel...
-        </span>
-      ),
-    });
+  async function handleSubmit(data: any) {
+    signupMutation.mutate(data);
   }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-4 w-full"
+      >
         <FormField
           control={form.control}
           name="name"
