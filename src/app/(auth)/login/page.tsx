@@ -1,97 +1,60 @@
-// app/login/page.tsx
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
+import LoginForm from "./login-form";
+import Link from "next/link";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // lógica de autenticação com Supabase aqui
-  };
-
   return (
     <div className="flex min-h-screen">
-      {/* Lado esquerdo */}
-      <div className="w-1/2 hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-[#0D1E57] to-[#3A2B77] text-white p-8">
-        <h2 className="text-2xl font-semibold mb-6">
-          Podcast
-          <br /> <span className="text-green-400">Roda da Prospecção</span>
-        </h2>
-        <p className="text-lg mb-4">
-          Aprenda com os{" "}
-          <span className="text-green-400">maiores especialistas</span> do
-          mercado em Vendas B2B
-        </p>
-        <div className="flex gap-4 mt-4">
-          {/* Coloque imagens reais depois */}
-          <div className="w-20 h-20 bg-white rounded shadow-md" />
-          <div className="w-20 h-20 bg-white rounded shadow-md" />
-          <div className="w-20 h-20 bg-white rounded shadow-md" />
+      {/* Lado esquerdo da tela */}
+      <div className="w-1/3 ">
+        <div className="relative w-full h-full">
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            src="/auth-bg.mp4"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
         </div>
-        <button className="mt-6 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
-          Inscreva-se
-        </button>
       </div>
-
-      {/* Lado direito */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-6">
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
-          <div className="flex justify-center mb-6">
-            <Image src="/logo.svg" alt="Logo" width={60} height={60} />
+      {/* Lado direito da tela */}
+      <div className="w-2/3 flex flex-col bg-white shadow-lg rounded-lg p-6">
+        <div className="flex flex-col items-center justify-center w-full h-full ">
+          <div className="flex flex-col gap-4 items-center justify-center mb-6 text-center w-full max-w-sm">
+            <Image src="/logo.svg" alt="Logo" width={150} height={100} />
+            <h1 className="text-2xl font-bold">Boas Vindas ao CMOG</h1>
+            <p className="text-gray-600">Entre com sua conta</p>
           </div>
 
-          <h1 className="text-2xl font-bold text-center text-blue-900">
-            Boas-vindas à [SUA PLATAFORMA]
-          </h1>
-          <p className="text-center text-gray-500 text-sm">
-            Entre para acessar a plataforma
-          </p>
+          {/* LoginForm + link de cadastro */}
+          <div className="w-full max-w-sm flex flex-col">
+            <LoginForm />
 
-          <div>
-            <Label htmlFor="email" className="text-red-600">
-              E-mail
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Digite o seu e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border-red-500"
-              required
-            />
-            <p className="text-xs text-red-600 mt-1">Adicione seu e-mail</p>
+            {/* Links de cadastro e esqueceu a senha organizados lado a lado */}
+            <div className="mt-4 flex justify-between text-sm text-gray-500">
+              <p>
+                Não tem uma conta?{" "}
+                <Link
+                  href="/register"
+                  className="text-blue-500 hover:underline ml-1"
+                >
+                  Cadastre-se
+                </Link>
+              </p>
+              <p>
+                <Link
+                  href="/forgot-password"
+                  className="text-blue-500 hover:underline"
+                >
+                  Esqueceu a senha?
+                </Link>
+              </p>
+            </div>
           </div>
-
-          <div>
-            <Label htmlFor="senha">Senha</Label>
-            <Input
-              id="senha"
-              type="password"
-              placeholder="********"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              required
-            />
-            <a
-              href="#"
-              className="text-sm text-blue-600 hover:underline mt-2 inline-block"
-            >
-              Esqueceu sua senha?
-            </a>
-          </div>
-
-          <Button type="submit" className="w-full">
-            Entrar
-          </Button>
-        </form>
+        </div>
       </div>
     </div>
   );
