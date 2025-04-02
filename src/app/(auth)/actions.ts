@@ -18,7 +18,7 @@ export async function getUserSession() {
     return { status: 'success', user: data?.user };
 }
 
-export async function Login(formData: FormData) {
+export async function login(formData: FormData) {
     // Create a new Supabase client instance using the server-side function to ensure the client is created on the server
     const supabase = await createClient();
 
@@ -48,7 +48,7 @@ export async function loginWithToken(token: string) {
         return { error: 'Falha ao fazer login.' };
     }
 
-    revalidatePath('/dashboard', 'layout');
+    revalidatePath('/dashboard/minhas-licitacoes', 'layout');
     return { success: 'Login Realizado!' };
 }
 
@@ -78,7 +78,8 @@ export async function signup(data: any) {
     }
 
     revalidatePath('/');
-    redirect('/dashboard/minhas-licitacoes');
+    redirect('/confirm-acount');
+    
 }
 
 export async function forgotPassword(formData: FormData) {
@@ -97,6 +98,29 @@ export async function forgotPassword(formData: FormData) {
         return {
             status: error?.message,
             user: null,
+        };
+    }
+
+    return { status: "success" };
+}
+
+export async function resetPassword(formData: FormData, code: string) {
+    const supabase = await createClient();
+    const { error: CodeError } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (CodeError) {
+        return {
+            status: CodeError?.message,
+        };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+        password: formData.get("password") as string,
+    });
+
+    if (error) {
+        return {
+            status: error?.message,
         };
     }
 

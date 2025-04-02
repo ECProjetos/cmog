@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
+import { Eye, EyeOff } from "lucide-react";
+
 import {
   Form,
   FormControl,
@@ -26,6 +28,9 @@ export default function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false); // Estado
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false); // Estado para mostrar/esconder a confirmação da senha
 
   const form = useForm<ResetPasswordFormValues>({
     defaultValues: {
@@ -36,6 +41,14 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (values: ResetPasswordFormValues) => {
     setLoading(true);
+
+    if (values.password !== values.password_confirmation) {
+      form.setError("password_confirmation", {
+        message: "As senhas não coincidem",
+      });
+      setLoading(false);
+      return;
+    }
 
     // Cria um FormData com os valores do formulário
     const formData = new FormData();
@@ -74,14 +87,23 @@ export default function ResetPasswordForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="password">Nova senha</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  id="password"
-                  placeholder="Digite sua nova senha"
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Digite sua senha"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    tabIndex={-1} // Evita focar no botão ao tabular
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,18 +113,33 @@ export default function ResetPasswordForm() {
         <FormField
           control={form.control}
           name="password_confirmation"
+          rules={{
+            validate: (value) =>
+              value === form.getValues("password") || "As senhas não coincidem",
+          }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor="password_confirmation">
-                Confirmação da nova senha
-              </FormLabel>
+              <FormLabel>Confirmar Senha</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  id="password_confirmation"
-                  placeholder="Confirme sua nova senha"
-                />
+                <div className="relative">
+                  <Input
+                    type={showPasswordConfirmation ? "text" : "password"}
+                    placeholder="Confirme a sua senha"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordConfirmation((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    tabIndex={-1}
+                  >
+                    {showPasswordConfirmation ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

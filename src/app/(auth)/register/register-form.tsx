@@ -54,15 +54,16 @@ export default function RegisterForm() {
         toast("Erro", {
           description: data.error,
         });
-      } else if (data.success) {
+      } else if (!data.error) {
         toast("Sucesso", {
-          description: data.success,
+          description: "Usuário registrado com sucesso!",
         });
-        router.push("/login");
+        router.push("/confirm-acount");
       }
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleSubmit(data: any) {
     signupMutation.mutate(data);
   }

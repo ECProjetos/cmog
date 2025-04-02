@@ -4,8 +4,8 @@ import { validaTelefone } from "@/utils/valida-telefone";
 import { z } from "zod";
 
 export const loginSchema = z.object({
-    email: z.string().email("Email inválido").min(1, "O email é obrigatório").max(100, "O email deve ter no máximo 100 caracteres"),
-    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres").max(100, "A senha deve ter no máximo 100 caracteres"),
+    email: z.string().email("Informe um email válido para acessar sua conta").min(1, "O email é obrigatório para login").max(100, "O email deve ter no máximo 100 caracteres"),
+    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres para login").max(100, "A senha deve ter no máximo 100 caracteres"),
 });
 
 export type LoginType = z.infer<typeof loginSchema>;

@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+
 import { z } from "zod";
 
-import { Eye, EyeOff } from "lucide-react"; // 👈 Certifique-se de que tem isso instalado
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +22,14 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { toast } from "sonner";
+
+import { login, loginWithToken } from "../actions";
+
 import { loginSchema } from "../zod-types";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/esconder
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -32,30 +40,52 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof registerSchema>) {
-    if (data.password !== data.confirmPassword) {
-      toast.error("Senhas não coincidem", {
-        description:
-          "As senhas fornecidas não coincidem. Por favor, tente novamente.",
-      });
-      return;
-    }
+  const tokenMutation = useMutation({
+    mutationFn: async (code: string) => loginWithToken(code),
+    onSuccess: (data) => {
+      if (!data.error) {
+        location.reload();
+      }
+    },
+  });
 
-    if (!data.cpf && !data.cnpj) {
-      toast.error("CPF ou CNPJ obrigatório", {
-        description: "Você deve fornecer pelo menos um CPF ou CNPJ.",
-      });
-      return;
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      tokenMutation.mutate(code);
     }
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    toast.success("Cadastro realizado com sucesso!", {
-      description: (
-        <span className="text-zinc-700 dark:text-zinc-200">
-          Redirecionando você para o painel...
-        </span>
-      ),
-    });
-  }
+  const loginMutation = useMutation({
+    mutationFn: async (values: z.infer<typeof loginSchema>) => {
+      const formData = new FormData();
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      return login(formData);
+    },
+    onSuccess: (data) => {
+      if (data.error) {
+        toast.error("Erro ao fazer login", {
+          description: <span className="text-gray-500">{data.error}</span>,
+        });
+      } else if (data.success) {
+        toast.success("Login Realizado com sucesso", {
+          description: (
+            <span className="text-gray-500">
+              Redirecionando você para a plataforma
+            </span>
+          ),
+        });
+        setTimeout(() => {
+          router.push("/dashboard/minhas-licitacoes");
+        }, 1000); // Redireciona após 1 segundo
+      }
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    loginMutation.mutate(values);
+  };
 
   return (
     <Form {...form}>
