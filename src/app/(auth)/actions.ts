@@ -36,7 +36,7 @@ export async function login(formData: FormData) {
     }
 
     // Revalidate the dashboard page to update the user session
-    revalidatePath('/dashboard/minhas-licitacoes', 'layout');
+    revalidatePath('/minhas-licitacoes', 'layout');
     return { success: 'Login Realizado!' };
 }
 export async function loginWithToken(token: string) {
@@ -48,7 +48,7 @@ export async function loginWithToken(token: string) {
         return { error: 'Falha ao fazer login.' };
     }
 
-    revalidatePath('/dashboard/minhas-licitacoes', 'layout');
+    revalidatePath('/minhas-licitacoes', 'layout');
     return { success: 'Login Realizado!' };
 }
 
@@ -79,7 +79,7 @@ export async function signup(data: any) {
 
     revalidatePath('/');
     redirect('/confirm-acount');
-    
+
 }
 
 export async function forgotPassword(formData: FormData) {
