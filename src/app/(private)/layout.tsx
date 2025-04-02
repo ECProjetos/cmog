@@ -3,7 +3,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { Separator } from "@radix-ui/react-separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 export default async function PrivateLayout({
   children,

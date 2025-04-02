@@ -8,7 +8,7 @@ export default async function AuthLayout({
 }>) {
   const response = await getUserSession();
   if (response?.user) {
-    redirect("/dashboard/minhas-licitacoes");
+    redirect("/minhas-licitacoes");
   }
   return <>{children}</>;
 }

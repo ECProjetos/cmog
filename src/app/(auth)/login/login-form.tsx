@@ -78,7 +78,7 @@ export default function LoginForm() {
         });
         setTimeout(() => {
           router.push("/minhas-licitacoes");
-        }, 1000); // Redireciona após 1 segundo
+        }, 2500);
       }
     },
   });

@@ -13,6 +13,7 @@ import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
+  SidebarGroupLabel,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
@@ -22,7 +23,7 @@ import {
 const activeItemStyles =
   "text-blue-600 [&_svg]:text-blue-600 bg-white shadow-sm border dark:bg-blue-950 dark:text-blue-400";
 
-export function NavMain({
+export function NavGeneral({
   items,
 }: {
   items: {
@@ -41,6 +42,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
+      <SidebarGroupLabel>Geral</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

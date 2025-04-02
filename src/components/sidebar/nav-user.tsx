@@ -1,18 +1,18 @@
 "use client";
 
 import {
-  // BadgeCheck,
-  // Bell,
+  BadgeCheck,
   ChevronsUpDown,
-  // CreditCard,
+  CreditCard,
   LogOut,
-  // Sparkles,
+  Sparkles,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/sidebar";
 import { User } from "@supabase/supabase-js";
 import { logout } from "@/hooks/use-logout";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+
 
 export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
@@ -43,10 +45,10 @@ export function NavUser({ user }: { user: User }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={user.user_metadata.avatar}
-                  alt={user.user_metadata.display_name}
+                  alt={user.user_metadata.name}
                 />
                 <AvatarFallback className="rounded-lg">
-                  {user.user_metadata.display_name
+                  {user.user_metadata.name
                     .split(" ")
                     .map((word: string) => word[0])
                     .join("")
@@ -55,7 +57,7 @@ export function NavUser({ user }: { user: User }) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.user_metadata.display_name}
+                  {user.user_metadata.name}
                 </span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
@@ -73,10 +75,10 @@ export function NavUser({ user }: { user: User }) {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={user.user_metadata.avatar}
-                    alt={user.user_metadata.display_name}
+                    alt={user.user_metadata.name}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {user.user_metadata.display_name
+                    {user.user_metadata.name
                       .split(" ")
                       .map((word: string) => word[0])
                       .join("")
@@ -85,39 +87,53 @@ export function NavUser({ user }: { user: User }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {user.user_metadata.display_name}
+                    {user.user_metadata.name}
                   </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
+            <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
-                Upgrade to Pro
+                Atualizar para Premium
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
-                Account
+                Conta
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
-                Billing
+                Cobrança
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup> */}
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <LogOut />
+                  Sair
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Tem certeza de que deseja sair?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Você precisará fazer login novamente para acessar sua conta.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={logout}>Sair</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
