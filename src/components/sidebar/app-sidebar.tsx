@@ -16,7 +16,7 @@ import {
 
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
-import { BookOpen, LucideIcon, Settings2 } from "lucide-react";
+import { BookOpen, Settings2 } from "lucide-react";
 import { getUserSession } from "@/app/(auth)/actions";
 import { User } from "@supabase/supabase-js";
 import { NavGeneral } from "./nav-general";
@@ -39,7 +39,7 @@ export const createData = (pathname: string) => ({
       items: [
         {
           title: "Conta",
-          url: "/settings",
+          url: "/settings/account",
           isActive: pathname.startsWith("/settings/account"),
         },
         {
@@ -60,7 +60,7 @@ export const createData = (pathname: string) => ({
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   const pathname = usePathname();
-  const data = createData(pathname);
+
   const [user, setUser] = useState<User | undefined>(undefined);
 
   useEffect(() => {
@@ -75,24 +75,18 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       });
   }, []);
 
-  const navMain = data.navMain.map(
-    (item: {
-      title: string;
-      icon: LucideIcon;
-      url: string;
-      items?: { url: string }[];
-    }) => ({
+  const data = createData(pathname);
+  const navData = {
+    ...data,
+    navGeneral: data.navGeneral.map((item) => ({
       ...item,
-      isActive: pathname === item.url || pathname.startsWith(item.url),
-      items: Array.isArray(item.items)
-        ? item.items.map((subItem: { url: string }) => ({
-            ...subItem,
-            isActive: pathname === subItem.url,
-            title: subItem.url, // Correcting the typo to match the expected type
-          }))
-        : [],
-    })
-  );
+      isActive: pathname.startsWith("/settings"),
+      items: item.items?.map((subItem) => ({
+        ...subItem,
+        isActive: pathname === subItem.url,
+      })),
+    })),
+  };
 
   return (
     <Sidebar collapsible="icon" {...props} className="border-none">
@@ -108,8 +102,8 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={navMain} />
-        <NavGeneral items={data.navGeneral} />
+        <NavMain items={navData.navMain} />
+        <NavGeneral items={navData.navGeneral} />
       </SidebarContent>
 
       <SidebarFooter>{user && <NavUser user={user} />}</SidebarFooter>
