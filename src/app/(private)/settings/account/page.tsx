@@ -203,6 +203,7 @@ export default function AccountPage() {
           <Label>Telefone</Label>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
         </div>
+      {cpf ? (
         <div className="grid gap-1">
           <Label>CPF</Label>
           <Input
@@ -211,15 +212,16 @@ export default function AccountPage() {
             placeholder="Somente números"
           />
         </div>
-        <div className="grid gap-1">
-          <Label>CNPJ</Label>
-          <Input
-            value={cnpj}
-            onChange={(e) => setCnpj(e.target.value)}
-            placeholder="Somente números"
-          />
-        </div>
-        {cnpj && (
+      ) : (
+        <>
+          <div className="grid gap-1">
+            <Label>CNPJ</Label>
+            <Input
+              value={cnpj}
+              onChange={(e) => setCnpj(e.target.value)}
+              placeholder="Somente números"
+            />
+          </div>
           <div className="grid gap-1">
             <Label>Razão Social</Label>
             <Input
@@ -227,8 +229,11 @@ export default function AccountPage() {
               onChange={(e) => setRazaoSocial(e.target.value)}
             />
           </div>
-        )}
-      </div>
+        </>
+      )}
+        </div>
+        
+        
 
       <Button
         className="mt-6"
