@@ -56,6 +56,7 @@ export async function updateUserAvatar(formData: FormData) {
         .upload(avatarPath, avatarFile, { upsert: true });
 
     if (uploadError) {
+        console.error('Erro ao fazer upload do novo avatar:', uploadError);
         return { error: 'Erro ao fazer upload do novo avatar.' };
     }
 
