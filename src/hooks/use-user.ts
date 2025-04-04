@@ -8,7 +8,5 @@ export async function getUser() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  //console.log('hooks/use-user.ts')
-  //console.log(user)
   return user;
 }

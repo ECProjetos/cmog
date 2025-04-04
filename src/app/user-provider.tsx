@@ -18,6 +18,11 @@ export default function UserProvider({
       const user = await getUser();
       if (user) {
         setUser(user);
+        if (user.user_metadata?.theme === "dark") {
+          document.querySelector("html")?.classList.add("dark");
+        } else {
+          document.querySelector("html")?.classList.remove("dark");
+        }
       }
       setLoading(false);
     }
