@@ -1,8 +1,8 @@
-export default function SearchPage() {
-    return (
-        <div>
-        <h1>Minhas Busca</h1>
-        <p>Esta é a página de busca.</p>
-        </div>
-    );
+export default function NovaPage() {
+  return (
+    <div>
+      <h1>Nova Página</h1>
+      <p>Esta é uma nova página de exemplo.</p>
+    </div>
+  );
 }
