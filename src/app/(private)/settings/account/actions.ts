@@ -1,66 +1,81 @@
-"use server";
+'use server';
 
-import { createClient } from "@/utils/supabase/server";
-import { UpdateUserProfileInput, userProfileSchema } from "../zod-types";
+import { revalidatePath } from 'next/cache';
+import { createClient } from '@/utils/supabase/server';
 
-export async function getUserById(id: string) {
+export async function updateUserProfile(formData: FormData) {
     const supabase = await createClient();
 
-    const { data, error } = await supabase
-        .from("users_profiles")
-        .select("*")
-        .eq("user_id", id)
-        .single();
+    const name = formData.get('name') as string;
+    const phone = formData.get('phone') as string;
+    const cpf = formData.get('cpf') as string | null;
+    const cnpj = formData.get('cnpj') as string | null;
+    const razao_social = formData.get('razao_social') as string | null;
 
-    if (error) throw new Error("Failed to fetch user data");
+    const { error } = await supabase.auth.updateUser({
+        data: {
+            name,
+            phone,
+            cpf: cpf || null,
+            cnpj: cnpj || null,
+            razao_social: cnpj ? razao_social : null,
+        },
+    });
 
-    return data;
+    if (error) {
+        return { error: 'Erro ao atualizar os dados do perfil.' };
+    }
+
+    revalidatePath('/', 'layout');
+    return { success: 'Perfil atualizado com sucesso!', name };
 }
 
-export async function updateUserProfile(data: UpdateUserProfileInput) {
+export async function updateUserAvatar(formData: FormData) {
     const supabase = await createClient();
-    const parsed = userProfileSchema.safeParse(data);
 
-    if (!parsed.success) {
-        const errors = parsed.error.flatten().fieldErrors;
-        return { error: "Erro de validação: " + JSON.stringify(errors) };
+    const avatarFile = formData.get('avatar') as File;
+    const oldAvatar = formData.get('old_avatar') as string;
+    const userId = formData.get('user_id') as string;
+
+    if (!avatarFile) {
+        return { error: 'Nenhuma imagem foi selecionada.' };
     }
 
-    const { user_id, ...newData } = parsed.data;
-
-    // Buscar dados atuais
-    const { data: currentData, error: fetchError } = await supabase
-        .from("users_profiles")
-        .select("*")
-        .eq("user_id", user_id)
-        .single();
-
-    if (fetchError) {
-        console.error("Erro ao buscar perfil atual:", fetchError);
-        return { error: "Erro ao buscar perfil atual" };
-    }
-
-    // Comparar campos para atualizar apenas os que mudaram
-    const updates: Partial<UpdateUserProfileInput> = {};
-    for (const key in newData) {
-        if (newData[key as keyof typeof newData] !== currentData[key]) {
-            updates[key as keyof typeof newData] = newData[key as keyof typeof newData];
+    if (oldAvatar) {
+        try {
+            const oldAvatarPath = `${userId}/avatar`;
+            await supabase.storage.from('avatars').remove([oldAvatarPath]);
+        } catch (error) {
+            console.error('Erro ao deletar avatar antigo:', error);
         }
     }
 
-    if (Object.keys(updates).length === 0) {
-        return { success: true }; // Nada para atualizar
+    const avatarPath = `${userId}/avatar`;
+    const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(avatarPath, avatarFile, { upsert: true });
+
+    if (uploadError) {
+        console.error('Erro ao fazer upload do novo avatar:', uploadError);
+        return { error: 'Erro ao fazer upload do novo avatar.' };
     }
 
-    const { error } = await supabase
-        .from("users_profiles")
-        .update(updates)
-        .eq("user_id", user_id);
+    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+        .from('avatars')
+        .createSignedUrl(avatarPath, 31536000);
 
-    if (error) {
-        console.error("Erro ao atualizar perfil:", error);
-        return { error: "Erro ao atualizar perfil" };
+    if (signedUrlError) {
+        return { error: 'Erro ao gerar URL do avatar.' };
     }
 
-    return { success: true };
+    const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: signedUrlData.signedUrl },
+    });
+
+    if (updateError) {
+        return { error: 'Erro ao atualizar URL do avatar.' };
+    }
+
+    revalidatePath('/', 'layout');
+    return { success: 'Avatar atualizado com sucesso!', avatar_url: signedUrlData.signedUrl };
 }
