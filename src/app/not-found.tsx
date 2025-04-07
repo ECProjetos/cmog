@@ -31,7 +31,7 @@ export default function NotFound() {
           removida.
         </p>
         <Button variant="outline" asChild>
-          <Link href="/minhas-licitacoes">Voltar para a página inicial</Link>
+          <Link href="/busca">Voltar para a página inicial</Link>
         </Button>
       </div>
     </div>
