@@ -10,4 +10,13 @@ export const searchSchema = z.object({
     sites: z.array(z.string()).min(1, { message: "Selecione pelo menos um portal" }),
 })
 
+export const searchSchemaView = z.object({
+    id_busca: z.string(),
+    id_user: z.string(),
+    titulo: z.string(),
+    descricao: z.string(),
+});
+
 export type SearchSchemaType = z.infer<typeof searchSchema>;
+
+export type SearchSchemaViewType = z.infer<typeof searchSchemaView>;
