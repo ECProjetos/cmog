@@ -7,10 +7,13 @@ import { useUserStore } from "@/stores/userStore";
 
 import { buttonVariants } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
+import Loading from "@/app/loading";
 
 import { getAllBuscas } from "./actions";
 
 import { SearchSchemaViewType } from "./zod-types";
+import { BuscaTable } from "./table";
+import { buscaColumns } from "./columns";
 
 export default function BuscasPage() {
   const user = useUserStore((state) => state.user);
@@ -43,38 +46,30 @@ export default function BuscasPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">Minhas Buscas</h1>
-        {loading && <p>Carregando...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && data.length === 0 && (
-          <p>Nenhuma busca encontrada.</p>
-        )}
-        <Link
-          href="/busca/nova"
-          className={buttonVariants({
-            variant: "secondary",
-            size: "lg",
-            className: "w-full",
-          })}
-        >
-          Criar nova busca
-          <PlusCircleIcon className="ml-2 h-4 w-4" />
-        </Link>
-        {data.map((busca) => (
-          <Link
-            key={busca.id_busca}
-            href={`/busca/${busca.id_busca}`}
-            className={buttonVariants({
-              variant: "outline",
-              size: "lg",
-              className: "w-full",
-            })}
-          >
-            {busca.titulo}
-          </Link>
-        ))}
-      </div>
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-2xl font-bold text-red-500">{error}</h1>
+          <p className="text-gray-500">Tente novamente mais tarde.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col px-4 gap-4">
+          <div className="flex items-center justify-between w-full">
+            <h1 className="text-2xl font-bold">Minhas Buscas</h1>
+            <Link
+              href="/busca/nova"
+              className={buttonVariants({ variant: "default" })}
+            >
+              <PlusCircleIcon className="h-4 w-4" />
+              Criar Busca
+            </Link>
+          </div>
+          <div className="w-full">
+            <BuscaTable data={data} columns={buscaColumns} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
