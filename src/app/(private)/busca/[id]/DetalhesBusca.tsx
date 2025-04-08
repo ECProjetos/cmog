@@ -75,87 +75,100 @@ export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : data && data.length > 0 ? (
-          data.map((licitacao: any) => (
-            <div
-              key={licitacao.id_licitacao}
-              className="border border-gray-300 rounded-lg p-5 mb-6 shadow-md"
-            >
-              <h2 className="text-xl font-bold text-blue-800 mb-1">
-                Licitação Nº {licitacao.numero}
-              </h2>
+          <table className="min-w-full table-auto border border-gray-300 mt-4 text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-2 py-2 text-left">Comprador</th>
+                <th className="border px-2 py-2 text-left">UF</th>
+                <th className="border px-2 py-2 text-left">Tipo</th>
+                <th className="border px-2 py-2 text-left">Data Abertura</th>
+                <th className="border px-2 py-2 text-left">Valor Estimado</th>
+                <th className="border px-2 py-2 text-left">Descrição</th>
+                <th className="border px-2 py-2 text-left">Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((licitacao: any) => {
+                const valorTotal = licitacao.itens?.reduce(
+                  (acc: number, item: any) =>
+                    acc +
+                    (item.vl_unitario_estimado && item.qt_itens
+                      ? item.vl_unitario_estimado * item.qt_itens
+                      : 0),
+                  0
+                );
 
-              <p className="text-gray-700">
-                <strong>Comprador:</strong> {licitacao.comprador}
-              </p>
+                // Novo resumo descritivo
+                const dsItens = licitacao.itens
+                  ?.map((item: any) => item.ds_item)
+                  .filter(Boolean)
+                  .slice(0, 3)
+                  .join(", ");
 
-              <p className="text-gray-700">
-                <strong>Tipo:</strong> {licitacao.tipo_licitacao}
-              </p>
+                const grupos = licitacao.grupos_materiais
+                  ?.map((g: any) => g.nome_grupo_material)
+                  .filter(Boolean)
+                  .join(", ");
 
-              <p className="text-gray-700">
-                <strong>Local:</strong> {licitacao.municipios?.nome_municipio} /{" "}
-                {licitacao.municipios?.uf_municipio}
-              </p>
+                const classes = licitacao.grupos_materiais
+                  ?.flatMap(
+                    (g: any) =>
+                      g.classes_materiais?.map(
+                        (c: any) => c.nome_classe_material
+                      ) ?? []
+                  )
+                  .filter(Boolean)
+                  .join(", ");
 
-              <p className="text-gray-700">
-                <strong>Abertura:</strong> {licitacao.data_abertura_propostas}{" "}
-                às {licitacao.hora_abertura_propostas}
-              </p>
+                const descricaoCompleta = [
+                  classes && `${classes}`,
+                  grupos && `${grupos}`,
+                  dsItens && ` ${dsItens}`,
+                ]
+                  .filter(Boolean)
+                  .join(" — ");
 
-              {/* GRUPOS E CLASSES */}
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-800 mb-1">
-                  Grupos e Classes:
-                </h3>
-                {licitacao.grupos_materiais?.map((grupo: any) => (
-                  <div
-                    key={grupo.id_grupo_material}
-                    className="ml-4 mb-2 text-sm"
-                  >
-                    <p className="font-medium">{grupo.nome_grupo_material}</p>
-                    <ul className="list-disc ml-6 text-gray-600">
-                      {grupo.classes_materiais?.map((classe: any) => (
-                        <li key={classe.id_classe_material}>
-                          {classe.nome_classe_material}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-
-              {/* ITENS */}
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-800 mb-1">Itens:</h3>
-                <ul className="list-disc ml-6 text-sm text-gray-700 space-y-1">
-                  {licitacao.itens?.map((item: any) => (
-                    <li key={item.id_item}>
-                      <span className="font-medium">{item.ds_item}</span>
-                      <div className="text-gray-600 ml-2 text-xs">
-                        Quantidade: {item.qt_itens ?? "—"} | Valor Estimado: R${" "}
-                        {item.vl_unitario_estimado
-                          ? Number(item.vl_unitario_estimado).toFixed(2)
-                          : "—"}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-4">
-                <a
-                  href={licitacao.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  Ver edital completo
-                </a>
-              </div>
-            </div>
-          ))
+                return (
+                  <tr key={licitacao.id_licitacao} className="hover:bg-gray-50">
+                    <td className="border px-2 py-2">{licitacao.comprador}</td>
+                    <td className="border px-2 py-2">
+                      {licitacao.municipios?.uf_municipio}
+                    </td>
+                    <td className="border px-2 py-2">
+                      {licitacao.tipo_licitacao}
+                    </td>
+                    <td className="border px-2 py-2">
+                      {licitacao.data_abertura_propostas} às{" "}
+                      {licitacao.hora_abertura_propostas}
+                    </td>
+                    <td className="border px-2 py-2">
+                      R${" "}
+                      {valorTotal?.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td className="border px-2 py-2 text-gray-700">
+                      {descricaoCompleta.length > 160
+                        ? descricaoCompleta.substring(0, 160) + "..."
+                        : descricaoCompleta}
+                    </td>
+                    <td className="border px-2 py-2">
+                      <a
+                        href={licitacao.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Ver edital
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         ) : (
-          <p>Nenhuma licitação encontrada.</p>
+          <p className="text-gray-500">Nenhuma licitação encontrada.</p>
         )}
       </div>
     </div>
