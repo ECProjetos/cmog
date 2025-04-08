@@ -36,7 +36,7 @@ export async function login(formData: FormData) {
     }
 
     // Revalidate the dashboard page to update the user session
-    revalidatePath('/minhas-licitacoes', 'layout');
+    revalidatePath('/busca', 'layout');
     return { success: 'Login Realizado!' };
 }
 export async function loginWithToken(token: string) {
@@ -48,7 +48,7 @@ export async function loginWithToken(token: string) {
         return { error: 'Falha ao fazer login.' };
     }
 
-    revalidatePath('/minhas-licitacoes', 'layout');
+    revalidatePath('/busca', 'layout');
     return { success: 'Login Realizado!' };
 }
 

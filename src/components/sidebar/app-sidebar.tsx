@@ -16,13 +16,19 @@ import {
 
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
-import { BookOpen, Settings2 } from "lucide-react";
+import { BookOpen, BookOpenCheckIcon, Settings2 } from "lucide-react";
 import { getUserSession } from "@/app/(auth)/actions";
 import { User } from "@supabase/supabase-js";
 import { NavGeneral } from "./nav-general";
 
 export const createData = (pathname: string) => ({
   navMain: [
+    {
+      title: "Minhas Buscas",
+      icon: BookOpenCheckIcon,
+      url: "/busca",
+      isActive: pathname.startsWith("/busca"),
+    },
     {
       title: "Minhas Licitações",
       icon: BookOpen,

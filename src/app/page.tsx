@@ -26,7 +26,7 @@ export default function Home() {
           Cadastro
         </Link>
         <Link
-          href="/minhas-licitacoes"
+          href="/busca"
           className={buttonVariants({
             variant: "default",
             size: "lg",
