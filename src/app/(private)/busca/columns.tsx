@@ -51,11 +51,33 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Título" />
     ),
+    cell: ({ row }) => (
+      <div
+        style={{
+          maxWidth: "500px",
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+        }}
+      >
+        {row.getValue("titulo")}
+      </div>
+    ),
   },
   {
     accessorKey: "descricao",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Descrição" />
+    ),
+    cell: ({ row }) => (
+      <div
+        style={{
+          maxWidth: "600px",
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+        }}
+      >
+        {row.getValue("titulo")}
+      </div>
     ),
   },
   {
