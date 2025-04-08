@@ -30,6 +30,7 @@ import { searchSchema, SearchSchemaType } from "../zod-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import InfoTooltip from "@/components/info-toolip";
+import { redirect } from "next/navigation";
 
 export default function SearchForm() {
   const form = useForm<z.infer<typeof searchSchema>>({
@@ -56,8 +57,19 @@ export default function SearchForm() {
         return;
       }
 
-      await CreateNewShearch(data, user.id);
-      toast.success("Busca criada com sucesso!");
+      const res = await CreateNewShearch(data, user.id);
+      if (res.error) {
+        toast.error("Erro ao criar busca. Tente novamente.",{
+          description: res.error,
+        });
+        return;
+      }
+      toast.success("Busca criada com sucesso!",{
+        description: `Encontramos ${res.quantidadeLicitacoes} licitações para você!`,
+      });
+      setTimeout(() => {
+        redirect(`/busca/{res.id_busca}`);
+      }, 2500);
     } catch (error) {
       console.error(error);
       toast.error("Erro ao criar busca. Tente novamente.");
