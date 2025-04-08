@@ -2,20 +2,6 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-
-
-function buildLike(keywords: string[], fields: string[]) {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} ILIKE '%${word}%'`)
-    ).join(" OR ");
-}
-
-function buildNotLike(keywords: string[], fields: string[]) {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
-    ).join(" AND ");
-}
-
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
 
@@ -28,6 +14,16 @@ export async function ReRunSearch(buscaId: string) {
     if (error || !busca) {
         throw new Error("Busca não encontrada");
     }
+
+    const buildLike = (keywords: string[], fields: string[]) =>
+        keywords.flatMap((word) =>
+            fields.map((field) => `${field} ILIKE '%${word}%'`)
+        ).join(" OR ");
+
+    const buildNotLike = (keywords: string[], fields: string[]) =>
+        keywords.flatMap((word) =>
+            fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
+        ).join(" AND ");
 
     const positiveClause = buildLike(busca.good_keywords, [
         "i.ds_item",
@@ -61,11 +57,10 @@ export async function ReRunSearch(buscaId: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const licitacoesIds = results?.map((r: any) => r.id_licitacao) ?? [];
 
-    // Atualiza a busca com os novos resultados
-    await supabase.from("buscas")
+    await supabase
+        .from("buscas")
         .update({ id_licitacoes: licitacoesIds })
         .eq("id_busca", buscaId);
 
     return licitacoesIds;
 }
-
