@@ -94,7 +94,7 @@ export function BuscaTable<TData, TValue>({
           <DataTableViewOptions table={table} />
         </div>
       </div>
-      <div className="rounded-md border overflow-x-auto">
+      <div className="rounded-md border overflow-x-auto px-4">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
