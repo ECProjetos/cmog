@@ -60,6 +60,16 @@ export const registerSchema = z
         razao_social: z
             .string()
             .optional(),
+
+        avatar_url: z
+            .string()
+            .optional(),
+
+        theme: z
+            .string()
+            .default("light")
+            .optional(),
+        
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "As senhas não coincidem.",

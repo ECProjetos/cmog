@@ -74,7 +74,8 @@ export async function signup(data: any) {
     });
 
     if (error) {
-        return { error: 'Falha ao fazer login. Verifique suas credenciais' };
+        return { error: 'Falha ao fazer cadastro. Verifique suas credenciais e tente novamente.' };
+
     }
 
     revalidatePath('/');
