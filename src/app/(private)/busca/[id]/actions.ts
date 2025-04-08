@@ -64,3 +64,19 @@ export async function ReRunSearch(buscaId: string) {
 
     return licitacoesIds;
 }
+
+export async function getLicitacoesByIds(ids: number[]) {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+        .from('licitacoes')
+        .select('*')
+        .in('id_licitacao', ids); // filtro com array de IDs
+
+    if (error) {
+        console.error('Erro ao buscar licitações:', error);
+        return { error: error.message };
+    }
+
+    return { data }; // <-- isso estava fora da função
+}

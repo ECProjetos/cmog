@@ -3,6 +3,7 @@
 import DetalhesBusca from "./DetalhesBusca";
 import { createClient } from "@/utils/supabase/server";
 
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -19,10 +20,5 @@ export default async function DetalhesBuscaPage({ params }: PageProps) {
 
   if (!busca) return <div>Busca não encontrada</div>;
 
-  const { data: licitacoes } = await supabase
-    .from("licitacoes")
-    .select("*")
-    .in("id_licitacao", busca.id_licitacoes || []);
-
-  return <DetalhesBusca busca={busca} licitacoes={licitacoes || []} />;
+  return <DetalhesBusca busca={busca} />;
 }

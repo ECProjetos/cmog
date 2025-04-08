@@ -1,26 +1,51 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import { ReRunSearch } from "./actions";
+import { ReRunSearch, getLicitacoesByIds } from "./actions";
 
 interface DetalhesBuscaProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   busca: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  licitacoes: any[];
 }
 
-export default function DetalhesBusca({
-  busca,
-  licitacoes,
-}: DetalhesBuscaProps) {
+export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [data, setData] = useState<any[] | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        // 1. Reexecuta a busca e retorna os IDs de licitação
+        const licitacoesIds = await ReRunSearch(busca.id_busca);
+
+        // 2. Com os IDs em mãos, busca as licitações
+        const res = await getLicitacoesByIds(licitacoesIds);
+
+        if (res?.error) {
+          setError(res.error);
+        } else {
+          setData(res.data);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar licitações:", err);
+        setError("Erro inesperado");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [busca.id_busca]);
   const handleUpdateButton = () => {
     startTransition(async () => {
       try {
@@ -35,49 +60,54 @@ export default function DetalhesBusca({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold">{busca.titulo}</h1>
-          <p className="text-gray-600">{busca.descricao}</p>
+    <div className="px-4 gap-4">
+      <div className="flex flex-col justify-between items-center gap-4 mt-2 mb-4">
+        <div className="flex ">
+          <h1 className="text-2xl font-bold text-gray-800">{busca.titulo}</h1>
+          <Button onClick={handleUpdateButton} disabled={isPending}>
+            <RotateCcw className="mr-2" />
+            {isPending ? "Atualizando..." : "Atualizar Busca"}
+          </Button>
         </div>
-
-        <Button onClick={handleUpdateButton} disabled={isPending}>
-          <RotateCcw className="mr-2" />
-          {isPending ? "Atualizando..." : "Atualizar Busca"}
-        </Button>
+        <p className="text-gray-600">{busca.descricao}</p>
       </div>
 
       <div>
         <h2 className="text-lg font-semibold mb-2">Licitações encontradas</h2>
-        <div className="border rounded-md overflow-hidden">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left">ID</th>
-                <th className="px-4 py-2 text-left">Órgão</th>
-                <th className="px-4 py-2 text-left">Objeto</th>
-                <th className="px-4 py-2 text-left">Data Abertura</th>
-              </tr>
-            </thead>
-            <tbody>
-              {licitacoes?.map((licitacao) => (
-                <tr key={licitacao.id_licitacao} className="border-t">
-                  <td className="px-4 py-2">{licitacao.id_licitacao}</td>
-                  <td className="px-4 py-2">{licitacao.nm_orgao}</td>
-                  <td className="px-4 py-2">{licitacao.objeto}</td>
-                  <td className="px-4 py-2">{licitacao.dt_abertura}</td>
+        <div className="border rounded-md overflow-hidden"></div>
+        <div className="overflow-x-auto">
+          {loading ? (
+            <p>Carregando...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : data && data.length > 0 ? (
+            <table className="min-w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-200 p-2">ID</th>
+                  <th className="border border-gray-200 p-2">Estado</th>
+                  <th className="border border-gray-200 p-2">Numero</th>
                 </tr>
-              ))}
-              {licitacoes?.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="text-center py-4 text-gray-400">
-                    Nenhuma licitação encontrada.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {data.map((licitacao) => (
+                  <tr key={licitacao.id_licitacao}>
+                    <td className="border border-gray-200 p-2">
+                      {licitacao.id_licitacao}
+                    </td>
+                    <td className="border border-gray-200 p-2">
+                      {licitacao.id_municipio}
+                    </td>
+                    <td className="border border-gray-200 p-2">
+                      {licitacao.numero}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>Nenhuma licitação encontrada.</p>
+          )}
         </div>
       </div>
     </div>
