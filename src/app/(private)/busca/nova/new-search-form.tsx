@@ -4,7 +4,9 @@ import { useForm } from "react-hook-form";
 
 import { z } from "zod";
 
-import { useUserStore } from "@/stores/userStore"; // ajuste o caminho conforme necessário
+import { useUserStore } from "@/stores/userStore";
+
+import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -25,55 +27,85 @@ import { STATES, STATES_BY_REGION } from "@/constants/states";
 import { MODALITY } from "@/constants/licitacao-modality";
 import { SITES } from "@/constants/licitacoes-sites";
 
-import { CreateNewShearch } from "./actions";
-import { searchSchema, SearchSchemaType } from "../zod-types";
+import { CreateNewShearch, updateSearch } from "./actions";
+import {
+  searchSchema,
+  SearchSchemaType,
+  SearchSchemaViewType,
+} from "../zod-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import InfoTooltip from "@/components/info-toolip";
 import { redirect } from "next/navigation";
 
-export default function SearchForm() {
+export default function SearchForm(busca: SearchSchemaViewType | undefined) {
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      goodKeyWord: "",
-      badKeyWord: "",
-      states: [],
-      modality: [],
-      sites: [],
-    },
+    defaultValues: busca
+      ? {
+          title: busca.titulo,
+          description: busca.descricao,
+          goodKeyWord: busca.good_keywords.join(" "),
+          badKeyWord: busca.bad_keywords.join(" "),
+          states: busca.states,
+          modality: busca.modality,
+          sites: ["pcp"],
+        }
+      : {
+          title: "",
+          description: "",
+          goodKeyWord: "",
+          badKeyWord: "",
+          states: [],
+          modality: [],
+          sites: [],
+        },
   });
   const allStates = STATES.map((state) => state.value);
   const allModality = MODALITY.map((modality) => modality.value);
   const allSites = SITES.map((site) => site.value);
   const user = useUserStore((state) => state.user);
+  const hasBusca = !!busca?.id_busca;
 
-  const onSubmit = async (data: SearchSchemaType) => {
-    try {
-      if (!user) {
-        toast.error("Usuário não autenticado.");
-        return;
+  const mutation = useMutation({
+    mutationFn: async (data: SearchSchemaType) => {
+      if (!user) throw new Error("Usuário não autenticado.");
+
+      if (busca) {
+        return await updateSearch(data, user.id, busca.id_busca);
+      } else {
+        return await CreateNewShearch(data, user.id);
       }
-
-      const res = await CreateNewShearch(data, user.id);
+    },
+    onSuccess: (res) => {
       if (res.error) {
-        toast.error("Erro ao criar busca. Tente novamente.",{
+        toast.error(`Erro ao ${hasBusca ? "criar" : "atualizar"} busca.`, {
           description: res.error,
         });
         return;
       }
-      toast.success("Busca criada com sucesso!",{
-        description: `Encontramos ${res.quantidadeLicitacoes} licitações para você!`,
-      });
+
+      toast.success(
+        `Busca ${hasBusca ? "criada" : "atualizada"} com sucesso!`,
+        {
+          description: `Encontramos ${res.quantidadeLicitacoes} licitações!`,
+        }
+      );
+
       setTimeout(() => {
         redirect(`/busca/${res.id_busca}`);
       }, 2500);
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao criar busca. Tente novamente.");
-    }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      toast.error(`Erro ao ${hasBusca ? "criar" : "atualizar"} busca.`, {
+        description: err.message,
+      });
+    },
+  });
+
+  const onSubmit = (data: SearchSchemaType) => {
+    mutation.mutate(data);
   };
 
   return (

@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { ClipboardEditIcon, RotateCcw } from "lucide-react";
 import { ReRunSearch } from "./actions";
 import {
   Breadcrumb,
@@ -68,9 +68,13 @@ export default function DetalhesBusca({
         <div className="flex flex-col justify-between items-center gap-4 mt-2 mb-4">
           <div className="flex w-full gap-4 justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-800">{busca.titulo}</h1>
+            <Button>
+              <ClipboardEditIcon className="h-4 w-4" />
+              Editar Filtros
+            </Button>
             <Button onClick={handleUpdateButton} disabled={isPending}>
-              <RotateCcw className="mr-2" />
-              {isPending ? "Atualizando..." : "Atualizar Busca"}
+              <RotateCcw className="h-4 w-4" />
+              {isPending ? "Atualizando..." : "Refazer Busca"}
             </Button>
           </div>
           <p className="text-gray-600">{busca.descricao}</p>
