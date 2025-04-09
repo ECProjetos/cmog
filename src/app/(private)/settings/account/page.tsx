@@ -30,6 +30,7 @@ export default function AccountPage() {
   // Estados para informações de login
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [loginConfirmPassword, setLoginConfirmPassword] = useState("");
 
   useEffect(() => {
     if (user?.user_metadata) {
@@ -162,7 +163,7 @@ export default function AccountPage() {
   const handleLoginSubmit = () => {
     const formData = new FormData();
     formData.append("email", loginEmail);
-    formData.append("password", loginPassword); // Agora usamos o valor do input
+    formData.append("password", loginPassword);
     loginMutation.mutate(formData);
   };
 
@@ -324,40 +325,50 @@ export default function AccountPage() {
                   onChange={(e) => setLoginEmail(e.target.value)}
                 />
               </div>
-              <div className="grid gap-1">
-                <Label>Digite sua senha atual</Label>
-                <Input
-                  type="password"
-                  placeholder="Digite sua senha atual"
-                  value={loginPassword}
-                  onChange={}
-                />
               </div>
-              <div className="grid gap-1">
-                <Label>Senha</Label>
+              <div className="grid gap-1 mt-4">
+              
+
+                <Label>Nova senha</Label>
                 <Input
+                className="mb-4"
                   type="password"
                   placeholder="Digite sua nova senha"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                disabled/>
+                />
+                <Label>Confirmar senha</Label>
+              <Input
+                type="password"
+                placeholder="Confirme sua nova senha"
+                value={loginConfirmPassword}
+                onChange={(e) => setLoginConfirmPassword(e.target.value)}
+              />
+              {loginPassword !== loginConfirmPassword && loginConfirmPassword && (
+                  <p className="text-sm text-red-500 mt-1">As senhas não coincidem.</p>
+                )}
+
               </div>
+              <Button
+              className="mt-6"
+              onClick={handleLoginSubmit}
+              disabled={
+                loginMutation.isPending ||
+                !loginPassword ||
+                loginPassword !== loginConfirmPassword
+              }
+            >
+              {loginMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                "Salvar Alterações"
+              )}
+            </Button>
             </div>
-          </div>
-          <Button
-            className="mt-6"
-            onClick={handleLoginSubmit}
-            disabled={loginMutation.isPending}
-          >
-            {loginMutation.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Salvando...
-              </>
-            ) : (
-              "Salvar Alterações"
-            )}
-          </Button>
+         
         </TabsContent>
       </Tabs>
     </>
