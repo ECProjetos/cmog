@@ -1,11 +1,11 @@
 "use client";
 
-import { useTransition, useState, useEffect } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import { ReRunSearch, getLicitacoesByIds } from "./actions";
+import { ReRunSearch } from "./actions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,40 +16,21 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 
-import { SearchSchemaViewType } from "../zod-types";
+import { LicitacaoType, SearchSchemaViewType } from "../zod-types";
+import { LicitacoesTable } from "./table";
+import { licitacaoColumns } from "./columns";
 
 interface DetalhesBuscaProps {
   busca: SearchSchemaViewType;
+  licitacoes: LicitacaoType[];
 }
 
-export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {
+export default function DetalhesBusca({
+  busca,
+  licitacoes,
+}: DetalhesBuscaProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const [data, setData] = useState<any[] | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const licitacoesIds = await ReRunSearch(busca.id_busca);
-        const res = await getLicitacoesByIds(licitacoesIds);
-        if (res?.error) {
-          setError(res.error);
-        } else {
-          setData(res.data);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar licitações:", err);
-        setError("Erro inesperado");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [busca.id_busca]);
 
   const handleUpdateButton = () => {
     startTransition(async () => {
@@ -76,8 +57,8 @@ export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>
-                {busca.titulo.split(" ").slice(0, 3).join(" ")}
+              <BreadcrumbPage className="truncate max-w-[180px]">
+                {busca.titulo}
               </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -94,115 +75,8 @@ export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {
           </div>
           <p className="text-gray-600">{busca.descricao}</p>
         </div>
-
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Licitações encontradas</h2>
-
-          {loading ? (
-            <p>Carregando...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : data && data.length > 0 ? (
-            <table className="min-w-full table-auto border border-gray-300 mt-4 text-sm">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border px-2 py-2 text-left">Comprador</th>
-                  <th className="border px-2 py-2 text-left">UF</th>
-                  <th className="border px-2 py-2 text-left">Tipo</th>
-                  <th className="border px-2 py-2 text-left">Data Abertura</th>
-                  <th className="border px-2 py-2 text-left">Valor Estimado</th>
-                  <th className="border px-2 py-2 text-left">Descrição</th>
-                  <th className="border px-2 py-2 text-left">Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((licitacao: any) => {
-                  const valorTotal = licitacao.itens?.reduce(
-                    (acc: number, item: any) =>
-                      acc +
-                      (item.vl_unitario_estimado && item.qt_itens
-                        ? item.vl_unitario_estimado * item.qt_itens
-                        : 0),
-                    0
-                  );
-
-                  // Novo resumo descritivo
-                  const dsItens = licitacao.itens
-                    ?.map((item: any) => item.ds_item)
-                    .filter(Boolean)
-                    .slice(0, 3)
-                    .join(", ");
-
-                  const grupos = licitacao.grupos_materiais
-                    ?.map((g: any) => g.nome_grupo_material)
-                    .filter(Boolean)
-                    .join(", ");
-
-                  const classes = licitacao.grupos_materiais
-                    ?.flatMap(
-                      (g: any) =>
-                        g.classes_materiais?.map(
-                          (c: any) => c.nome_classe_material
-                        ) ?? []
-                    )
-                    .filter(Boolean)
-                    .join(", ");
-
-                  const descricaoCompleta = [
-                    classes && `${classes}`,
-                    grupos && `${grupos}`,
-                    dsItens && ` ${dsItens}`,
-                  ]
-                    .filter(Boolean)
-                    .join(" — ");
-
-                  return (
-                    <tr
-                      key={licitacao.id_licitacao}
-                      className="hover:bg-gray-50"
-                    >
-                      <td className="border px-2 py-2">
-                        {licitacao.comprador}
-                      </td>
-                      <td className="border px-2 py-2">
-                        {licitacao.municipios?.uf_municipio}
-                      </td>
-                      <td className="border px-2 py-2">
-                        {licitacao.tipo_licitacao}
-                      </td>
-                      <td className="border px-2 py-2">
-                        {licitacao.data_abertura_propostas} às{" "}
-                        {licitacao.hora_abertura_propostas}
-                      </td>
-                      <td className="border px-2 py-2">
-                        R${" "}
-                        {valorTotal?.toLocaleString("pt-BR", {
-                          minimumFractionDigits: 2,
-                        })}
-                      </td>
-                      <td className="border px-2 py-2 text-gray-700">
-                        {descricaoCompleta.length > 160
-                          ? descricaoCompleta.substring(0, 160) + "..."
-                          : descricaoCompleta}
-                      </td>
-                      <td className="border px-2 py-2">
-                        <a
-                          href={licitacao.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          Ver edital
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-500">Nenhuma licitação encontrada.</p>
-          )}
+        <div className="flex flex-col gap-4 mt-4">
+          <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />
         </div>
       </div>
     </>

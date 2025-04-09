@@ -15,11 +15,49 @@ export const searchSchemaView = z.object({
     id_user: z.string(),
     titulo: z.string(),
     descricao: z.string(),
+    good_keywords: z.array(z.string()),
+    bad_keywords: z.array(z.string()),
+    states: z.array(z.string()),
+    modality: z.array(z.string()),
+    id_licitacoes: z.array(z.number()),
+});
+
+export const itemSchema = z.object({
+    id_item: z.number(),
+    ds_item: z.string(),
+    qt_itens: z.string(),
+    vl_unitario_estimado: z.string().nullable(),
+});
+
+export const classeMaterialSchema = z.object({
+    id_classe_material: z.number(),
+    nome_classe_material: z.string(),
+});
+
+export const grupoMaterialSchema = z.object({
+    id_grupo_material: z.number(),
+    nome_grupo_material: z.string(),
+    classes_materiais: z.array(classeMaterialSchema),
+});
+
+export const municipioSchema = z.object({
+    uf_municipio: z.string(),
 });
 
 export const licitacaoSchema = z.object({
-    
-})
+    id_licitacao: z.number(),
+    comprador: z.string(),
+    data_abertura_propostas: z.string(),
+    hora_abertura_propostas: z.string(),
+    url: z.string(),
+    municipios: municipioSchema,
+    grupos_materiais: z.array(grupoMaterialSchema),
+    itens: z.array(itemSchema),
+});
+
+export type ItemType = z.infer<typeof itemSchema>;
+
+export type LicitacaoType = z.infer<typeof licitacaoSchema>;
 
 export type SearchSchemaType = z.infer<typeof searchSchema>;
 

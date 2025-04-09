@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { LicitacaoType } from "../zod-types";
 
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
@@ -65,21 +66,18 @@ export async function ReRunSearch(buscaId: string) {
     return licitacoesIds;
 }
 
-export async function getLicitacoesByIds(ids: number[]) {
+export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: LicitacaoType[]; error?: string }> {
     const supabase = await createClient();
 
     const { data, error } = await supabase
         .from('licitacoes')
         .select(`
   id_licitacao,
-  numero,
   comprador,
-  tipo_licitacao,
   data_abertura_propostas,
   hora_abertura_propostas,
   url,
   municipios (
-    nome_municipio,
     uf_municipio
   ),
   grupos_materiais (
@@ -104,5 +102,25 @@ export async function getLicitacoesByIds(ids: number[]) {
         return { error: error.message };
     }
 
-    return { data };
+    try {
+        if (!data) {
+            return { error: "Nenhuma licitação encontrada" };
+        }
+        const parsedData = data.map((licitacao) => {
+            return {
+                ...licitacao,
+                municipios: licitacao.municipios?.[0] ?? {}, // Ensure municipios is a single object
+                itens: licitacao.itens?.map((item) => ({
+                    ...item,
+                    vl_unitario_estimado: item.vl_unitario_estimado ? item.vl_unitario_estimado.toString() : null,
+                })),
+            };
+        });
+        return { data: parsedData };
+    } catch (parseError) {
+        console.error('Erro ao analisar os dados:', parseError);
+        return { error: "Erro ao processar os dados da licitação" };
+    }
+
+
 }

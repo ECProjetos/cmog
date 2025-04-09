@@ -1,8 +1,8 @@
 // app/(private)/busca/[id]/page.tsx
 
+import { getLicitacoesByIds } from "./actions";
 import DetalhesBusca from "./DetalhesBusca";
 import { createClient } from "@/utils/supabase/server";
-
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -18,7 +18,9 @@ export default async function DetalhesBuscaPage({ params }: PageProps) {
     .eq("id_busca", id)
     .single();
 
+  const licitacoes = await getLicitacoesByIds(busca.id_licitacoes);
+
   if (!busca) return <div>Busca não encontrada</div>;
 
-  return <DetalhesBusca busca={busca} />;
+  return <DetalhesBusca busca={busca} licitacoes={licitacoes.data ?? []} />;
 }
