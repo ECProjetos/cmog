@@ -166,6 +166,10 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={SalvarLicitacao}>
+              <BookmarkPlus className="mr-2 h-4 w-4" />
+              Salvar Licitação
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
                 href={`/busca/licitacao/${licitacao.id_licitacao}`}
@@ -174,12 +178,6 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
                 <Search className="mr-2 h-4 w-4" />
                 Ver Detalhes
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Button variant="link" onClick={SalvarLicitacao}>
-                <BookmarkPlus className="mr-2 h-4 w-4" />
-                Salvar Licitação
-              </Button>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
 import { z } from "zod";
@@ -28,7 +28,6 @@ import { login, loginWithToken } from "../actions";
 import { loginSchema } from "../zod-types";
 
 export default function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/esconder
 
@@ -76,9 +75,6 @@ export default function LoginForm() {
             </span>
           ),
         });
-        setTimeout(() => {
-          router.push("/minhas-licitacoes");
-        }, 2500);
       }
     },
   });
