@@ -22,6 +22,11 @@ export const searchSchemaView = z.object({
     id_licitacoes: z.array(z.number()),
 });
 
+export const cnaeSchema = z.object({
+    cnae: z.string(),
+    descricao: z.string()
+});
+
 export const itemSchema = z.object({
     id_item: z.number(),
     ds_item: z.string(),
@@ -54,6 +59,21 @@ export const licitacaoSchema = z.object({
     grupos_materiais: z.array(grupoMaterialSchema),
     itens: z.array(itemSchema),
 });
+
+export const licitacaoSchemaIndividual = z.object({
+    id_licitacao: z.number(),
+    comprador: z.string(),
+    data_abertura_propostas: z.string(),
+    hora_abertura_propostas: z.string(),
+    url: z.string(),
+    municipios: municipioSchema,
+    grupos_materiais: z.array(grupoMaterialSchema),
+    itens: z.array(itemSchema),
+    cnae: z.array(cnaeSchema),
+    tipo_licitacao: z.string(),
+});
+
+export const licitacaoIndividual = z.object({licitacaoSchemaIndividual});
 
 export const LicitacoesArraySchema = z.array(licitacaoSchema);
 

@@ -28,7 +28,7 @@ export default function NovaPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <SearchForm />
+      <SearchForm/>
     </div>
   );
 }
