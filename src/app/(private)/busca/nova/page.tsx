@@ -28,7 +28,17 @@ export default function NovaPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <SearchForm />
+      <SearchForm
+        id_busca=""
+        id_user=""
+        titulo=""
+        descricao=""
+        good_keywords={[]}
+        bad_keywords={[]}
+        states={[]}
+        modality={[]}
+        id_licitacoes={[]}
+      />
     </div>
   );
 }

@@ -168,7 +168,7 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                href={`/licitacao/${licitacao.id_licitacao}`}
+                href={`/busca/licitacao/${licitacao.id_licitacao}`}
                 className="flex items-center"
               >
                 <Search className="mr-2 h-4 w-4" />
