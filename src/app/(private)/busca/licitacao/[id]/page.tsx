@@ -65,12 +65,17 @@ export default function Page() {
         <h3 className="text-lg font-bold mb-2">Itens:</h3>
         <ul className="list-disc list-inside space-y-2">
           {licitacao.itens.map((item) => (
-            <li key={item.id_item}>
-              <p><strong>Descrição:</strong> {item.ds_item}</p>
-              <p><strong>Quantidade:</strong> {item.qt_itens}</p>
-              <p><strong>Valor Unitário Estimado:</strong> R$ {item.vl_unitario_estimado}</p>
+            <li key={item.id_item} className="border rounded p-2">
+              <details>
+              <summary className="cursor-pointer">
+                <strong>Item:</strong> {item.ds_item}
+              </summary>
+              <div className="mt-2">
+                <p><strong>Quantidade:</strong> {item.qt_itens}</p>
+                <p><strong>Valor Unitário Estimado:</strong> R$ {item.vl_unitario_estimado}</p>
+              </div>
+              </details>
             </li>
-        
           ))}
         </ul>
         <br/>
