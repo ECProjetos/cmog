@@ -40,9 +40,13 @@ import { redirect } from "next/navigation";
 
 type SearchFormProps = {
   busca?: SearchSchemaViewType;
+  setFormModalOpen?: (open: boolean) => void;
 };
 
-export default function SearchForm({ busca }: SearchFormProps) {
+export default function SearchForm({
+  busca,
+  setFormModalOpen,
+}: SearchFormProps) {
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
     defaultValues: busca
@@ -95,10 +99,13 @@ export default function SearchForm({ busca }: SearchFormProps) {
           description: `Encontramos ${res.quantidadeLicitacoes} licitações!`,
         }
       );
-
-      setTimeout(() => {
-        redirect(`/busca/${res.id_busca}`);
-      }, 2500);
+      if (hasBusca && setFormModalOpen) {
+        setFormModalOpen(false);
+      } else {
+        setTimeout(() => {
+          redirect(`/busca/${res.id_busca}`);
+        }, 2000);
+      }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -389,9 +396,22 @@ export default function SearchForm({ busca }: SearchFormProps) {
             </Button>
           </div>
         </FormItem>
-        <Button type="submit" className="w-full mt-4">
-          Buscar
-        </Button>
+        <div className="flex items-center space-x-2">
+          {hasBusca && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setFormModalOpen?.(false)}
+            >
+              Voltar
+            </Button>
+          )}
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Resetar
+          </Button>
+
+          <Button type="submit">Buscar</Button>
+        </div>
       </form>
     </Form>
   );
