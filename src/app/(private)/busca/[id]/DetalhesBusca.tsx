@@ -65,19 +65,25 @@ export default function DetalhesBusca({
         </Breadcrumb>
       </header>
       <div className="px-4 gap-4">
-        <div className="flex flex-col justify-between items-center gap-4 mt-2 mb-4">
+        <div className="flex flex-col gap-4 mt-2 mb-4">
           <div className="flex w-full gap-4 justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">{busca.titulo}</h1>
-            <Button>
-              <ClipboardEditIcon className="h-4 w-4" />
-              Editar Filtros
-            </Button>
-            <Button onClick={handleUpdateButton} disabled={isPending}>
-              <RotateCcw className="h-4 w-4" />
-              {isPending ? "Atualizando..." : "Refazer Busca"}
-            </Button>
+            <div className="flex gap-2 items-center">
+              <h1 className="text-2xl font-bold text-gray-800">
+                {busca.titulo}
+              </h1>
+            </div>
+            <div className="flex gap-2 items-center">
+              <Button>
+                <ClipboardEditIcon className="h-4 w-4" />
+                Editar Filtros
+              </Button>
+              <Button onClick={handleUpdateButton} disabled={isPending}>
+                <RotateCcw className="h-4 w-4" />
+                {isPending ? "Atualizando..." : "Refazer Busca"}
+              </Button>
+            </div>
           </div>
-          <p className="text-gray-600">{busca.descricao}</p>
+          <p className="text-gray-600 justify-start">{busca.descricao}</p>
         </div>
         <div>
           <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />

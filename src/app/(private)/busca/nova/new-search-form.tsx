@@ -38,7 +38,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import InfoTooltip from "@/components/info-toolip";
 import { redirect } from "next/navigation";
 
-export default function SearchForm(busca: SearchSchemaViewType | undefined) {
+type SearchFormProps = {
+  busca?: SearchSchemaViewType;
+};
+
+export default function SearchForm({ busca }: SearchFormProps) {
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
     defaultValues: busca
