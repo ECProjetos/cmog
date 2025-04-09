@@ -23,11 +23,12 @@ export async function updateUserProfile(formData: FormData) {
     });
 
     if (error) {
-        return { error: 'Erro ao atualizar os dados do perfil.' };
+        return { error: error.status };
     }
 
     revalidatePath('/', 'layout');
     return { success: 'Perfil atualizado com sucesso!', name };
+    
 }
 
 export async function updateUserAvatar(formData: FormData) {
@@ -43,14 +44,14 @@ export async function updateUserAvatar(formData: FormData) {
 
     if (oldAvatar) {
         try {
-            const oldAvatarPath = `${userId}/avatar`;
+            const oldAvatarPath = `private/${userId}/avatar`;
             await supabase.storage.from('avatars').remove([oldAvatarPath]);
         } catch (error) {
             console.error('Erro ao deletar avatar antigo:', error);
         }
     }
 
-    const avatarPath = `${userId}/avatar`;
+    const avatarPath = `private/${userId}/avatar`;
     const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(avatarPath, avatarFile, { upsert: true });
@@ -79,3 +80,4 @@ export async function updateUserAvatar(formData: FormData) {
     revalidatePath('/', 'layout');
     return { success: 'Avatar atualizado com sucesso!', avatar_url: signedUrlData.signedUrl };
 }
+
