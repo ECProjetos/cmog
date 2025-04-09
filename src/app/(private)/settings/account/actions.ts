@@ -30,6 +30,25 @@ export async function updateUserProfile(formData: FormData) {
     return { success: 'Perfil atualizado com sucesso!', name };
     
 }
+export async function updateUserLogin(formData: FormData) {
+    const supabase = await createClient();
+
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const { error } = await supabase.auth.updateUser({
+        email,
+        password,
+    });
+
+    if (error) {
+        return { error: error.message };
+    }
+
+    revalidatePath('/', 'layout');
+    return { success: 'Email e senha atualizados com sucesso!' };
+}
+
 
 export async function updateUserAvatar(formData: FormData) {
     const supabase = await createClient();
