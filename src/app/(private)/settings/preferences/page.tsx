@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { updateUserPreferences } from './actions';
 import { toast } from 'sonner';
 
+
 export default function Page() {
   const [theme, setTheme] = useState('light');
 
@@ -44,38 +45,45 @@ export default function Page() {
 
   return (
   <div>
-      <div className="flex flex-col bg-white shadow-lg rounded-2xl p-6 w-60 border dark:bg-[#1c1c20]">
-        <h1 className="text-2xl font-semibold mb-4">Theme Preferences</h1>
+      <div className="flex flex-col bg-white shadow-lg rounded-2xl p-6 w-60 border dark:bg-[#1c1c20] justify-center items-center">
+        <h1 className="text-2xl font-semibold mb-4 justify-center items-center">Tema</h1>
         <div className="flex gap-4">
           <div
-            className={`flex items-center justify-center w-24 h-24 rounded-md border-2 cursor-pointer ${
+            className={`flex items-center justify-center w-24 h-24 rounded-md border-2 cursor-pointer overflow-hidden ${
               theme === 'light' ? 'border-primary' : 'border-gray-300'
             }`}
             onClick={() => handleThemeChange('light')}
           >
-            Light
+            <img
+              src= '/claro.png'
+              alt="Tema Claro"
+              className="object-cover w-full h-full"
+            />
           </div>
+
           <div
-            className={`flex items-center justify-center w-24 h-24 rounded-md border-2 cursor-pointer ${
+            className={`flex items-center justify-center w-24 h-24 rounded-md border-2 cursor-pointer overflow-hidden ${
               theme === 'dark' ? 'border-primary' : 'border-gray-300'
             }`}
             onClick={() => handleThemeChange('dark')}
           >
-            Dark
-      </div>
-      
-    </div>
-    
-  </div>
-  <button
+            <img
+              src="/escuro.png"
+              alt="Tema Escuro"
+              className="object-cover w-full h-full"
+            />
+          </div>
+        </div>
+    <button
           className="mt-4 px-4 py-2 left-10 bg-primary text-white rounded-md flex justify-center items-center"
           onClick={() => {
             const formData = new FormData();
             handleSubmit(formData);
           }}
         >
-          Save Preferences
+          Salvar preferencias
         </button>
+  </div>
 </div>
 
   );

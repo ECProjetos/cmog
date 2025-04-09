@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useUserStore } from "@/stores/userStore";
-import { updateUserAvatar, updateUserProfile, updateUserLogin } from "./actions";
+import { updateUserAvatar, updateUserProfile  } from "./actions";
 import { useMutation } from "@tanstack/react-query";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { updateUserPassword } from "./actions";
 
 export default function AccountPage() {
   const user = useUserStore((state) => state.user);
@@ -29,8 +30,8 @@ export default function AccountPage() {
 
   // Estados para informações de login
   const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginConfirmPassword, setLoginConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (user?.user_metadata) {
@@ -54,21 +55,26 @@ export default function AccountPage() {
     }
   }, [avatarFile]);
 
-  const loginMutation = useMutation({
-    mutationFn: async (formData: FormData) => updateUserLogin(formData),
+  const passwordMutation = useMutation({
+    mutationFn: async (formData: FormData) => updateUserPassword(formData),
     onSuccess: (data) => {
       if (data.error) {
-        toast.error("Erro ao atualizar informações de login", {
+        toast.error("Erro ao atualizar senha", {
           description: data.error,
         });
         return;
       }
-
-      toast.success("Informações de login atualizadas com sucesso", {
-        description: "Seu e-mail e senha foram atualizados com sucesso.",
+  
+      toast.success("Senha atualizada com sucesso", {
+        description: "Sua senha foi alterada com êxito.",
       });
+  
+      setCurrentPassword("");
+      setPassword("");
     },
   });
+
+
 
   const avatarMutation = useMutation({
     mutationFn: async (formData: FormData) => updateUserAvatar(formData),
@@ -160,12 +166,12 @@ export default function AccountPage() {
     avatarMutation.mutate(formData);
   };
 
-  const handleLoginSubmit = () => {
+  async function handlePasswordSubmit() {
     const formData = new FormData();
-    formData.append("email", loginEmail);
-    formData.append("password", loginPassword);
-    loginMutation.mutate(formData);
-  };
+    formData.append('current_password', currentPassword);
+    formData.append('password', password);
+    passwordMutation.mutate(formData);
+  }
 
   const handleProfileSubmit = () => {
     const formData = new FormData();
@@ -327,46 +333,34 @@ export default function AccountPage() {
               </div>
               </div>
               <div className="grid gap-1 mt-4">
-              
 
-                <Label>Nova senha</Label>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="currentPassword">Senha Atual</Label>
+              <Input
+                type="password"
+                id="currentPassword"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
+            </div>
+                        
+
+              <Label>Nova senha</Label>
                 <Input
                 className="mb-4"
                   type="password"
                   placeholder="Digite sua nova senha"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-                <Label>Confirmar senha</Label>
-              <Input
-                type="password"
-                placeholder="Confirme sua nova senha"
-                value={loginConfirmPassword}
-                onChange={(e) => setLoginConfirmPassword(e.target.value)}
-              />
-              {loginPassword !== loginConfirmPassword && loginConfirmPassword && (
-                  <p className="text-sm text-red-500 mt-1">As senhas não coincidem.</p>
-                )}
-
+      
               </div>
-              <Button
-              className="mt-6"
-              onClick={handleLoginSubmit}
-              disabled={
-                loginMutation.isPending ||
-                !loginPassword ||
-                loginPassword !== loginConfirmPassword
-              }
-            >
-              {loginMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Salvando...
-                </>
-              ) : (
-                "Salvar Alterações"
-              )}
-            </Button>
+            <Button onClick={handlePasswordSubmit} disabled={passwordMutation.isPending}>
+            {passwordMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            Atualizar Senha
+          </Button>
+        </div>
             </div>
          
         </TabsContent>

@@ -30,24 +30,32 @@ export async function updateUserProfile(formData: FormData) {
     return { success: 'Perfil atualizado com sucesso!', name };
     
 }
-export async function updateUserLogin(formData: FormData) {
+
+export async function updateUserPassword(formData: FormData) {
     const supabase = await createClient();
-
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    const { error } = await supabase.auth.updateUser({
-        email,
-        password,
+  
+    const currentPassword = formData.get('current_password') as string;
+    const newPassword = formData.get('password') as string;
+  
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: (await supabase.auth.getUser()).data.user?.email as string,
+      password: currentPassword,
     });
-
-    if (error) {
-        return { error: error.message };
+  
+    if (signInError) {
+      return { error: 'Current password is incorrect.' };
     }
-
-    revalidatePath('/', 'layout');
-    return { success: 'Email e senha atualizados com sucesso!' };
-}
+  
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+  
+    if (updateError) {
+      return { error: 'Failed to update password. Please try again.' };
+    }
+  
+    return { success: 'Password updated successfully!' };
+  }
 
 
 export async function updateUserAvatar(formData: FormData) {
