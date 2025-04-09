@@ -25,6 +25,7 @@ import { toast } from "sonner";
 
 import { LicitacaoType } from "../zod-types";
 import Link from "next/link";
+import { useState } from "react";
 
 function valorTotalEstimado(licitacao: LicitacaoType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
@@ -88,12 +89,13 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
     cell: ({ row }) => {
       const horas = row.original.hora_abertura_propostas;
       return (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+        <div style={{ whiteSpace: "balance", wordWrap: "break-word" }}>
           {row.getValue("data_abertura_propostas")} às {horas}
         </div>
       );
     },
   },
+
   {
     id: "descricao",
     header: ({ column }) => (
@@ -101,9 +103,33 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
     ),
     cell: ({ row }) => {
       const licitacao = row.original;
+      const descricaoCompleta = formatDescricao(licitacao);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [expanded, setExpanded] = useState(false);
+      const limiteCaracteres = 250; // ajuste conforme necessário
+
+      const textoExibido = expanded
+        ? descricaoCompleta
+        : descricaoCompleta.slice(0, limiteCaracteres) +
+          (descricaoCompleta.length > limiteCaracteres ? "..." : "");
+
       return (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {formatDescricao(licitacao)}
+          {textoExibido}
+          <br />
+          {descricaoCompleta.length > limiteCaracteres && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                background: "none",
+                color: "GrayText",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              {expanded ? "Mostrar menos" : "Mostrar mais"}
+            </button>
+          )}
         </div>
       );
     },

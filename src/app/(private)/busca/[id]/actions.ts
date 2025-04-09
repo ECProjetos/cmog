@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { LicitacaoType } from "../zod-types";
+import { LicitacaoType, LicitacoesArraySchema } from "../zod-types";
 
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
@@ -72,29 +72,29 @@ export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: Licita
     const { data, error } = await supabase
         .from('licitacoes')
         .select(`
-  id_licitacao,
-  comprador,
-  data_abertura_propostas,
-  hora_abertura_propostas,
-  url,
-  municipios (
-    uf_municipio
-  ),
-  grupos_materiais (
-    id_grupo_material,
-    nome_grupo_material,
-    classes_materiais (
-      id_classe_material,
-      nome_classe_material
-    )
-  ),
-  itens (
-    id_item,
-    ds_item,
-    qt_itens,
-    vl_unitario_estimado
-  )
-  `)
+            id_licitacao,
+            comprador,
+            data_abertura_propostas,
+            hora_abertura_propostas,
+            url,
+            municipios (
+                uf_municipio
+            ),
+            grupos_materiais (
+                id_grupo_material,
+                nome_grupo_material,
+                classes_materiais (
+                    id_classe_material,
+                    nome_classe_material
+                )
+            ),
+            itens (
+                id_item,
+                ds_item,
+                qt_itens,
+                vl_unitario_estimado
+            )
+        `)
         .in('id_licitacao', ids);
 
     if (error) {
@@ -102,25 +102,16 @@ export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: Licita
         return { error: error.message };
     }
 
+    if (!data) {
+        return { error: "Nenhuma licitação encontrada" };
+    }
+
     try {
-        if (!data) {
-            return { error: "Nenhuma licitação encontrada" };
-        }
-        const parsedData = data.map((licitacao) => {
-            return {
-                ...licitacao,
-                municipios: licitacao.municipios?.[0] ?? {}, // Ensure municipios is a single object
-                itens: licitacao.itens?.map((item) => ({
-                    ...item,
-                    vl_unitario_estimado: item.vl_unitario_estimado ? item.vl_unitario_estimado.toString() : null,
-                })),
-            };
-        });
+        const parsedData = LicitacoesArraySchema.parse(data);
         return { data: parsedData };
     } catch (parseError) {
         console.error('Erro ao analisar os dados:', parseError);
         return { error: "Erro ao processar os dados da licitação" };
     }
-
-
 }
+

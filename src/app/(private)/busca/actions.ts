@@ -9,7 +9,7 @@ export async function getAllBuscas(user_id: string) {
         const supabase = await createClient();
         const { data, error } = await supabase
             .from("buscas")
-            .select("id_busca, id_user, titulo, descricao")
+            .select("*")
             .eq("id_user", user_id)
 
         if (error) {

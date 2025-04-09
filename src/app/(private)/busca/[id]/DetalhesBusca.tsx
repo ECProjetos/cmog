@@ -75,7 +75,7 @@ export default function DetalhesBusca({
           </div>
           <p className="text-gray-600">{busca.descricao}</p>
         </div>
-        <div className="flex flex-col gap-4 mt-4">
+        <div>
           <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />
         </div>
       </div>

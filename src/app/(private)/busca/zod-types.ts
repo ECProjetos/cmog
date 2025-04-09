@@ -55,6 +55,8 @@ export const licitacaoSchema = z.object({
     itens: z.array(itemSchema),
 });
 
+export const LicitacoesArraySchema = z.array(licitacaoSchema);
+
 export type ItemType = z.infer<typeof itemSchema>;
 
 export type LicitacaoType = z.infer<typeof licitacaoSchema>;
