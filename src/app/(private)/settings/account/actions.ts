@@ -23,12 +23,40 @@ export async function updateUserProfile(formData: FormData) {
     });
 
     if (error) {
-        return { error: 'Erro ao atualizar os dados do perfil.' };
+        return { error: error.status };
     }
 
     revalidatePath('/', 'layout');
     return { success: 'Perfil atualizado com sucesso!', name };
+    
 }
+
+export async function updateUserPassword(formData: FormData) {
+    const supabase = await createClient();
+  
+    const currentPassword = formData.get('current_password') as string;
+    const newPassword = formData.get('password') as string;
+  
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: (await supabase.auth.getUser()).data.user?.email as string,
+      password: currentPassword,
+    });
+  
+    if (signInError) {
+      return { error: 'Current password is incorrect.' };
+    }
+  
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+  
+    if (updateError) {
+      return { error: 'Failed to update password. Please try again.' };
+    }
+  
+    return { success: 'Password updated successfully!' };
+  }
+
 
 export async function updateUserAvatar(formData: FormData) {
     const supabase = await createClient();
@@ -43,14 +71,14 @@ export async function updateUserAvatar(formData: FormData) {
 
     if (oldAvatar) {
         try {
-            const oldAvatarPath = `${userId}/avatar`;
+            const oldAvatarPath = `private/${userId}/avatar`;
             await supabase.storage.from('avatars').remove([oldAvatarPath]);
         } catch (error) {
             console.error('Erro ao deletar avatar antigo:', error);
         }
     }
 
-    const avatarPath = `${userId}/avatar`;
+    const avatarPath = `private/${userId}/avatar`;
     const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(avatarPath, avatarFile, { upsert: true });
@@ -79,3 +107,4 @@ export async function updateUserAvatar(formData: FormData) {
     revalidatePath('/', 'layout');
     return { success: 'Avatar atualizado com sucesso!', avatar_url: signedUrlData.signedUrl };
 }
+
