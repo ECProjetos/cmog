@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 
+import { SearchSchemaViewType } from "../zod-types";
+
 interface DetalhesBuscaProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  busca: any;
+  busca: SearchSchemaViewType;
 }
 
 export default function DetalhesBusca({ busca }: DetalhesBuscaProps) {

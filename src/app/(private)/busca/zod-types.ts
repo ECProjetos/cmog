@@ -17,6 +17,10 @@ export const searchSchemaView = z.object({
     descricao: z.string(),
 });
 
+export const licitacaoSchema = z.object({
+    
+})
+
 export type SearchSchemaType = z.infer<typeof searchSchema>;
 
 export type SearchSchemaViewType = z.infer<typeof searchSchemaView>;
