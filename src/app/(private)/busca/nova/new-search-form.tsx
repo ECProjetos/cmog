@@ -68,7 +68,7 @@ export default function SearchForm() {
         description: `Encontramos ${res.quantidadeLicitacoes} licitações para você!`,
       });
       setTimeout(() => {
-        redirect(`/busca/{res.id_busca}`);
+        redirect(`/busca/${res.id_busca}`);
       }, 2500);
     } catch (error) {
       console.error(error);

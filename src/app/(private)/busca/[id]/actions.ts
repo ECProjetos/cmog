@@ -1,20 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-
-
-
-function buildLike(keywords: string[], fields: string[]) {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} ILIKE '%${word}%'`)
-    ).join(" OR ");
-}
-
-function buildNotLike(keywords: string[], fields: string[]) {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
-    ).join(" AND ");
-}
+import { LicitacaoType, LicitacoesArraySchema } from "../zod-types";
 
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
@@ -28,6 +15,16 @@ export async function ReRunSearch(buscaId: string) {
     if (error || !busca) {
         throw new Error("Busca não encontrada");
     }
+
+    const buildLike = (keywords: string[], fields: string[]) =>
+        keywords.flatMap((word) =>
+            fields.map((field) => `${field} ILIKE '%${word}%'`)
+        ).join(" OR ");
+
+    const buildNotLike = (keywords: string[], fields: string[]) =>
+        keywords.flatMap((word) =>
+            fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
+        ).join(" AND ");
 
     const positiveClause = buildLike(busca.good_keywords, [
         "i.ds_item",
@@ -61,11 +58,60 @@ export async function ReRunSearch(buscaId: string) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const licitacoesIds = results?.map((r: any) => r.id_licitacao) ?? [];
 
-    // Atualiza a busca com os novos resultados
-    await supabase.from("buscas")
+    await supabase
+        .from("buscas")
         .update({ id_licitacoes: licitacoesIds })
         .eq("id_busca", buscaId);
 
     return licitacoesIds;
+}
+
+export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: LicitacaoType[]; error?: string }> {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+        .from('licitacoes')
+        .select(`
+            id_licitacao,
+            comprador,
+            data_abertura_propostas,
+            hora_abertura_propostas,
+            url,
+            municipios (
+                uf_municipio
+            ),
+            grupos_materiais (
+                id_grupo_material,
+                nome_grupo_material,
+                classes_materiais (
+                    id_classe_material,
+                    nome_classe_material
+                )
+            ),
+            itens (
+                id_item,
+                ds_item,
+                qt_itens,
+                vl_unitario_estimado
+            )
+        `)
+        .in('id_licitacao', ids);
+
+    if (error) {
+        console.error('Erro ao buscar licitações:', error);
+        return { error: error.message };
+    }
+
+    if (!data) {
+        return { error: "Nenhuma licitação encontrada" };
+    }
+
+    try {
+        const parsedData = LicitacoesArraySchema.parse(data);
+        return { data: parsedData };
+    } catch (parseError) {
+        console.error('Erro ao analisar os dados:', parseError);
+        return { error: "Erro ao processar os dados da licitação" };
+    }
 }
 

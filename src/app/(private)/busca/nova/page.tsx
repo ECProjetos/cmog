@@ -18,7 +18,7 @@ export default function NovaPage() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/busca">Minhas Busca</Link>
+                <Link href="/busca">Minhas Buscas</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
