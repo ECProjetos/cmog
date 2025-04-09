@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { updateUserPreferences } from './actions';
 import { toast } from 'sonner';
+import Image from 'next/image';	
 
 
 export default function Page() {
@@ -45,7 +46,7 @@ export default function Page() {
 
   return (
   <div>
-      <div className="flex flex-col bg-white shadow-lg rounded-2xl p-6 w-60 border dark:bg-[#1c1c20] justify-center items-center">
+      <div className="flex flex-col justify-start items-start px-10">
         <h1 className="text-2xl font-semibold mb-4 justify-center items-center">Tema</h1>
         <div className="flex gap-4">
           <div
@@ -54,10 +55,12 @@ export default function Page() {
             }`}
             onClick={() => handleThemeChange('light')}
           >
-            <img
+            <Image
               src= '/claro.png'
               alt="Tema Claro"
               className="object-cover w-full h-full"
+              width={100}
+              height={100}
             />
           </div>
 
@@ -67,10 +70,12 @@ export default function Page() {
             }`}
             onClick={() => handleThemeChange('dark')}
           >
-            <img
+            <Image
               src="/escuro.png"
               alt="Tema Escuro"
               className="object-cover w-full h-full"
+              width={100}
+              height={100}
             />
           </div>
         </div>
