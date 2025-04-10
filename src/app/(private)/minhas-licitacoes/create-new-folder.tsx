@@ -24,35 +24,40 @@ type CreateNewFolderProps = {
 
 export function CreateNewFolder({ user_id }: CreateNewFolderProps) {
   const [folderName, setFolderName] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false); // Começa como false (não aberto)
 
   const handleCreateFolder = async () => {
-    if (!user_id) return;
-    if (!folderName) return;
+    if (!user_id || !folderName) return;
+
     const { data, error } = await createFolder(folderName, user_id);
+
     if (error) {
       toast.error("Erro ao criar pasta:", {
         description: error.message,
       });
       return;
     }
+
     if (!data) {
       toast.error("Erro ao criar pasta:", {
         description: "Pasta não foi criada",
       });
       return;
     }
+
     toast.success("Pasta criada com sucesso!", {
       description: `Pasta ${folderName} criada com sucesso!`,
     });
+
     setFolderName("");
-    setIsOpen(false);
+    setIsOpen(false); // Fecha o dialog
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <FolderPlus className="h-4 w-4" />
+        <Button onClick={() => setIsOpen(true)}>
+          <FolderPlus className="h-4 w-4 mr-2" />
           Nova Pasta
         </Button>
       </DialogTrigger>

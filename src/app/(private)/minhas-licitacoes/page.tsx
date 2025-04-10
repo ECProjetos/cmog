@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/userStore";
 
-import { Button } from "@/components/ui/button";
-import { FolderPlus } from "lucide-react";
-
 import { CreateNewFolder } from "./create-new-folder";
 
 import { getAllFolders } from "./actions";
@@ -16,6 +13,7 @@ export default function MinhasLicitacoesPage() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     setLoading(true);
