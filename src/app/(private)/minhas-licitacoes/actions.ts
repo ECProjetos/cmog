@@ -30,7 +30,7 @@ export async function createFolder(nome_folder: string, user_id: string) {
             return { error: { message: "Erro ao validar os dados retornados" } };
         }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         console.error("Erro inesperado ao criar pasta:", err);
         return { error: { message: "Erro interno do servidor" } };
@@ -67,6 +67,29 @@ export async function getAllFolders(user_id: string) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.error("Erro interno:", error);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
+export async function deleteFolder(folder_id: string) {
+    try {
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders")
+            .delete()
+            .eq("id_folder", folder_id)
+
+        if (error) {
+            console.error("Erro ao deletar pasta:", error);
+            return { error: { message: "Erro ao deletar pasta" } };
+        }
+
+        return { data: { message: "Pasta deletada com sucesso" } };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error("Erro ao deletar pasta:", error);
         return { error: { message: "Erro interno do servidor" } };
     }
 }

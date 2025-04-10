@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "@/stores/userStore";
 
 import { CreateNewFolder } from "./create-new-folder";
-
+import { FolderColumns } from "./columns";
 import { getAllFolders } from "./actions";
-import { Folder } from "./zod-types";
+import { FolderType } from "./zod-types";
+import { FolderTable } from "./table";
+import Link from "next/link";
 
 export default function MinhasLicitacoesPage() {
   const user = useUserStore((state) => state.user);
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folders, setFolders] = useState<FolderType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
 
   useEffect(() => {
     setLoading(true);
@@ -44,6 +45,15 @@ export default function MinhasLicitacoesPage() {
         <h1 className="text-2xl font-bold">Minhas Licitações</h1>
         <CreateNewFolder user_id={user?.id} />
       </div>
+      {loading ? (
+        <p>Carregando...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <Link href="/">
+          <FolderTable data={folders} columns={FolderColumns} />
+        </Link>
+      )}
     </div>
   );
 }

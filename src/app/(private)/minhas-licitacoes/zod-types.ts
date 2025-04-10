@@ -24,7 +24,7 @@ export const folderLicitacoesSchema = z.object({
     created_at: z.date()
 });
 
-export type Folder = z.infer<typeof folderSchema>;
+export type FolderType = z.infer<typeof folderSchema>;
 
 export type StatusLicitacoes = z.infer<typeof statusLicitacoesSchema>;
 
