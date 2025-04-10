@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import Link from "next/link";
 import { LicitacaoType, SearchSchemaViewType } from "../zod-types";
 import { LicitacoesTable } from "./table";
 import { licitacaoColumns } from "./columns";
+import SearchForm from "../nova/new-search-form";
 
 interface DetalhesBuscaProps {
   busca: SearchSchemaViewType;
@@ -31,6 +32,7 @@ export default function DetalhesBusca({
 }: DetalhesBuscaProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const [formModalOpen, setFormModalOpen] = useState(false);
 
   const handleUpdateButton = () => {
     startTransition(async () => {
@@ -47,42 +49,72 @@ export default function DetalhesBusca({
 
   return (
     <>
-      <header className="mb-4 flex items-center justify-between">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href="/busca">Minhas Buscas</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="truncate max-w-[180px]">
-                {busca.titulo}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </header>
-      <div className="px-4 gap-4">
-        <div className="flex flex-col justify-between items-center gap-4 mt-2 mb-4">
-          <div className="flex w-full gap-4 justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">{busca.titulo}</h1>
-            <Button>
-              <ClipboardEditIcon className="h-4 w-4" />
-              Editar Filtros
-            </Button>
-            <Button onClick={handleUpdateButton} disabled={isPending}>
-              <RotateCcw className="h-4 w-4" />
-              {isPending ? "Atualizando..." : "Refazer Busca"}
-            </Button>
+      {formModalOpen ? (
+        <>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/busca">Minhas Buscas</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="truncate max-w-[180px]">
+                  Atualizar Busca
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <br className="mb-4" />
+          <SearchForm busca={busca} setFormModalOpen={setFormModalOpen} />
+        </>
+      ) : (
+        <>
+          <header className="mb-4 flex items-center justify-between">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/busca">Minhas Buscas</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="truncate max-w-[180px]">
+                    {busca.titulo}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </header>
+          <div className="px-4 gap-4">
+            <div className="flex flex-col gap-4 mt-2 mb-4">
+              <div className="flex w-full gap-4 justify-between items-center">
+                <div className="flex gap-2 items-center">
+                  <h1 className="text-2xl font-bold text-gray-800">
+                    {busca.titulo}
+                  </h1>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Button onClick={() => setFormModalOpen(true)}>
+                    <ClipboardEditIcon className="h-4 w-4" />
+                    Editar Filtros
+                  </Button>
+                  <Button onClick={handleUpdateButton} disabled={isPending}>
+                    <RotateCcw className="h-4 w-4" />
+                    {isPending ? "Atualizando..." : "Refazer Busca"}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-gray-600 justify-start">{busca.descricao}</p>
+            </div>
+            <div>
+              <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />
+            </div>
           </div>
-          <p className="text-gray-600">{busca.descricao}</p>
-        </div>
-        <div>
-          <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 }
