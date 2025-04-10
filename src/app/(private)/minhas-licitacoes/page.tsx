@@ -8,7 +8,6 @@ import { FolderColumns } from "./columns";
 import { getAllFolders } from "./actions";
 import { FolderType } from "./zod-types";
 import { FolderTable } from "./table";
-import Link from "next/link";
 
 export default function MinhasLicitacoesPage() {
   const user = useUserStore((state) => state.user);
@@ -50,9 +49,7 @@ export default function MinhasLicitacoesPage() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <Link href="/">
-          <FolderTable data={folders} columns={FolderColumns} />
-        </Link>
+        <FolderTable data={folders} columns={FolderColumns} />
       )}
     </div>
   );

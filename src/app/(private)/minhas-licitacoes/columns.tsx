@@ -48,13 +48,29 @@ const onDelete = (id: string) => {
 export const FolderColumns: ColumnDef<FolderType>[] = [
   {
     id: "icon",
-    cell: () => <Folder className="text-muted-foreground" />,
+    cell: ({ row }) => {
+      const id = row.original.id_folder;
+      return (
+        <Link href={`minhas-licitacoes/${id}`}>
+          <Folder className="mr-2 h-4 w-4" />
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "nome_folder",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nome da pasta" />
     ),
+    cell: ({ row }) => {
+      const id = row.original.id_folder;
+
+      return (
+        <Link href={`minhas-licitacoes/${id}`} className="flex items-center">
+          {row.getValue("nome_folder")}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "created_at",
@@ -65,11 +81,13 @@ export const FolderColumns: ColumnDef<FolderType>[] = [
       const date = new Date(row.getValue("created_at"));
       return (
         <div>
-          {date.toLocaleDateString("pt-BR", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          })}
+          <Link href={`minhas-licitacoes/${row.original.id_folder}`}>
+            {date.toLocaleDateString("pt-BR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })}
+          </Link>
         </div>
       );
     },
