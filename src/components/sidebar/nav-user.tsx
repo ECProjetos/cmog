@@ -84,7 +84,7 @@ export function NavUser({ user }: { user: User }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={user.user_metadata.avatar}
+                    src={user.user_metadata.avatar_url}
                     alt={user.user_metadata.name}
                   />
                   <AvatarFallback className="rounded-lg">
