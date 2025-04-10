@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,8 @@ import { LicitacaoType, SearchSchemaViewType } from "../zod-types";
 import { LicitacoesTable } from "./table";
 import { licitacaoColumns } from "./columns";
 import SearchForm from "../nova/new-search-form";
+import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
+import { getAllFolders } from "@/app/(private)/minhas-licitacoes/actions";
 
 interface DetalhesBuscaProps {
   busca: SearchSchemaViewType;
@@ -33,7 +35,33 @@ export default function DetalhesBusca({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [formModalOpen, setFormModalOpen] = useState(false);
+  const user_id = busca.id_user;
+  const [folders, setFolders] = useState<FolderType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    setLoading(true);
+    if (!user_id) {
+      setLoading(false);
+      return;
+    }
+    getAllFolders(user_id)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error.message);
+        } else {
+          setFolders(res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar dados:", err);
+        setError("Erro ao buscar dados");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user_id]); // Adicione user.id como dependência
   const handleUpdateButton = () => {
     startTransition(async () => {
       try {
@@ -110,7 +138,16 @@ export default function DetalhesBusca({
               <p className="text-gray-600 justify-start">{busca.descricao}</p>
             </div>
             <div>
-              <LicitacoesTable data={licitacoes} columns={licitacaoColumns} />
+              {loading ? (
+                <p>Carregando...</p>
+              ) : error ? (
+                <p className="text-red-500">{error}</p>
+              ) : (
+                <LicitacoesTable
+                  data={licitacoes}
+                  columns={licitacaoColumns(folders)}
+                />
+              )}
             </div>
           </div>
         </>

@@ -19,7 +19,6 @@ export default async function DetalhesBuscaPage({ params }: PageProps) {
     .single();
 
   const licitacoes = await getLicitacoesByIds(busca.id_licitacoes);
-
   if (!busca) return <div>Busca não encontrada</div>;
 
   return <DetalhesBusca busca={busca} licitacoes={licitacoes.data ?? []} />;

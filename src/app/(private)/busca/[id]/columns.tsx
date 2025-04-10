@@ -2,12 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import {
-  Search,
-  BookmarkPlus,
-  ExternalLink,
-  MoreHorizontal,
-} from "lucide-react";
+import { Search, ExternalLink, MoreHorizontal } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -22,11 +17,11 @@ import { Button } from "@/components/ui/button";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
-import { toast } from "sonner";
-
 import { LicitacaoType } from "../zod-types";
 import Link from "next/link";
 import { useState } from "react";
+import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
+import { SaveLicitacao } from "./save-licitacao";
 
 function valorTotalEstimado(licitacao: LicitacaoType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
@@ -63,13 +58,9 @@ function formatDescricao(licitacao: LicitacaoType): string {
   return [classes, grupos, dsItens].filter(Boolean).join(" — ");
 }
 
-const SalvarLicitacao = () => {
-  toast.success("Implementar Salvar Licitação", {
-    description: "Licitação X Salva no Folder Y",
-  });
-};
-
-export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
+export const licitacaoColumns = (
+  folders: FolderType[]
+): ColumnDef<LicitacaoType>[] => [
   {
     accessorKey: "comprador",
     header: ({ column }) => (
@@ -167,9 +158,11 @@ export const licitacaoColumns: ColumnDef<LicitacaoType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={SalvarLicitacao}>
-              <BookmarkPlus className="mr-2 h-4 w-4" />
-              Salvar Licitação
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+              <SaveLicitacao
+                licitacao_id={licitacao.id_licitacao}
+                folders={folders}
+              />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
