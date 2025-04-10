@@ -47,6 +47,7 @@ export default function SearchForm({
   busca,
   setFormModalOpen,
 }: SearchFormProps) {
+
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
     defaultValues: busca

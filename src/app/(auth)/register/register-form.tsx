@@ -43,6 +43,7 @@ export default function RegisterForm() {
       cnpj: "",
       razao_social: "",
       phone: "",
+      avatar_url: "",
     },
   });
   const signupMutation = useMutation({

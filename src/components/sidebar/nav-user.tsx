@@ -54,7 +54,7 @@ export function NavUser({ user }: { user: User }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={user.user_metadata.avatar}
+                  src={user.user_metadata.avatar_url}
                   alt={user.user_metadata.name}
                 />
                 <AvatarFallback className="rounded-lg">
