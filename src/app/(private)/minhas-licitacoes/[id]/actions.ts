@@ -74,4 +74,32 @@ export async function getFolderLicitacoesByFolderId(
         console.error("Erro inesperado:", error.message || error);
         return { data: [], error: { message: "Erro inesperado" } };
     }
-}; 
+};
+
+export async function deletLicitacaoFromFolder(
+    folderId: string,
+    licitacaoId: string
+) {
+    try {
+        if (!folderId || !licitacaoId) {
+            return { error: { message: "ID da pasta ou da licitação não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders_licitacoes")
+            .delete()
+            .eq("id_folder", folderId)
+            .eq("id_licitacao", licitacaoId)
+
+        if (error) {
+            console.error("Erro ao deletar licitação da pasta:", error);
+            return { error: { message: "Erro ao deletar licitação da pasta" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao deletar licitação da pasta:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}

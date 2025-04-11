@@ -33,6 +33,7 @@ import { toast } from "sonner";
 
 import { FolderLicitacoes } from "../zod-types";
 import { LicitacaoType } from "@/app/(private)/busca/zod-types";
+import { deletLicitacaoFromFolder } from "./actions";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -76,7 +77,6 @@ type FolderDetailColumnsProps = {
 };
 
 export const FolderDetailColumns = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onUpdate,
 }: FolderDetailColumnsProps): ColumnDef<FolderLicitacoes>[] => [
   {
@@ -227,6 +227,7 @@ export const FolderDetailColumns = ({
     ),
     cell: ({ row }) => {
       const licitacao = row.original.licitacao;
+      const id = row.original.id_folder;
 
       return (
         <DropdownMenu>
@@ -260,7 +261,10 @@ export const FolderDetailColumns = ({
             </DropdownMenuItem>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={(e) => e.preventDefault()}
+                >
                   <Trash className="mr-2 h-4 w-4" />
                   Remover da pasta
                 </DropdownMenuItem>
@@ -275,12 +279,19 @@ export const FolderDetailColumns = ({
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => {
-                      toast("implementar a remoção da licitação da pasta", {
-                        description: "Aguarde...",
-                      });
-                    }}
                     className="bg-red-800 text-white hover:bg-red-600"
+                    onClick={async () => {
+                      const res = await deletLicitacaoFromFolder(
+                        id,
+                        String(licitacao?.id_licitacao || "")
+                      );
+                      if (res.error) {
+                        toast.error(res.error.message);
+                      } else {
+                        toast.success("Licitação removida com sucesso!");
+                        onUpdate();
+                      }
+                    }}
                   >
                     Remover
                   </AlertDialogAction>
