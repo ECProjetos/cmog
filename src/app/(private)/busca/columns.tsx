@@ -51,34 +51,44 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Título" />
     ),
-    cell: ({ row }) => (
-      <div
-        style={{
-          maxWidth: "500px",
-          whiteSpace: "normal",
-          wordWrap: "break-word",
-        }}
-      >
-        {row.getValue("titulo")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const id = row.original.id_busca;
+      return (
+        <Link href={`/busca/${id}`}>
+          <div
+            style={{
+              maxWidth: "500px",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+            }}
+          >
+            {row.getValue("titulo")}
+          </div>
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "descricao",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Descrição" />
     ),
-    cell: ({ row }) => (
-      <div
-        style={{
-          maxWidth: "600px",
-          whiteSpace: "normal",
-          wordWrap: "break-word",
-        }}
-      >
-        {row.getValue("titulo")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const id = row.original.id_busca;
+      return (
+        <Link href={`/busca/${id}`}>
+          <div
+            style={{
+              maxWidth: "600px",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+            }}
+          >
+            {row.getValue("titulo")}
+          </div>
+        </Link>
+      );
+    },
   },
   {
     id: "actions",

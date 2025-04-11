@@ -15,6 +15,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 import { LicitacaoType, SearchSchemaViewType } from "../zod-types";
 import { LicitacoesTable } from "./table";
@@ -77,82 +83,98 @@ export default function DetalhesBusca({
   };
 
   return (
-    <>
-      {formModalOpen ? (
-        <>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/busca">Minhas Buscas</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="truncate max-w-[180px]">
-                  Atualizar Busca
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <br className="mb-4" />
-          <SearchForm busca={busca} setFormModalOpen={setFormModalOpen} />
-        </>
-      ) : (
-        <>
-          <header className="mb-4 flex items-center justify-between">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link href="/busca">Minhas Buscas</Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="truncate max-w-[180px]">
-                    {busca.titulo}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </header>
-          <div className="px-4 gap-4">
-            <div className="flex flex-col gap-4 mt-2 mb-4">
-              <div className="flex w-full gap-4 justify-between items-center">
-                <div className="flex gap-2 items-center">
-                  <h1 className="text-2xl font-bold text-gray-800">
-                    {busca.titulo}
-                  </h1>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4 pl-0 dark:bg-[#18181B]">
+          <div className="bg-white shadow-lg rounded-2xl p-6 w-full min-h-full border dark:bg-[#1c1c20]">
+            {formModalOpen ? (
+              <>
+                <div className="flex h-16 shrink-0 items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                          <Link href="/busca">Minhas Buscas</Link>
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage className="truncate max-w-[180px]">
+                          Atualizar Busca
+                        </BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
                 </div>
-                <div className="flex gap-2 items-center">
-                  <Button onClick={() => setFormModalOpen(true)}>
-                    <ClipboardEditIcon className="h-4 w-4" />
-                    Editar Filtros
-                  </Button>
-                  <Button onClick={handleUpdateButton} disabled={isPending}>
-                    <RotateCcw className="h-4 w-4" />
-                    {isPending ? "Atualizando..." : "Refazer Busca"}
-                  </Button>
+                <br className="mb-4" />
+                <SearchForm busca={busca} setFormModalOpen={setFormModalOpen} />
+              </>
+            ) : (
+              <>
+                <div className="flex h-16 shrink-0 items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                          <Link href="/busca">Minhas Buscas</Link>
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage className="truncate max-w-[180px]">
+                          {busca.titulo}
+                        </BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
                 </div>
-              </div>
-              <p className="text-gray-600 justify-start">{busca.descricao}</p>
-            </div>
-            <div>
-              {loading ? (
-                <SkeletonTable />
-              ) : error ? (
-                <p className="text-red-500">{error}</p>
-              ) : (
-                <LicitacoesTable
-                  data={licitacoes}
-                  columns={licitacaoColumns(folders)}
-                />
-              )}
-            </div>
+                <div className="px-4 gap-4">
+                  <div className="flex flex-col gap-4 mt-2 mb-4">
+                    <div className="flex w-full gap-4 justify-between items-center">
+                      <div className="flex gap-2 items-center">
+                        <h1 className="text-2xl font-bold text-gray-800">
+                          {busca.titulo}
+                        </h1>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <Button onClick={() => setFormModalOpen(true)}>
+                          <ClipboardEditIcon className="h-4 w-4" />
+                          Editar Filtros
+                        </Button>
+                        <Button
+                          onClick={handleUpdateButton}
+                          disabled={isPending}
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          {isPending ? "Atualizando..." : "Refazer Busca"}
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 justify-start">
+                      {busca.descricao}
+                    </p>
+                  </div>
+                  <div>
+                    {loading ? (
+                      <SkeletonTable />
+                    ) : error ? (
+                      <p className="text-red-500">{error}</p>
+                    ) : (
+                      <LicitacoesTable
+                        data={licitacoes}
+                        columns={licitacaoColumns(folders)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-        </>
-      )}
-    </>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

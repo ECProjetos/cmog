@@ -62,10 +62,24 @@ export const licitacaoColumns = (
   folders: FolderType[]
 ): ColumnDef<LicitacaoType>[] => [
   {
-    accessorKey: "comprador",
+    id: "comprador",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
+    cell: ({ row }) => {
+      const licitacao = row.original;
+      return (
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            maxWidth: "300px",
+          }}
+        >
+          {licitacao.comprador}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "municipios.uf_municipio",

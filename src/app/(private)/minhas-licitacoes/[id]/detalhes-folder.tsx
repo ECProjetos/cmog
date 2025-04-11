@@ -19,7 +19,7 @@ export default function DetalhesFolder({
 }: FolderLicitacoesProps) {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between w-full mb-4">
+      <div className="flex flex-col gap-2 w-full mb-4 ml-4">
         <h1 className="text-2xl font-bold">
           Detalhes da Pasta: {folderLicitacoes[0]?.folders.nome_folder}
         </h1>
