@@ -52,10 +52,9 @@ export function SaveLicitacao({ licitacao_id, folders }: SaveLicitacaoProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <p className="flex items-center text-sm text-gray-700 cursor-pointer hover:text-gray-900">
-          <BookmarkPlus className="h-4 w-4" />
-          Salvar Licitação
-          <span className="sr-only">Salvar Licitação</span>
+        <p className="flex items-center px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200">
+          <BookmarkPlus className="mr-2 h-4 w-4" />
+          <span className="ml-2">Salvar Licitação</span>
         </p>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

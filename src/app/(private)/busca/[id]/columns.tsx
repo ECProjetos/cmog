@@ -167,7 +167,7 @@ export const licitacaoColumns = (
             <DropdownMenuItem asChild>
               <Link
                 href={`/busca/licitacao/${licitacao.id_licitacao}`}
-                className="flex items-center"
+                className="flex items-center px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
               >
                 <Search className="mr-2 h-4 w-4" />
                 Ver Detalhes
@@ -177,7 +177,7 @@ export const licitacaoColumns = (
               <Link
                 href={licitacao.url}
                 target="_blank"
-                className="flex items-center"
+                className="flex items-center px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
                 Ir para o edital

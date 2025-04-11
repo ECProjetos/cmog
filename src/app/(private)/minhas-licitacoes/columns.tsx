@@ -73,6 +73,29 @@ export const FolderColumns: ColumnDef<FolderType>[] = [
     },
   },
   {
+    accessorKey: "descricao",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Descrição" />
+    ),
+    cell: ({ row }) => {
+      const id = row.original.id_folder;
+      return (
+        <Link href={`minhas-licitacoes/${id}`} className="flex items-center">
+          <div
+            style={{
+              maxWidth: "500px",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+            }}
+          >
+            {row.getValue("descricao")}
+          </div>
+          ;
+        </Link>
+      );
+    },
+  },
+  {
     accessorKey: "created_at",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Criada em" />

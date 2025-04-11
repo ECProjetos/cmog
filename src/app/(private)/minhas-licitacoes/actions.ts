@@ -4,13 +4,13 @@ import { createClient } from "@/utils/supabase/server";
 import { folderSchema } from "./zod-types";
 import { z } from "zod";
 
-export async function createFolder(nome_folder: string, user_id: string) {
+export async function createFolder(nome_folder: string, user_id: string, descricao: string) {
     try {
         const supabase = await createClient();
 
         const { data, error } = await supabase
             .from("folders")
-            .insert([{ nome_folder, user_id }])
+            .insert([{ nome_folder, user_id, descricao }])
             .select("*");
 
         if (error) {

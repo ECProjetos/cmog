@@ -24,12 +24,17 @@ type CreateNewFolderProps = {
 
 export function CreateNewFolder({ user_id }: CreateNewFolderProps) {
   const [folderName, setFolderName] = useState<string>("");
+  const [folderDescription, setFolderDescription] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false); // Começa como false (não aberto)
 
   const handleCreateFolder = async () => {
     if (!user_id || !folderName) return;
 
-    const { data, error } = await createFolder(folderName, user_id);
+    const { data, error } = await createFolder(
+      folderName,
+      user_id,
+      folderDescription
+    );
 
     if (error) {
       toast.error("Erro ao criar pasta:", {
@@ -68,24 +73,39 @@ export function CreateNewFolder({ user_id }: CreateNewFolderProps) {
             Insira o nome da nova pasta para organizá-la.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="folderName" className="text-right">
-              Nome
-            </Label>
-            <Input
-              id="folderName"
-              value={folderName}
-              onChange={(e) => setFolderName(e.target.value)}
-              className="col-span-3"
-            />
+        <div className="grid gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="space-y-2 items-center">
+              <Label htmlFor="folderName" className="text-right">
+                Nome:
+              </Label>
+              <Input
+                id="folderName"
+                value={folderName}
+                onChange={(e) => setFolderName(e.target.value)}
+                className="col-span-3"
+                placeholder="Nome da pasta"
+              />
+            </div>
+            <div className="space-y-2 items-center">
+              <Label htmlFor="folderDescription" className="text-right">
+                Descrição:
+              </Label>
+              <Input
+                id="folderDescription"
+                value={folderDescription}
+                onChange={(e) => setFolderDescription(e.target.value)}
+                className="col-span-3"
+                placeholder="Descrição da pasta"
+              />
+            </div>
           </div>
         </div>
         <DialogFooter>
           <Button
             type="button"
             onClick={handleCreateFolder}
-            disabled={!folderName}
+            disabled={!folderName || !folderDescription}
           >
             Criar Pasta
           </Button>

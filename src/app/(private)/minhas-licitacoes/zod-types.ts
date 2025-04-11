@@ -4,6 +4,7 @@ export const folderSchema = z.object({
     id_folder: z.string().uuid(),
     user_id: z.string().uuid(),
     nome_folder: z.string().min(1, { message: 'Nome da pasta é obrigatório' }),
+    descricao: z.string().min(1, { message: 'Descrição da pasta é obrigatória' }),
     created_at: z.string()
 });
 

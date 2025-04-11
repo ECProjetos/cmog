@@ -73,7 +73,7 @@ export const licitacaoSchemaIndividual = z.object({
     tipo_licitacao: z.string(),
 });
 
-export const licitacaoIndividual = z.object({licitacaoSchemaIndividual});
+export const licitacaoIndividual = z.object({ licitacaoSchemaIndividual });
 
 export const LicitacoesArraySchema = z.array(licitacaoSchema);
 

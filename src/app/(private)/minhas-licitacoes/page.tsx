@@ -8,6 +8,7 @@ import { FolderColumns } from "./columns";
 import { getAllFolders } from "./actions";
 import { FolderType } from "./zod-types";
 import { FolderTable } from "./table";
+import { SkeletonTable } from "@/components/skeleton-table";
 
 export default function MinhasLicitacoesPage() {
   const user = useUserStore((state) => state.user);
@@ -45,7 +46,7 @@ export default function MinhasLicitacoesPage() {
         <CreateNewFolder user_id={user?.id} />
       </div>
       {loading ? (
-        <p>Carregando...</p>
+        <SkeletonTable />
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (

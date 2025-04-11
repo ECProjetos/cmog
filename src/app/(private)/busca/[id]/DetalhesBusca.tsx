@@ -22,6 +22,7 @@ import { licitacaoColumns } from "./columns";
 import SearchForm from "../nova/new-search-form";
 import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 import { getAllFolders } from "@/app/(private)/minhas-licitacoes/actions";
+import { SkeletonTable } from "@/components/skeleton-table";
 
 interface DetalhesBuscaProps {
   busca: SearchSchemaViewType;
@@ -139,7 +140,7 @@ export default function DetalhesBusca({
             </div>
             <div>
               {loading ? (
-                <p>Carregando...</p>
+                <SkeletonTable />
               ) : error ? (
                 <p className="text-red-500">{error}</p>
               ) : (

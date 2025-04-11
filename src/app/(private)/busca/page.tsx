@@ -7,13 +7,13 @@ import { useUserStore } from "@/stores/userStore";
 
 import { buttonVariants } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
-import Loading from "@/app/loading";
 
 import { getAllBuscas } from "./actions";
 
 import { SearchSchemaViewType } from "./zod-types";
 import { BuscaTable } from "./table";
 import { buscaColumns } from "./columns";
+import { SkeletonTable } from "@/components/skeleton-table";
 
 export default function BuscasPage() {
   const user = useUserStore((state) => state.user);
@@ -47,7 +47,7 @@ export default function BuscasPage() {
   return (
     <>
       {loading ? (
-        <Loading />
+        <SkeletonTable />
       ) : error ? (
         <div className="flex flex-col items-center justify-center h-screen">
           <h1 className="text-2xl font-bold text-red-500">{error}</h1>
