@@ -1,8 +1,15 @@
-export default function FolderLicitacaoPage() {
-  return (
-    <div>
-      <h1>Minhas Licitações</h1>
-      <p>Esta página lista as licitações do usuário.</p>
-    </div>
-  );
+"use server";
+
+import { getFolderLicitacoesByFolderId } from "./actions";
+import DetalhesFolder from "./detalhes-folder";
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function DetalhesFolderPage({ params }: PageProps) {
+  const { id } = await params;
+  const folderLicitacoes = await getFolderLicitacoesByFolderId(id);
+  if (!folderLicitacoes) return <div>Pasta não encontrada</div>;
+  return <DetalhesFolder folderLicitacoes={folderLicitacoes.data} />;
 }

@@ -1,4 +1,4 @@
-// app/(private)/busca/[id]/page.tsx
+"use server";
 
 import { getLicitacoesByIds } from "./actions";
 import DetalhesBusca from "./DetalhesBusca";

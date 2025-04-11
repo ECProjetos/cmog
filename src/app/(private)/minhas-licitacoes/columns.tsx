@@ -129,7 +129,10 @@ export const FolderColumns = ({
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/busca/${id}`} className="flex items-center">
+              <Link
+                href={`minhas-licitacoes/${id}`}
+                className="flex items-center"
+              >
                 <FolderOpen className="mr-2 h-4 w-4" />
                 Ver
               </Link>
