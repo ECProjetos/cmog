@@ -20,9 +20,10 @@ import { toast } from "sonner";
 
 type CreateNewFolderProps = {
   user_id: string | undefined;
+  onUpdate: () => void; // Função de atualização opcional
 };
 
-export function CreateNewFolder({ user_id }: CreateNewFolderProps) {
+export function CreateNewFolder({ user_id, onUpdate }: CreateNewFolderProps) {
   const [folderName, setFolderName] = useState<string>("");
   const [folderDescription, setFolderDescription] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false); // Começa como false (não aberto)
@@ -53,6 +54,8 @@ export function CreateNewFolder({ user_id }: CreateNewFolderProps) {
     toast.success("Pasta criada com sucesso!", {
       description: `Pasta ${folderName} criada com sucesso!`,
     });
+
+    onUpdate();
 
     setFolderName("");
     setIsOpen(false); // Fecha o dialog

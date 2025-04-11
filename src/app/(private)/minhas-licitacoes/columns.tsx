@@ -34,18 +34,13 @@ import { deleteFolder } from "./actions";
 import { FolderType } from "./zod-types";
 import Link from "next/link";
 
-const onDelete = (id: string) => {
-  deleteFolder(id).then((res) => {
-    if (res.error) {
-      toast.error(res.error.message);
-    } else {
-      toast.success("Pasta excluída com sucesso!");
-      setTimeout(() => window.location.reload(), 1500);
-    }
-  });
+type FolderColumnsProps = {
+  onUpdate: () => void;
 };
 
-export const FolderColumns: ColumnDef<FolderType>[] = [
+export const FolderColumns = ({
+  onUpdate,
+}: FolderColumnsProps): ColumnDef<FolderType>[] => [
   {
     id: "icon",
     cell: ({ row }) => {
@@ -161,8 +156,14 @@ export const FolderColumns: ColumnDef<FolderType>[] = [
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-800 text-white hover:bg-red-600"
-                    onClick={() => {
-                      onDelete(id);
+                    onClick={async () => {
+                      const res = await deleteFolder(id);
+                      if (res.error) {
+                        toast.error(res.error.message);
+                      } else {
+                        toast.success("Pasta excluída com sucesso!");
+                        onUpdate(); // <- Chama atualização aqui
+                      }
                     }}
                   >
                     Excluir

@@ -14,7 +14,7 @@ export function SkeletonTable() {
       </div>
 
       {/* Linhas da tabela (simulação de 5 linhas) */}
-      {Array.from({ length: 5 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
           className="flex justify-between px-4 py-4 items-center border-b"
