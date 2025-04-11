@@ -76,6 +76,7 @@ type FolderDetailColumnsProps = {
 };
 
 export const FolderDetailColumns = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onUpdate,
 }: FolderDetailColumnsProps): ColumnDef<FolderLicitacoes>[] => [
   {
