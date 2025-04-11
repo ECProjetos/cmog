@@ -3,18 +3,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { SearchSchemaType } from "../zod-types";
 
-// const buildLike = (keywords: string[], fields: string[]) => {
-//     return keywords.flatMap((word) =>
-//         fields.map((field) => `${field} ILIKE '%${word}%'`)
-//     ).join(" OR ");
-// };
-
-// const buildNotLike = (keywords: string[], fields: string[]) => {
-//     return keywords.flatMap((word) =>
-//         fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
-//     ).join(" AND ");
-// };
-
 const buildLike = (keywords: string[], fields: string[]) => {
     return keywords.flatMap((word) =>
         fields.map((field) => `${field} ILIKE '%${word}%'`)

@@ -30,15 +30,15 @@ import { Button } from "@/components/ui/button";
 import { ListRestart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-interface LicitacoesTable<TData, TValue> {
+interface FolderDetailTable<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]; // Define as colunas da tabela
   data: TData[]; // Define os dados da tabela
 }
 
-export function LicitacoesTable<TData, TValue>({
+export function FolderDetailTable<TData, TValue>({
   columns,
   data,
-}: LicitacoesTable<TData, TValue>) {
+}: FolderDetailTable<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // Define o estado de ordenação
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // Define o estado de filtro
 

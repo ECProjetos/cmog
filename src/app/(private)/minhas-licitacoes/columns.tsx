@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Trash, MoreHorizontal, Search } from "lucide-react";
+import { Trash, MoreHorizontal, FolderOpen, Folder } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -30,40 +30,39 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { deleteBusca } from "./actions";
-import { SearchSchemaViewType } from "./zod-types";
+import { deleteFolder } from "./actions";
+import { FolderType } from "./zod-types";
 import Link from "next/link";
 
-const DeleteBusca = (id: string) => {
-  deleteBusca(id).then((res) => {
-    if (res.error) {
-      toast.error(res.error.message);
-    } else {
-      toast.success("Busca excluída com sucesso!");
-      setTimeout(() => window.location.reload(), 1500);
-    }
-  });
+type FolderColumnsProps = {
+  onUpdate: () => void;
 };
 
-export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
+export const FolderColumns = ({
+  onUpdate,
+}: FolderColumnsProps): ColumnDef<FolderType>[] => [
   {
-    accessorKey: "titulo",
+    id: "icon",
+    cell: ({ row }) => {
+      const id = row.original.id_folder;
+      return (
+        <Link href={`minhas-licitacoes/${id}`}>
+          <Folder className="mr-2 h-4 w-4" />
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "nome_folder",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Título" />
+      <DataTableColumnHeader column={column} title="Nome da pasta" />
     ),
     cell: ({ row }) => {
-      const id = row.original.id_busca;
+      const id = row.original.id_folder;
+
       return (
-        <Link href={`/busca/${id}`}>
-          <div
-            style={{
-              maxWidth: "500px",
-              whiteSpace: "normal",
-              wordWrap: "break-word",
-            }}
-          >
-            {row.getValue("titulo")}
-          </div>
+        <Link href={`minhas-licitacoes/${id}`} className="flex items-center">
+          {row.getValue("nome_folder")}
         </Link>
       );
     },
@@ -74,19 +73,40 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
       <DataTableColumnHeader column={column} title="Descrição" />
     ),
     cell: ({ row }) => {
-      const id = row.original.id_busca;
+      const id = row.original.id_folder;
       return (
-        <Link href={`/busca/${id}`}>
+        <Link href={`minhas-licitacoes/${id}`} className="flex items-center">
           <div
             style={{
-              maxWidth: "600px",
+              maxWidth: "500px",
               whiteSpace: "normal",
               wordWrap: "break-word",
             }}
           >
-            {row.getValue("titulo")}
+            {row.getValue("descricao")}
           </div>
+          ;
         </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Criada em" />
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("created_at"));
+      return (
+        <div>
+          <Link href={`minhas-licitacoes/${row.original.id_folder}`}>
+            {date.toLocaleDateString("pt-BR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })}
+          </Link>
+        </div>
       );
     },
   },
@@ -96,7 +116,7 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
       <DataTableColumnHeader column={column} title="Ações" />
     ),
     cell: ({ row }) => {
-      const id = row.original.id_busca;
+      const id = row.original.id_folder;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -109,8 +129,11 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/busca/${id}`} className="flex items-center">
-                <Search className="mr-2 h-4 w-4" />
+              <Link
+                href={`minhas-licitacoes/${id}`}
+                className="flex items-center"
+              >
+                <FolderOpen className="mr-2 h-4 w-4" />
                 Ver
               </Link>
             </DropdownMenuItem>
@@ -136,8 +159,14 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-800 text-white hover:bg-red-600"
-                    onClick={() => {
-                      DeleteBusca(id);
+                    onClick={async () => {
+                      const res = await deleteFolder(id);
+                      if (res.error) {
+                        toast.error(res.error.message);
+                      } else {
+                        toast.success("Pasta excluída com sucesso!");
+                        onUpdate(); // <- Chama atualização aqui
+                      }
                     }}
                   >
                     Excluir

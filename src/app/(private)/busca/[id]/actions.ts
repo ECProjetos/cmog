@@ -115,3 +115,28 @@ export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: Licita
     }
 }
 
+export async function saveLicitacao(
+    licitacao_id: number,
+    folder_id: string
+) {
+    try {
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders_licitacoes")
+            .insert([{ id_licitacao: licitacao_id, id_folder: folder_id }])
+
+        if (error) {
+            console.error("Erro ao salvar licitação:", error);
+            return { error: { message: error.message } };
+        }
+
+        return { data: { message: "Licitação salva com sucesso!" } };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error("Erro inesperado ao salvar licitação:", error);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+

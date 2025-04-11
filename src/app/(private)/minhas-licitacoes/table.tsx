@@ -30,15 +30,15 @@ import { Button } from "@/components/ui/button";
 import { ListRestart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-interface LicitacoesTable<TData, TValue> {
+interface FolderTable<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]; // Define as colunas da tabela
   data: TData[]; // Define os dados da tabela
 }
 
-export function LicitacoesTable<TData, TValue>({
+export function FolderTable<TData, TValue>({
   columns,
   data,
-}: LicitacoesTable<TData, TValue>) {
+}: FolderTable<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]); // Define o estado de ordenação
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // Define o estado de filtro
 
@@ -71,13 +71,13 @@ export function LicitacoesTable<TData, TValue>({
     <div className="overflow-x-auto">
       <div className="flex items-center justify-between p-4 ">
         <Input
-          placeholder="Pesquisar em objeto..."
+          placeholder="Pesquisar nome da pasta..."
           value={
-            (table.getColumn("descricao")?.getFilterValue() as string) ?? "" // Define o valor do filtro
+            (table.getColumn("nome_folder")?.getFilterValue() as string) ?? "" // Define o valor do filtro
           }
           onChange={
             (event) =>
-              table.getColumn("descricao")?.setFilterValue(event.target.value) // Define o valor do filtro}
+              table.getColumn("nome_folder")?.setFilterValue(event.target.value) // Define o valor do filtro}
           }
           className="max-w-sm"
         />
@@ -137,7 +137,7 @@ export function LicitacoesTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Sem resultados.
+                  Sem pastas disponivel. Crie uma agora!
                 </TableCell>
               </TableRow>
             )}

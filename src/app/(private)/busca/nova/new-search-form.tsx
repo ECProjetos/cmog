@@ -47,7 +47,6 @@ export default function SearchForm({
   busca,
   setFormModalOpen,
 }: SearchFormProps) {
-
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
     defaultValues: busca
@@ -398,11 +397,19 @@ export default function SearchForm({
           </div>
         </FormItem>
         <div className="flex items-center space-x-2">
-          {hasBusca && (
+          {hasBusca ? (
             <Button
               type="button"
               variant="outline"
               onClick={() => setFormModalOpen?.(false)}
+            >
+              Voltar
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => redirect("/busca")}
             >
               Voltar
             </Button>
