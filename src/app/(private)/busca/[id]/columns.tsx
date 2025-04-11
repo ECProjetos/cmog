@@ -91,7 +91,7 @@ export const licitacaoColumns = (
   {
     id: "descricao",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Descrição" />
+      <DataTableColumnHeader column={column} title="Objeto" />
     ),
     cell: ({ row }) => {
       const licitacao = row.original;

@@ -1,15 +1,15 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getFolderLicitacoesByFolderId } from "./actions";
 import DetalhesFolder from "./detalhes-folder";
 import { FolderLicitacoes } from "../zod-types"; // ou o caminho correto
 
-interface PageProps {
-  params: { id: string };
-}
 
-export default function DetalhesFolderPage({ params }: PageProps) {
+export default function DetalhesFolderPage() {
+  const params = useParams();
+  const folderId = params.id as string;
   const [folderLicitacoes, setFolderLicitacoes] = useState<FolderLicitacoes[]>(
     []
   );
@@ -20,7 +20,7 @@ export default function DetalhesFolderPage({ params }: PageProps) {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const result = await getFolderLicitacoesByFolderId(params.id);
+      const result = await getFolderLicitacoesByFolderId(folderId);
       if (result.error) {
         setError(result.error.message);
         setFolderLicitacoes([]);
@@ -32,7 +32,7 @@ export default function DetalhesFolderPage({ params }: PageProps) {
     };
 
     fetchData();
-  }, [params.id, refresh]);
+  }, [folderId, refresh]);
 
   if (error) return <div className="text-red-600">{error}</div>;
   if (!folderLicitacoes || folderLicitacoes.length === 0)

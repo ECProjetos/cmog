@@ -71,7 +71,7 @@ export function FolderDetailTable<TData, TValue>({
     <div className="overflow-x-auto">
       <div className="flex items-center justify-between p-4 ">
         <Input
-          placeholder="Pesquisar em Descrição..."
+          placeholder="Pesquisar em objeto..."
           value={
             (table.getColumn("descricao")?.getFilterValue() as string) ?? "" // Define o valor do filtro
           }

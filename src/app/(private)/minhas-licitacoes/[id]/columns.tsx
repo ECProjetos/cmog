@@ -80,11 +80,24 @@ export const FolderDetailColumns = ({
   onUpdate,
 }: FolderDetailColumnsProps): ColumnDef<FolderLicitacoes>[] => [
   {
-    accessorKey: "licitacao.comprador",
+    id: "comprador",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
+    accessorFn: (row) => row.licitacao?.comprador || "—",
+    cell: ({ row }) => (
+      <div
+        style={{
+          whiteSpace: "normal",
+          wordBreak: "break-word",
+          maxWidth: "150px",
+        }}
+      >
+        {row.original.licitacao?.comprador || "—"}
+      </div>
+    ),
   },
+
   {
     accessorKey: "licitacao.municipios.uf_municipio",
     header: ({ column }) => (
@@ -92,16 +105,23 @@ export const FolderDetailColumns = ({
     ),
   },
   {
-    accessorKey: "licitacao.data_abertura_propostas",
+    id: "data_abertura_propostas", // Define o id manualmente
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data de Abertura" />
     ),
     cell: ({ row }) => {
-      const horas =
-        row.original.licitacao?.hora_abertura_propostas || "Indisponível";
+      const data = row.original.licitacao?.data_abertura_propostas || "—";
+      const hora = row.original.licitacao?.hora_abertura_propostas || "—";
       return (
-        <div style={{ whiteSpace: "balance", wordWrap: "break-word" }}>
-          {row.getValue("data_abertura_propostas")} às {horas}
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            textAlign: "center",
+          }}
+        >
+          <div>{data}</div>
+          <div>às {hora}</div>
         </div>
       );
     },
@@ -109,7 +129,7 @@ export const FolderDetailColumns = ({
   {
     id: "descricao",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Descrição" />
+      <DataTableColumnHeader column={column} title="Objeto" />
     ),
     cell: ({ row }) => {
       const licitacao = row.original.licitacao;
