@@ -1,9 +1,24 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getLicitacaoIndividualById } from './actions'; // Ajuste o path conforme necessário
-import { licitacaoIndividualType } from './zod-types-licitacao';
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getLicitacaoIndividualById } from "./actions"; // Ajuste o path conforme necessário
+import { licitacaoIndividualType } from "./zod-types-licitacao";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import Link from "next/link";
 
 export default function Page() {
   const params = useParams();
@@ -15,7 +30,9 @@ export default function Page() {
     getLicitacaoIndividualById([Number(id)])
       .then((res) => {
         if (res.error) {
-          console.error(typeof res.error === 'string' ? res.error : "Erro desconhecido");
+          console.error(
+            typeof res.error === "string" ? res.error : "Erro desconhecido"
+          );
         } else if (res.data) {
           setLicitacoes(res.data);
         }
@@ -43,34 +60,38 @@ export default function Page() {
   }
 
   const renderLicitacao = (licitacao: licitacaoIndividualType) => (
-    <div key={licitacao.id_licitacao} className="mt-6 p-4 border rounded shadow">
+    <div
+      key={licitacao.id_licitacao}
+      className="mt-6 p-4 border rounded shadow"
+    >
       <h2 className="text-xl font-semibold">{licitacao.comprador}</h2>
       <div className="mb-4 space-y-2 mt-4">
         <p>
-          <strong>Data de Abertura:</strong> {licitacao.data_abertura_propostas} às {licitacao.hora_abertura_propostas}
+          <strong>Data de Abertura:</strong> {licitacao.data_abertura_propostas}{" "}
+          às {licitacao.hora_abertura_propostas}
         </p>
         <p>
-          <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} - {licitacao.municipios?.uf_municipio || "Indisponível"}
-
+          <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} -{" "}
+          {licitacao.municipios?.uf_municipio || "Indisponível"}
         </p>
         <p>
           <strong>Valor Total Estimado:</strong> {valorTotalEstimado(licitacao)}
         </p>
-          
+
         {licitacao.grupos_materiais.map((grupo) =>
           grupo.classes_materiais.map((classe) => (
             <p key={classe.id_classe_material}>{classe.nome_classe_material}</p>
           ))
         )}
 
-<a
-            href={licitacao.url}
-            className="text-blue-600 underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Acessar licitação
-          </a>
+        <a
+          href={licitacao.url}
+          className="text-blue-600 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Acessar licitação
+        </a>
       </div>
 
       <div className="mt-4">
@@ -87,7 +108,8 @@ export default function Page() {
                     <strong>Quantidade:</strong> {item.qt_itens}
                   </p>
                   <p>
-                    <strong>Valor Unitário Estimado:</strong> R$ {item.vl_unitario_estimado}
+                    <strong>Valor Unitário Estimado:</strong> R${" "}
+                    {item.vl_unitario_estimado}
                   </p>
                 </div>
               </details>
@@ -99,13 +121,38 @@ export default function Page() {
   );
 
   return (
-    <div className="container py-6 px-10">
-      <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
-      {licitacoes.length > 0 ? (
-        licitacoes.map(renderLicitacao)
-      ) : (
-        <p className="mt-4 text-gray-600">Erro ao buscar licitação.</p>
-      )}
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4 pl-0 dark:bg-[#18181B]">
+          <div className="bg-white shadow-lg rounded-2xl p-6 w-full min-h-full border dark:bg-[#1c1c20]">
+            <div className="flex h-16 shrink-0 items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link href="#">Configurações</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Conta</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+            <div className="container py-6 px-10">
+              <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
+              {licitacoes.length > 0 ? (
+                licitacoes.map(renderLicitacao)
+              ) : (
+                <p className="mt-4 text-gray-600">Erro ao buscar licitação.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
