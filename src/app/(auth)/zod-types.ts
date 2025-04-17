@@ -69,7 +69,11 @@ export const registerSchema = z
             .string()
             .default("light")
             .optional(),
-        
+        lgpd: z
+            .boolean()
+            .refine((val) => val === true, { message: "Você deve aceitar os termos de uso e a política de privacidade para continuar." })
+
+
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "As senhas não coincidem.",

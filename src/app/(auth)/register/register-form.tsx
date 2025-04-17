@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { signup } from "../actions"; // Importa a função de ação para registrar o usuário
@@ -25,6 +26,7 @@ import { toast } from "sonner";
 import { registerSchema } from "../zod-types";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -44,6 +46,7 @@ export default function RegisterForm() {
       razao_social: "",
       phone: "",
       avatar_url: "",
+      lgpd: false,
     },
   });
   const signupMutation = useMutation({
@@ -267,6 +270,31 @@ export default function RegisterForm() {
                 <Input placeholder="Digite o seu telefone" {...field} />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* Campo LGPD*/}
+        <FormField
+          control={form.control}
+          name="lgpd"
+          render={({ field }) => (
+            <FormItem className="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox
+                  id="lgpd"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="flex-1">
+                <FormLabel htmlFor="lgpd" className="font-normal text-sm">
+                  Aceito os termos de uso e a{" "}
+                  <Link href="/lgpd" className="text-blue-500 hover:underline">
+                    política de privacidade.
+                  </Link>
+                </FormLabel>
+                <FormMessage />
+              </div>
             </FormItem>
           )}
         />
