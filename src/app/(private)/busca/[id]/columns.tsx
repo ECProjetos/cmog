@@ -63,6 +63,7 @@ export const licitacaoColumns = (
 ): ColumnDef<LicitacaoType>[] => [
   {
     id: "comprador",
+    accessorFn: (row) => formatDescricao(row),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
@@ -104,6 +105,7 @@ export const licitacaoColumns = (
 
   {
     id: "descricao",
+    accessorFn: (row) => formatDescricao(row),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Objeto" />
     ),
@@ -142,6 +144,7 @@ export const licitacaoColumns = (
   },
   {
     id: "valor_estimado",
+    accessorFn: (row) => formatDescricao(row),
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valor Estimado" />
     ),

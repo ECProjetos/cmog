@@ -30,8 +30,16 @@ export async function CreateNewShearch(
         modality,
     } = data;
 
-    const positiveKeywords = goodKeyWord.trim().split(/\s+/);
-    const negativeKeywords = badKeyWord.trim().split(/\s+/);
+    const positiveKeywords = goodKeyWord
+        .split(";")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    const negativeKeywords = badKeyWord
+        .split(";")
+        .map(s => s.trim())
+        .filter(Boolean);
+
 
     const positiveClause = buildLike(positiveKeywords, [
         "i.ds_item",
@@ -113,8 +121,16 @@ export async function updateSearch(
         modality,
     } = data;
 
-    const positiveKeywords = goodKeyWord.trim().split(/\s+/);
-    const negativeKeywords = badKeyWord.trim().split(/\s+/);
+    const positiveKeywords = goodKeyWord
+        .split(";")
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    const negativeKeywords = badKeyWord
+        .split(";")
+        .map(s => s.trim())
+        .filter(Boolean);
+
 
     const positiveClause = buildLike(positiveKeywords, [
         "i.ds_item",

@@ -1,14 +1,51 @@
 import { z } from 'zod';
 
+
+const keywordRefine = (value: string) => {
+    const hasSemicolon = value.includes(";");
+
+    const parts = value
+        .split(";")
+        .map((part) => part.trim())
+        .filter((part) => part.length > 0);
+
+    // Se tem ponto e vírgula, mas alguma parte está vazia
+    if (hasSemicolon && parts.length === 0) return false;
+
+    // Se não tem ponto e vírgula e tem espaços, assume erro de separador
+    if (!hasSemicolon && value.trim().includes(" ")) return false;
+
+    // Está ok
+    return parts.length > 0;
+};
+
+
 export const searchSchema = z.object({
     title: z.string().min(1, { message: "Título é obrigatório" }),
     description: z.string().min(1, { message: "Descrição é obrigatória" }),
-    goodKeyWord: z.string().min(1, { message: "Palavras chaves possitivas são obrigatória" }),
-    badKeyWord: z.string().min(1, { message: "Palavras chaves negativas são obrigatória" }),
+
+    goodKeyWord: z
+        .string()
+        .min(1, { message: "Palavras chaves positivas são obrigatórias" })
+        .refine(keywordRefine, {
+            message:
+                "Use ponto e vírgula (;) para separar as palavras. Ex: prato; garfo; talher descartável",
+        }),
+
+    badKeyWord: z
+        .string()
+        .min(1, { message: "Palavras chaves negativas são obrigatórias" })
+        .refine(keywordRefine, {
+            message:
+                "Use ponto e vírgula (;) para separar as palavras. Ex: caneca; garrafa térmica",
+        }),
+
     states: z.array(z.string()).min(1, { message: "Selecione pelo menos um estado" }),
-    modality: z.array(z.string().min(1, { message: "Selecione pelo menos uma modalidade" })),
+    modality: z.array(z.string()).min(1, { message: "Selecione pelo menos uma modalidade" }),
     sites: z.array(z.string()).min(1, { message: "Selecione pelo menos um portal" }),
-})
+});
+
+
 
 export const searchSchemaView = z.object({
     id_busca: z.string(),

@@ -53,8 +53,8 @@ export default function SearchForm({
       ? {
           title: busca.titulo,
           description: busca.descricao,
-          goodKeyWord: busca.good_keywords.join(" "),
-          badKeyWord: busca.bad_keywords.join(" "),
+          goodKeyWord: busca.good_keywords.join("; "),
+          badKeyWord: busca.bad_keywords.join("; "),
           states: busca.states,
           modality: busca.modality,
           sites: ["pcp"],
@@ -163,11 +163,11 @@ export default function SearchForm({
             <FormItem>
               <div className="flex items-center space-x-2">
                 <FormLabel>Palavras Chaves Positivas</FormLabel>
-                <InfoTooltip text="Escreva Palavras que você gostaria que buscassemos em suas licitações, varie entre plural e singular" />
+                <InfoTooltip text="Escreva Palavras que você gostaria que buscassemos em suas licitações, varie entre plural e singular. Separe cada palavra ou expressão com ';'. Ex: prato; garfo; talher descartável" />
               </div>
               <FormControl>
                 <Textarea
-                  placeholder="Palavras chaves positivas. Ex: Pratos Prato Garfos Garfo"
+                  placeholder="Ex: prato; garfo; talher descartável"
                   {...field}
                 />
               </FormControl>
@@ -183,11 +183,11 @@ export default function SearchForm({
             <FormItem>
               <div className="flex items-center space-x-2">
                 <FormLabel>Palavras Chaves Negativas</FormLabel>
-                <InfoTooltip text="Escreva Palavras que você não gostaria que buscassemos em suas licitações" />
+                <InfoTooltip text="Escreva Palavras que você não gostaria que buscassemos em suas licitações. Separe com ';' as palavras que você quer evitar. Ex: caneca; pano de prato" />
               </div>
               <FormControl>
                 <Textarea
-                  placeholder="Palavras Chaves Negaticas, Canecas Caneca Garrafas Garravas Panos Pano"
+                  placeholder="Ex: caneca; garrafa térmica; pano de prato"
                   {...field}
                 />
               </FormControl>
