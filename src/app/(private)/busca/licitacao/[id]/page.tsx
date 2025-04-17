@@ -6,6 +6,7 @@ import { getLicitacaoIndividualById } from "./actions";
 import { licitacaoIndividualType } from "./zod-types-licitacao";
 import {
   Breadcrumb,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -24,6 +25,7 @@ import { SaveLicitacao } from "./save-licitacao";
 import { getUserSession } from "@/app/(auth)/actions";
 import { getAllFolders } from "@/app/(private)/minhas-licitacoes/actions";
 import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const params = useParams();
@@ -189,12 +191,18 @@ export default function Page() {
                 <BreadcrumbList>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link href="/licitacoes">Licitações</Link>
+                      <Link href="/minhas-buscas">Minhas Buscas</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Detalhes</BreadcrumbPage>
+                    <BreadcrumbEllipsis className="h-4 w-4" />
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="truncate max-w-[180px]">
+                      Detalhes da Licitação
+                    </BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
@@ -203,10 +211,20 @@ export default function Page() {
             <div className="container py-6 px-10">
               <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
-                <SaveLicitacao
-                  licitacao_id={Number(idParam)}
-                  folders={folders}
-                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.history.back();
+                    }}
+                  >
+                    Voltar
+                  </Button>
+                  <SaveLicitacao
+                    licitacao_id={Number(idParam)}
+                    folders={folders}
+                  />
+                </div>
               </div>
 
               {isLoading ? (
