@@ -35,12 +35,12 @@ export default function ConfirmAccountPage() {
       {/* Conteúdo acima do vídeo */}
 
       <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/30">
-        <div className="bg-white  p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+        <div className="bg-white  p-8 rounded-lg shadow-lg max-w-md w-full text-center dark:bg-gray-800 dark:text-gray-100">
           <h1 className="text-2xl font-bold mb-4">Confirmação de Conta</h1>
-          <p className="mb-6 text-gray-600">
+          <p className="mb-6 text-gray-600 dark:text-gray-300">
             Verifique seu e-mail para confirmar sua conta.
           </p>
-          <p className="mb-6 text-gray-600">
+          <p className="mb-6 text-gray-600 dark:text-gray-300">
             Se você não recebeu o e-mail, clique no botão abaixo.
           </p>
           <Button
