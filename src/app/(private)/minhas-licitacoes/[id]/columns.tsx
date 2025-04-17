@@ -2,7 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Search, ExternalLink, MoreHorizontal, Trash } from "lucide-react";
+import {
+  Search,
+  ExternalLink,
+  MoreHorizontal,
+  Trash,
+  PlusCircle,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -106,6 +112,7 @@ export const FolderDetailColumns = ({
   },
   {
     id: "data_abertura_propostas", // Define o id manualmente
+    accessorFn: (row) => row.licitacao?.data_abertura_propostas || "—",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data de Abertura" />
     ),
@@ -128,6 +135,8 @@ export const FolderDetailColumns = ({
   },
   {
     id: "descricao",
+    accessorFn: (row) =>
+      row.licitacao ? formatDescricao(row.licitacao) : "Descrição indisponível",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Objeto" />
     ),
@@ -168,6 +177,8 @@ export const FolderDetailColumns = ({
   },
   {
     id: "valor_estimado",
+    accessorFn: (row) =>
+      row.licitacao ? valorTotalEstimado(row.licitacao) : "Indisponível",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valor Estimado" />
     ),
@@ -188,7 +199,13 @@ export const FolderDetailColumns = ({
     cell: ({ row }) => {
       const status = row.original.status_licitacoes;
 
-      if (!status) return <span className="text-gray-400">Sem status</span>;
+      if (!status)
+        return (
+          <Button variant="ghost" size="sm" className="w-full">
+            <PlusCircle className="h-4 w-4" />
+            Status
+          </Button>
+        );
 
       return (
         <div className="flex items-center gap-2">
@@ -215,7 +232,14 @@ export const FolderDetailColumns = ({
           className="text-sm text-gray-600"
           style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
         >
-          {obs || "—"}
+          {obs ? (
+            obs
+          ) : (
+            <Button variant="ghost" size="sm" className="w-full">
+              <PlusCircle className="h-4 w-4" />
+              Adicionar Observação
+            </Button>
+          )}
         </div>
       );
     },
