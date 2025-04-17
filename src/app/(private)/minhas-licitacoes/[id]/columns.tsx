@@ -42,6 +42,7 @@ import { LicitacaoType } from "@/app/(private)/busca/zod-types";
 import { deletLicitacaoFromFolder } from "./actions";
 import { useState } from "react";
 import Link from "next/link";
+import { ObservacaoDialog } from "./observacao-dialog";
 
 function valorTotalEstimado(licitacao: LicitacaoType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
@@ -225,20 +226,47 @@ export const FolderDetailColumns = ({
       <DataTableColumnHeader column={column} title="Observação" />
     ),
     cell: ({ row }) => {
-      const obs = row.original.observacao;
+      const { id_folders_licitacoes, id_licitacao, id_folder, observacao } =
+        row.original;
+
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [expanded, setExpanded] = useState(false);
+      const maxLength = 150;
+      const hasLongText = observacao && observacao.length > maxLength;
+      const textToDisplay =
+        observacao && !expanded
+          ? observacao.slice(0, maxLength) + (hasLongText ? "..." : "")
+          : observacao;
 
       return (
-        <div
-          className="text-sm text-gray-600"
-          style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
-        >
-          {obs ? (
-            obs
-          ) : (
-            <Button variant="ghost" size="sm" className="w-full">
-              <PlusCircle className="h-4 w-4" />
-              Adicionar Observação
-            </Button>
+        <div className="flex flex-col gap-1 text-sm text-gray-700">
+          {/* Botão editar sempre visível no topo */}
+          <ObservacaoDialog
+            folderLicitacao={String(id_folders_licitacoes)}
+            licitacao_id={Number(id_licitacao)}
+            folder_id={String(id_folder)}
+            existingObservacao={observacao}
+            onUpdate={onUpdate}
+          />
+
+          {/* Texto da observação */}
+          <div
+            style={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {textToDisplay || null}
+          </div>
+
+          {/* Mostrar mais/menos se necessário */}
+          {hasLongText && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-xs text-muted-foreground hover:underline w-fit"
+            >
+              {expanded ? "Mostrar menos" : "Mostrar mais"}
+            </button>
           )}
         </div>
       );

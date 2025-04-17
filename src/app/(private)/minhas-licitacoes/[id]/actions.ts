@@ -103,3 +103,34 @@ export async function deletLicitacaoFromFolder(
         return { error: { message: "Erro interno do servidor" } };
     }
 }
+
+export async function addObservacaoToLicitacao(
+    folderLicitacaoId: string,
+    folderId: string,
+    licitacaoId: number,
+    observacao: string
+) {
+    try {
+        if (!folderLicitacaoId || !folderId || !licitacaoId) {
+            return { error: { message: "ID da pasta, da licitação ou observação não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders_licitacoes")
+            .update({ observacao: observacao || null })
+            .eq("id_folders_licitacoes", folderLicitacaoId)
+            .eq("id_folder", folderId)
+            .eq("id_licitacao", licitacaoId)
+
+        if (error) {
+            console.error("Erro ao adicionar observação à licitação:", error);
+            return { error: { message: "Erro ao adicionar observação à licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao adicionar observação:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
