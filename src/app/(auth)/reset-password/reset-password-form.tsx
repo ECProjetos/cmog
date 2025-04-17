@@ -3,11 +3,10 @@
 import React, { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { resetPassword } from "../actions"; // Importa a função de ação para redefinir a senha
+import { resetPassword } from "../actions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-
 import { Eye, EyeOff } from "lucide-react";
 
 import {
@@ -28,9 +27,9 @@ export default function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState(false); // Estado
+  const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
-    useState(false); // Estado para mostrar/esconder a confirmação da senha
+    useState(false);
 
   const form = useForm<ResetPasswordFormValues>({
     defaultValues: {
@@ -50,12 +49,10 @@ export default function ResetPasswordForm() {
       return;
     }
 
-    // Cria um FormData com os valores do formulário
     const formData = new FormData();
     formData.append("password", values.password);
     formData.append("password_confirmation", values.password_confirmation);
 
-    // Obtém o token (ou code) dos parâmetros da URL
     const token = searchParams.get("token") || searchParams.get("code");
 
     if (!token) {
@@ -70,7 +67,6 @@ export default function ResetPasswordForm() {
       toast.success("Senha redefinida", {
         description: "Sua senha foi redefinida com sucesso.",
       });
-      // Opcionalmente, redireciona para a página de login
       router.push("/login");
     } else {
       form.setError("password", { message: response.status });
@@ -87,19 +83,20 @@ export default function ResetPasswordForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel className="dark:text-gray-200">Senha</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Digite sua senha"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white pr-10"
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    tabIndex={-1} // Evita focar no botão ao tabular
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+                    tabIndex={-1}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -119,18 +116,21 @@ export default function ResetPasswordForm() {
           }}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmar Senha</FormLabel>
+              <FormLabel className="dark:text-gray-200">
+                Confirmar Senha
+              </FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     type={showPasswordConfirmation ? "text" : "password"}
                     placeholder="Confirme a sua senha"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white pr-10"
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPasswordConfirmation((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
                     tabIndex={-1}
                   >
                     {showPasswordConfirmation ? (
@@ -147,7 +147,7 @@ export default function ResetPasswordForm() {
         />
 
         <FormItem>
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Carregando..." : "Redefinir senha"}
           </Button>
         </FormItem>

@@ -16,12 +16,12 @@ export default function ResetPasswordPage() {
             className="object-cover w-full h-full animate-video-fade-10s"
             src="/auth-bg.mp4"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80 dark:to-black/70" />
         </div>
       </div>
 
-      <section className="w-[400px] p-8 bg-white/80 backdrop-blur-md rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      <section className="w-[400px] p-8 bg-white/80 backdrop-blur-md rounded-lg shadow-lg dark:bg-gray-700 dark:bg-black/80">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6 dark:text-gray-100">
           Restaurar senha
         </h1>
         <ResetPasswordForm />

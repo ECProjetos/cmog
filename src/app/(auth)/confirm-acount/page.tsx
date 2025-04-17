@@ -18,14 +18,18 @@ export default function ConfirmAccountPage() {
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Vídeo de fundo */}
-      <div className="relative w-full h-full z-0">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          src="/auth-bg.mp4"
-        />
+      <div className="absolute left-0 top-0 w-full h-full -z-10">
+        <div className="relative w-full h-full">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="object-cover w-full h-full animate-video-fade-10s"
+            src="/auth-bg.mp4"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80 dark:to-black/70" />
+        </div>
       </div>
 
       {/* Conteúdo acima do vídeo */}

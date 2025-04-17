@@ -16,7 +16,7 @@ export default function NotFound() {
             className="object-cover w-full h-full animate-video-fade-10s"
             src="/auth-bg.mp4"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80 dark:to-black/70" />
         </div>
       </div>
 
@@ -30,7 +30,11 @@ export default function NotFound() {
           Desculpe, a página que você está tentando acessar não existe ou foi
           removida.
         </p>
-        <Button variant="outline" asChild>
+        <Button
+          variant="outline"
+          asChild
+          className="dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+        >
           <Link href="/busca">Voltar para a página inicial</Link>
         </Button>
       </div>

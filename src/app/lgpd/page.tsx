@@ -7,12 +7,12 @@ export default function LGPDPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-3xl mx-auto px-6 py-16 text-gray-800 leading-relaxed">
-        <h1 className="text-4xl font-bold mb-6 text-neutral-900">
+      <main className="max-w-3xl mx-auto px-6 py-16 text-gray-800 dark:text-gray-100 leading-relaxed">
+        <h1 className="text-4xl font-bold mb-6 text-neutral-900 dark:text-white">
           Política de Privacidade e Proteção de Dados
         </h1>
 
-        <p className="text-sm text-gray-500 mb-10">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-10">
           Última atualização: <strong>17 de abril de 2025</strong>
         </p>
 
@@ -33,10 +33,10 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             1. Definições Importantes
           </h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
+          <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
             <li>
               <strong>Titular:</strong> Pessoa natural a quem se referem os
               dados pessoais tratados.
@@ -58,11 +58,13 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">2. Dados Coletados</h2>
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
+            2. Dados Coletados
+          </h2>
           <p className="mb-4">
             Coletamos os seguintes dados pessoais, conforme a finalidade:
           </p>
-          <ul className="list-disc list-inside space-y-2">
+          <ul className="list-disc list-inside space-y-2 dark:text-gray-300">
             <li>Nome completo</li>
             <li>E-mail</li>
             <li>Senha (armazenada de forma criptografada)</li>
@@ -77,14 +79,14 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             3. Finalidade do Tratamento
           </h2>
           <p>
             Os dados pessoais são utilizados com base nas hipóteses legais
             previstas na LGPD, com as seguintes finalidades:
           </p>
-          <ul className="list-disc list-inside mt-3 space-y-2">
+          <ul className="list-disc list-inside mt-3 space-y-2 dark:text-gray-300">
             <li>Identificação e autenticação do usuário</li>
             <li>Prestação dos serviços contratados</li>
             <li>Comunicações operacionais e legais</li>
@@ -95,14 +97,14 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             4. Compartilhamento de Dados
           </h2>
           <p>
             Os dados poderão ser compartilhados exclusivamente nos seguintes
             casos:
           </p>
-          <ul className="list-disc list-inside mt-2 space-y-2">
+          <ul className="list-disc list-inside mt-2 space-y-2 dark:text-gray-300">
             <li>
               Para cumprimento de obrigação legal, regulatória ou judicial
             </li>
@@ -115,7 +117,7 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             5. Armazenamento e Segurança
           </h2>
           <p>
@@ -130,14 +132,14 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             6. Direitos do Titular
           </h2>
           <p>
             O titular dos dados pode, a qualquer momento, exercer os seguintes
             direitos:
           </p>
-          <ul className="list-disc list-inside mt-2 space-y-2">
+          <ul className="list-disc list-inside mt-2 space-y-2 dark:text-gray-300">
             <li>Confirmação da existência de tratamento</li>
             <li>Acesso aos dados pessoais</li>
             <li>Correção de dados incompletos, inexatos ou desatualizados</li>
@@ -153,7 +155,7 @@ export default function LGPDPage() {
             e-mail:{" "}
             <a
               href="mailto:contato@seudominio.com.br"
-              className="text-blue-600 underline"
+              className="text-blue-600 dark:text-blue-400 underline"
             >
               contato@seudominio.com.br
             </a>
@@ -161,7 +163,7 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             7. Alterações nesta Política
           </h2>
           <p>
@@ -173,7 +175,7 @@ export default function LGPDPage() {
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2 className="text-2xl font-semibold mb-4 dark:text-white">
             8. Contato com o Encarregado (DPO)
           </h2>
           <p>
@@ -184,14 +186,14 @@ export default function LGPDPage() {
             <strong>Encarregado (DPO):</strong>{" "}
             <a
               href="mailto:contato@ecprojetos.com.br"
-              className="text-blue-600 underline"
+              className="text-blue-600 dark:text-blue-400 underline"
             >
               contato@ecprojetos.com.br
             </a>
           </p>
         </section>
 
-        <footer className="pt-10 mt-16 border-t text-sm text-gray-500">
+        <footer className="pt-10 mt-16 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
           <p>
             © {new Date().getFullYear()} CMOG – Central de Monitoramento e
             Gestão. Todos os direitos reservados. CNPJ: 00.000.000/0001-00.

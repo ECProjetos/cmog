@@ -4,9 +4,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Eye, EyeOff } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,8 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-import { signup } from "../actions"; // Importa a função de ação para registrar o usuário
-
+import { signup } from "../actions";
 import { toast } from "sonner";
 import { registerSchema } from "../zod-types";
 import { useMutation } from "@tanstack/react-query";
@@ -30,10 +27,10 @@ import Link from "next/link";
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/esconder
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Estado para mostrar/esconder
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [pessoa, setPessoa] = useState("fisica");
 
-  const [pessoa, setPessoa] = useState("fisica"); // Estado para mostrar/esconder
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -49,16 +46,13 @@ export default function RegisterForm() {
       lgpd: false,
     },
   });
+
   const signupMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      return signup(formData);
-    },
+    mutationFn: async (formData: FormData) => signup(formData),
     onSuccess: (data) => {
       if (data.error) {
-        toast("Erro", {
-          description: data.error,
-        });
-      } else if (!data.error) {
+        toast("Erro", { description: data.error });
+      } else {
         toast("Sucesso", {
           description: "Usuário registrado com sucesso!",
         });
@@ -83,9 +77,13 @@ export default function RegisterForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel className="dark:text-gray-200">Nome</FormLabel>
               <FormControl>
-                <Input placeholder="Digite o seu nome" {...field} />
+                <Input
+                  placeholder="Digite o seu nome"
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,9 +95,13 @@ export default function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="dark:text-gray-200">Email</FormLabel>
               <FormControl>
-                <Input placeholder="Digite  o seu email" {...field} />
+                <Input
+                  placeholder="Digite o seu email"
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -111,19 +113,20 @@ export default function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel className="dark:text-gray-200">Senha</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Digite a sua senha"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white pr-10"
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    tabIndex={-1} // Evita focar no botão ao tabular
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+                    tabIndex={-1}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -139,19 +142,22 @@ export default function RegisterForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmar Senha</FormLabel>
+              <FormLabel className="dark:text-gray-200">
+                Confirmar Senha
+              </FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirme a sua senha"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white pr-10"
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    tabIndex={-1} // Evita focar no botão ao tabular
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+                    tabIndex={-1}
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={18} />
@@ -166,70 +172,58 @@ export default function RegisterForm() {
           )}
         />
 
-        {/* Campos adicionais para CPF, CNPJ e Telefone */}
+        {/* Radio Pessoa */}
         <RadioGroup
           value={pessoa}
           onValueChange={(val) => setPessoa(val)}
           className="flex gap-4"
         >
-          <FormItem>
-            <FormLabel htmlFor="fisica">
-              <div
-                className={`flex items-center gap-2 px-4 py-2 rounded-md border cursor-pointer transition-all duration-300 ${
-                  pessoa === "fisica"
-                    ? "bg-blue-100 border-blue-400"
-                    : "border-gray-300"
-                }`}
-              >
-                <RadioGroupItem id="fisica" value="fisica" />
-                <span
-                  className={`font-semibold ${
-                    pessoa === "fisica" ? "text-black" : "text-gray-700"
+          {["fisica", "juridica"].map((tipo) => (
+            <FormItem key={tipo}>
+              <FormLabel htmlFor={tipo}>
+                <div
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md border cursor-pointer transition-all duration-300 ${
+                    pessoa === tipo
+                      ? "bg-blue-100 border-blue-400 dark:bg-blue-200/20 dark:border-blue-300"
+                      : "border-gray-300 dark:border-gray-600"
                   }`}
                 >
-                  Pessoa Física
-                </span>
-              </div>
-            </FormLabel>
-          </FormItem>
-          <FormItem>
-            <FormLabel htmlFor="juridica">
-              <div
-                className={`flex items-center gap-2 px-4 py-2 rounded-md border cursor-pointer transition-all duration-300 ${
-                  pessoa === "juridica"
-                    ? "bg-blue-100 border-blue-400"
-                    : "border-gray-300"
-                }`}
-              >
-                <RadioGroupItem id="juridica" value="juridica" />
-                <span
-                  className={`font-semibold ${
-                    pessoa === "juridica" ? "text-black" : "text-gray-700"
-                  }`}
-                >
-                  Pessoa Jurídica
-                </span>
-              </div>
-            </FormLabel>
-          </FormItem>
+                  <RadioGroupItem id={tipo} value={tipo} />
+                  <span
+                    className={`font-semibold ${
+                      pessoa === tipo
+                        ? "text-black dark:text-white"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    Pessoa {tipo === "fisica" ? "Física" : "Jurídica"}
+                  </span>
+                </div>
+              </FormLabel>
+            </FormItem>
+          ))}
         </RadioGroup>
+
         {pessoa === "fisica" && (
-          <>
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>CPF</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite o seu CPF" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </>
+          <FormField
+            control={form.control}
+            name="cpf"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="dark:text-gray-200">CPF</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Digite o seu CPF"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         )}
+
         {pessoa === "juridica" && (
           <>
             <FormField
@@ -237,9 +231,13 @@ export default function RegisterForm() {
               name="cnpj"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CNPJ</FormLabel>
+                  <FormLabel className="dark:text-gray-200">CNPJ</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o seu CNPJ" {...field} />
+                    <Input
+                      placeholder="Digite o seu CNPJ"
+                      className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -250,9 +248,15 @@ export default function RegisterForm() {
               name="razao_social"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Razão Social</FormLabel>
+                  <FormLabel className="dark:text-gray-200">
+                    Razão Social
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite a sua razão social" {...field} />
+                    <Input
+                      placeholder="Digite a sua razão social"
+                      className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -260,20 +264,26 @@ export default function RegisterForm() {
             />
           </>
         )}
+
         <FormField
           control={form.control}
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Telefone</FormLabel>
+              <FormLabel className="dark:text-gray-200">Telefone</FormLabel>
               <FormControl>
-                <Input placeholder="Digite o seu telefone" {...field} />
+                <Input
+                  placeholder="Digite o seu telefone"
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* Campo LGPD*/}
+
+        {/* Campo LGPD */}
         <FormField
           control={form.control}
           name="lgpd"
@@ -287,9 +297,15 @@ export default function RegisterForm() {
                 />
               </FormControl>
               <div className="flex-1">
-                <FormLabel htmlFor="lgpd" className="font-normal text-sm">
+                <FormLabel
+                  htmlFor="lgpd"
+                  className="font-normal text-sm text-gray-700 dark:text-gray-300"
+                >
                   Aceito os termos de uso e a{" "}
-                  <Link href="/lgpd" className="text-blue-500 hover:underline">
+                  <Link
+                    href="/lgpd"
+                    className="text-blue-500 dark:text-blue-400 hover:underline"
+                  >
                     política de privacidade.
                   </Link>
                 </FormLabel>
@@ -298,7 +314,7 @@ export default function RegisterForm() {
             </FormItem>
           )}
         />
-        {/* Botão de envio */}
+
         <Button className="w-full" type="submit">
           Registrar
         </Button>

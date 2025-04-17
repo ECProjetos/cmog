@@ -5,9 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-
 import { z } from "zod";
-
 import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,14 +20,12 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { toast } from "sonner";
-
 import { login, loginWithToken } from "../actions";
-
 import { loginSchema } from "../zod-types";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/esconder
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -53,7 +49,8 @@ export default function LoginForm() {
     if (code) {
       tokenMutation.mutate(code);
     }
-  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const loginMutation = useMutation({
     mutationFn: async (values: z.infer<typeof loginSchema>) => {
@@ -65,12 +62,16 @@ export default function LoginForm() {
     onSuccess: (data) => {
       if (data.error) {
         toast.error("Erro ao fazer login", {
-          description: <span className="text-gray-500">{data.error}</span>,
+          description: (
+            <span className="text-gray-500 dark:text-gray-300">
+              {data.error}
+            </span>
+          ),
         });
       } else if (data.success) {
-        toast.success("Login Realizado com sucesso", {
+        toast.success("Login realizado com sucesso", {
           description: (
-            <span className="text-gray-500">
+            <span className="text-gray-500 dark:text-gray-300">
               Redirecionando você para a plataforma
             </span>
           ),
@@ -91,9 +92,15 @@ export default function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-gray-700 dark:text-gray-200">
+                Email
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Digite  o seu email" {...field} />
+                <Input
+                  placeholder="Digite o seu email"
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,19 +112,22 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel className="text-gray-700 dark:text-gray-200">
+                Senha
+              </FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Digite sua senha"
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-white pr-10"
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                    tabIndex={-1} // Evita focar no botão ao tabular
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
+                    tabIndex={-1}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
