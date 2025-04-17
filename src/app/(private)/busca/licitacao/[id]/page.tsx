@@ -1,8 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getLicitacaoIndividualById } from "./actions"; // Ajuste o path conforme necessário
+import { useEffect, useState, useCallback } from "react";
+import { getLicitacaoIndividualById } from "./actions";
 import { licitacaoIndividualType } from "./zod-types-licitacao";
 import {
   Breadcrumb,
@@ -19,105 +19,162 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import Link from "next/link";
+import { SkeletonTable } from "@/components/skeleton-table";
+import { SaveLicitacao } from "./save-licitacao";
+import { getUserSession } from "@/app/(auth)/actions";
+import { getAllFolders } from "@/app/(private)/minhas-licitacoes/actions";
+import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 
 export default function Page() {
   const params = useParams();
-  const id = params.id;
+  const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [licitacoes, setLicitacoes] = useState<licitacaoIndividualType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [folders, setFolders] = useState<FolderType[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getLicitacaoIndividualById([Number(id)])
+    getUserSession()
+      .then((response) => {
+        if (response?.user) {
+          setUserId(response.user.id);
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar sessão do usuário:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    getAllFolders(userId)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error.message);
+        } else {
+          setFolders(res.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar pastas:", err);
+        setError("Erro ao buscar pastas");
+      });
+  }, [userId]);
+
+  useEffect(() => {
+    if (!idParam) return;
+
+    setIsLoading(true);
+    getLicitacaoIndividualById([Number(idParam)])
       .then((res) => {
         if (res.error) {
           console.error(
             typeof res.error === "string" ? res.error : "Erro desconhecido"
           );
+          setError("Erro ao buscar licitação.");
         } else if (res.data) {
           setLicitacoes(res.data);
+          setError(null);
         }
       })
       .catch((err) => {
-        console.error("Erro ao buscar dados:", err);
+        console.error("Erro ao buscar licitação:", err);
+        setError("Erro ao buscar licitação.");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, [id]);
+  }, [idParam]);
 
-  function valorTotalEstimado(licitacao: licitacaoIndividualType): string {
-    const totalEstimado = licitacao.itens.reduce((total, item) => {
-      const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
-      const quantidade = parseFloat(item.qt_itens || "0");
-      return total + valorUnitario * quantidade;
-    }, 0);
+  const valorTotalEstimado = useCallback(
+    (licitacao: licitacaoIndividualType): string => {
+      const totalEstimado = licitacao.itens.reduce((total, item) => {
+        const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
+        const quantidade = parseFloat(item.qt_itens || "0");
+        return total + valorUnitario * quantidade;
+      }, 0);
 
-    if (isNaN(totalEstimado)) {
-      return "Indisponível";
-    }
+      if (isNaN(totalEstimado)) {
+        return "Indisponível";
+      }
 
-    return totalEstimado.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  }
+      return totalEstimado.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+    },
+    []
+  );
 
-  const renderLicitacao = (licitacao: licitacaoIndividualType) => (
-    <div
-      key={licitacao.id_licitacao}
-      className="mt-6 p-4 border rounded shadow"
-    >
-      <h2 className="text-xl font-semibold">{licitacao.comprador}</h2>
-      <div className="mb-4 space-y-2 mt-4">
-        <p>
-          <strong>Data de Abertura:</strong> {licitacao.data_abertura_propostas}{" "}
-          às {licitacao.hora_abertura_propostas}
-        </p>
-        <p>
-          <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} -{" "}
-          {licitacao.municipios?.uf_municipio || "Indisponível"}
-        </p>
-        <p>
-          <strong>Valor Total Estimado:</strong> {valorTotalEstimado(licitacao)}
-        </p>
+  const renderLicitacao = useCallback(
+    (licitacao: licitacaoIndividualType) => (
+      <div
+        key={licitacao.id_licitacao}
+        className="mt-6 p-4 border rounded shadow"
+      >
+        <h2 className="text-xl font-semibold">{licitacao.comprador}</h2>
+        <div className="mb-4 space-y-2 mt-4">
+          <p>
+            <strong>Data de Abertura:</strong>{" "}
+            {licitacao.data_abertura_propostas} às{" "}
+            {licitacao.hora_abertura_propostas}
+          </p>
+          <p>
+            <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} -{" "}
+            {licitacao.municipios?.uf_municipio || "Indisponível"}
+          </p>
+          <p>
+            <strong>Valor Total Estimado:</strong>{" "}
+            {valorTotalEstimado(licitacao)}
+          </p>
 
-        {licitacao.grupos_materiais.map((grupo) =>
-          grupo.classes_materiais.map((classe) => (
-            <p key={classe.id_classe_material}>{classe.nome_classe_material}</p>
-          ))
-        )}
+          {licitacao.grupos_materiais.map((grupo) =>
+            grupo.classes_materiais.map((classe) => (
+              <p key={classe.id_classe_material}>
+                {classe.nome_classe_material}
+              </p>
+            ))
+          )}
 
-        <a
-          href={licitacao.url}
-          className="text-blue-600 underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Acessar licitação
-        </a>
+          <a
+            href={licitacao.url}
+            className="text-blue-600 underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Acessar licitação
+          </a>
+        </div>
+
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Itens:</h3>
+          <ul className="list-inside space-y-2 text-sm">
+            {licitacao.itens.map((item) => (
+              <li key={item.id_item} className="border rounded p-2">
+                <details>
+                  <summary className="cursor-pointer">
+                    <strong>Item:</strong> {item.ds_item}
+                  </summary>
+                  <div className="mt-2">
+                    <p>
+                      <strong>Quantidade:</strong> {item.qt_itens}
+                    </p>
+                    <p>
+                      <strong>Valor Unitário Estimado:</strong> R${" "}
+                      {item.vl_unitario_estimado}
+                    </p>
+                  </div>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-
-      <div className="mt-4">
-        <h3 className="text-lg font-bold mb-2">Itens:</h3>
-        <ul className="list-inside space-y-2 text-sm">
-          {licitacao.itens.map((item) => (
-            <li key={item.id_item} className="border rounded p-2">
-              <details>
-                <summary className="cursor-pointer">
-                  <strong>Item:</strong> {item.ds_item}
-                </summary>
-                <div className="mt-2">
-                  <p>
-                    <strong>Quantidade:</strong> {item.qt_itens}
-                  </p>
-                  <p>
-                    <strong>Valor Unitário Estimado:</strong> R${" "}
-                    {item.vl_unitario_estimado}
-                  </p>
-                </div>
-              </details>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    ),
+    [valorTotalEstimado]
   );
 
   return (
@@ -132,22 +189,36 @@ export default function Page() {
                 <BreadcrumbList>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link href="#">Configurações</Link>
+                      <Link href="/licitacoes">Licitações</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Conta</BreadcrumbPage>
+                    <BreadcrumbPage>Detalhes</BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
+
             <div className="container py-6 px-10">
-              <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
-              {licitacoes.length > 0 ? (
+              <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
+                <SaveLicitacao
+                  licitacao_id={Number(idParam)}
+                  folders={folders}
+                />
+              </div>
+
+              {isLoading ? (
+                <SkeletonTable />
+              ) : licitacoes.length > 0 ? (
                 licitacoes.map(renderLicitacao)
+              ) : error ? (
+                <p className="mt-4 text-red-500">{error}</p>
               ) : (
-                <p className="mt-4 text-gray-600">Erro ao buscar licitação.</p>
+                <p className="mt-4 text-gray-600">
+                  Nenhuma licitação encontrada.
+                </p>
               )}
             </div>
           </div>
