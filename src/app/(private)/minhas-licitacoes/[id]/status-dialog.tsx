@@ -11,6 +11,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PlusCircle } from "lucide-react";
@@ -79,6 +91,7 @@ export function StatusDialog({
     if (isOpen && user_id) {
       fetchStatuses();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, user_id]);
 
   async function fetchStatuses() {
@@ -88,7 +101,12 @@ export function StatusDialog({
       return;
     }
     setStatusList(
-      data.sort((a, b) => a.nome_status.localeCompare(b.nome_status))
+      data
+        .map((item) => ({
+          ...item,
+          user_id: user_id!, // Ensure user_id is added to each item
+        }))
+        .sort((a, b) => a.nome_status.localeCompare(b.nome_status))
     );
   }
 
@@ -141,11 +159,6 @@ export function StatusDialog({
   }
 
   async function handleDeleteStatus(id: string) {
-    const confirm = window.confirm(
-      "Tem certeza que deseja excluir este status?"
-    );
-    if (!confirm) return;
-
     setLoading(true);
     const { error } = await deleteStatusLicitacao(id);
     setLoading(false);
@@ -157,6 +170,7 @@ export function StatusDialog({
 
     toast.success("Status excluído com sucesso!");
     await fetchStatuses();
+    onUpdate?.();
   }
 
   async function handleEditStatus(id: string) {
@@ -183,6 +197,7 @@ export function StatusDialog({
     setEditingStatusId(null);
     setEditedName("");
     await fetchStatuses();
+    onUpdate?.();
   }
 
   return (
@@ -249,14 +264,34 @@ export function StatusDialog({
                       {st.nome_status}
                     </button>
                   )}
-
-                  <button
-                    onClick={() => handleDeleteStatus(st.id_status)}
-                    className="ml-1 text-white text-xs hover:text-red-300"
-                    title="Excluir status"
-                  >
-                    ×
-                  </button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button
+                        className="ml-1 text-white text-xs hover:text-red-300"
+                        title="Excluir status"
+                      >
+                        ×
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Excluir Status</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Tem certeza que deseja excluir este status? Esta ação
+                          não pode ser desfeita.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                          className="bg-red-500 text-white hover:bg-red-600"
+                          onClick={() => handleDeleteStatus(st.id_status)}
+                        >
+                          Excluir
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               ))}
             </div>

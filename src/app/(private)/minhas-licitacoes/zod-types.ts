@@ -14,7 +14,7 @@ export const statusLicitacoesSchema = z.object({
     user_id: z.string().uuid(),
     nome_status: z.string().min(1, { message: 'Nome do status é obrigatório' }),
     cor: z.string().optional(),
-    created_at: z.string()
+    created_at: z.string().optional(),
 });
 
 export const folderLicitacoesSchema = z.object({
