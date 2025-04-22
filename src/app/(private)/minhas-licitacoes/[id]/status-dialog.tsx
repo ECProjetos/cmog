@@ -89,6 +89,7 @@ export function StatusDialog({
     if (isOpen && user_id) {
       fetchStatuses();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, user_id]);
 
   async function fetchStatuses() {
