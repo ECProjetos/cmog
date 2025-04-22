@@ -21,6 +21,8 @@ import {
   createNewStatus,
   getStatusLicitacoesByUserId,
   addSatatusToLicitacao,
+  deleteStatusLicitacao,
+  updateStatusLicitacao,
 } from "./actions";
 
 import { StatusLicitacoes } from "@/app/(private)/minhas-licitacoes/zod-types";
@@ -35,7 +37,6 @@ const colors = [
   "#8B5CF6",
 ];
 
-// Props do componente
 type StatusDialogProps = {
   folderLicitacao: string;
   licitacao_id: number;
@@ -53,21 +54,24 @@ export function StatusDialog({
   onUpdate,
   user_id,
 }: StatusDialogProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [statusName, setStatusName] = useState<string>("");
-  const [color, setColor] = useState<string>(colors[0]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [statusName, setStatusName] = useState("");
+  const [color, setColor] = useState(colors[0]);
   const [statusList, setStatusList] = useState<StatusLicitacoes[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(
     status?.id_status || null
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+  const [editedName, setEditedName] = useState("");
 
-  // Resetar dados ao fechar
   useEffect(() => {
     if (!isOpen) {
       setStatusName("");
       setColor(colors[0]);
       setSelectedStatus(status?.id_status || null);
+      setEditingStatusId(null);
+      setEditedName("");
     }
   }, [isOpen, status]);
 
@@ -136,6 +140,51 @@ export function StatusDialog({
     setIsOpen(false);
   }
 
+  async function handleDeleteStatus(id: string) {
+    const confirm = window.confirm(
+      "Tem certeza que deseja excluir este status?"
+    );
+    if (!confirm) return;
+
+    setLoading(true);
+    const { error } = await deleteStatusLicitacao(id);
+    setLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Status excluído com sucesso!");
+    await fetchStatuses();
+  }
+
+  async function handleEditStatus(id: string) {
+    const trimmed = editedName.trim();
+    if (!trimmed) {
+      toast.error("Nome não pode ser vazio.");
+      return;
+    }
+
+    if (trimmed.length > 26) {
+      toast.error("Máximo de 26 caracteres.");
+      return;
+    }
+
+    const color = statusList.find((s) => s.id_status === id)?.cor || colors[0];
+
+    const { error } = await updateStatusLicitacao(id, trimmed, color);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Status atualizado com sucesso!");
+    setEditingStatusId(null);
+    setEditedName("");
+    await fetchStatuses();
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -165,18 +214,50 @@ export function StatusDialog({
             <Label>Status existente</Label>
             <div className="flex flex-wrap gap-2">
               {statusList.map((st) => (
-                <button
+                <div
                   key={st.id_status}
-                  onClick={() => setSelectedStatus(st.id_status)}
-                  className={`px-3 py-1 rounded-full text-sm text-white transition ${
+                  className={`flex items-center rounded-full text-sm text-white px-2 py-1 ${
                     selectedStatus === st.id_status
                       ? "ring-2 ring-white ring-offset-2"
-                      : "opacity-80 hover:opacity-100"
+                      : "opacity-90 hover:opacity-100"
                   }`}
                   style={{ backgroundColor: st.cor }}
                 >
-                  {st.nome_status}
-                </button>
+                  {editingStatusId === st.id_status ? (
+                    <input
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      onBlur={() => handleEditStatus(st.id_status)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleEditStatus(st.id_status);
+                        }
+                      }}
+                      maxLength={26}
+                      className="bg-transparent border-none text-white text-sm focus:outline-none"
+                      autoFocus
+                    />
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSelectedStatus(st.id_status);
+                        setEditingStatusId(st.id_status);
+                        setEditedName(st.nome_status);
+                      }}
+                      className="text-left pr-1"
+                    >
+                      {st.nome_status}
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => handleDeleteStatus(st.id_status)}
+                    className="ml-1 text-white text-xs hover:text-red-300"
+                    title="Excluir status"
+                  >
+                    ×
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -190,6 +271,9 @@ export function StatusDialog({
               onChange={(e) => setStatusName(e.target.value)}
               maxLength={26}
             />
+            <div className="text-right text-xs text-muted-foreground">
+              {statusName.length} / 26
+            </div>
             <div className="flex gap-2 mt-2">
               {colors.map((c) => (
                 <button
