@@ -182,7 +182,7 @@ export async function getStatusLicitacoesByUserId(
             .select(`
                         id_status,
                         nome_status,
-                        cor,
+                        cor
                     `)
             .eq("user_id", user_id);
 

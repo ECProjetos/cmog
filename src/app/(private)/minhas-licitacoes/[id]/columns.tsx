@@ -197,6 +197,8 @@ export const FolderDetailColumns = ({
     cell: ({ row }) => {
       const { id_folders_licitacoes, id_licitacao, id_folder } = row.original;
       const status = row.original.status_licitacoes;
+      console.log("status", status);
+      
 
       return (
         <StatusDialog
