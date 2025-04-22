@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,7 +37,6 @@ import {
 
 import { StatusLicitacoes } from "@/app/(private)/minhas-licitacoes/zod-types";
 
-// Cores disponíveis
 const colors = [
   "#EF4444",
   "#F59E0B",
@@ -76,6 +73,7 @@ export function StatusDialog({
   const [loading, setLoading] = useState(false);
   const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
   const [editedName, setEditedName] = useState("");
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -91,7 +89,6 @@ export function StatusDialog({
     if (isOpen && user_id) {
       fetchStatuses();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, user_id]);
 
   async function fetchStatuses() {
@@ -102,10 +99,7 @@ export function StatusDialog({
     }
     setStatusList(
       data
-        .map((item) => ({
-          ...item,
-          user_id: user_id!, // Ensure user_id is added to each item
-        }))
+        .map((item) => ({ ...item, user_id: user_id! }))
         .sort((a, b) => a.nome_status.localeCompare(b.nome_status))
     );
   }
@@ -186,8 +180,8 @@ export function StatusDialog({
     }
 
     const color = statusList.find((s) => s.id_status === id)?.cor || colors[0];
-
     const { error } = await updateStatusLicitacao(id, trimmed, color);
+
     if (error) {
       toast.error(error.message);
       return;
@@ -212,7 +206,7 @@ export function StatusDialog({
           </span>
         ) : (
           <Button variant="ghost" size="sm" className="w-full justify-start">
-            <PlusCircle className="h-4 w-4" />
+            <PlusCircle className="h-4 w-4 mr-1" />
             Status
           </Button>
         )}
@@ -224,19 +218,66 @@ export function StatusDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Lista de Status existentes */}
-          <div className="space-y-2">
-            <Label>Status existente</Label>
-            <div className="flex flex-wrap gap-2">
+          <div className="flex justify-between items-center">
+            <Label className="text-base font-semibold">
+              {addModalOpen ? "Criar novo status" : "Status existentes"}
+            </Label>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setAddModalOpen(!addModalOpen)}
+            >
+              {addModalOpen ? "← Voltar" : "+ Novo"}
+            </Button>
+          </div>
+
+          {addModalOpen ? (
+            <div className="space-y-2">
+              <Input
+                placeholder="Nome do status"
+                value={statusName}
+                onChange={(e) => setStatusName(e.target.value)}
+                maxLength={26}
+              />
+              <div className="text-right text-xs text-muted-foreground">
+                {statusName.length} / 26
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {colors.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setColor(c)}
+                    className={`w-6 h-6 rounded-full border-2 transition ${
+                      color === c
+                        ? "border-black scale-110"
+                        : "border-transparent"
+                    }`}
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+                <Button
+                  onClick={handleCreateStatus}
+                  size="sm"
+                  disabled={loading}
+                >
+                  {loading ? "Criando..." : "Criar"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2 max-h-[240px] overflow-y-auto">
               {statusList.map((st) => (
                 <div
                   key={st.id_status}
-                  className={`flex items-center rounded-full text-sm text-white px-2 py-1 ${
+                  className={`flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium transition ${
                     selectedStatus === st.id_status
-                      ? "ring-2 ring-white ring-offset-2"
-                      : "opacity-90 hover:opacity-100"
+                      ? "bg-opacity-90"
+                      : "hover:opacity-90"
                   }`}
-                  style={{ backgroundColor: st.cor }}
+                  style={{
+                    backgroundColor: st.cor,
+                    color: "white",
+                  }}
                 >
                   {editingStatusId === st.id_status ? (
                     <input
@@ -244,12 +285,13 @@ export function StatusDialog({
                       onChange={(e) => setEditedName(e.target.value)}
                       onBlur={() => handleEditStatus(st.id_status)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleEditStatus(st.id_status);
-                        }
+                        if (e.key === "Enter") handleEditStatus(st.id_status);
                       }}
                       maxLength={26}
-                      className="bg-transparent border-none text-white text-sm focus:outline-none"
+                      style={{
+                        width: `${Math.max(editedName.length + 1, 4)}ch`,
+                      }}
+                      className="bg-transparent border-b border-white text-white text-sm px-1 py-0.5 focus:outline-none rounded-sm"
                       autoFocus
                     />
                   ) : (
@@ -259,15 +301,17 @@ export function StatusDialog({
                         setEditingStatusId(st.id_status);
                         setEditedName(st.nome_status);
                       }}
-                      className="text-left pr-1"
+                      className="truncate text-left"
+                      title={st.nome_status}
                     >
                       {st.nome_status}
                     </button>
                   )}
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className="ml-1 text-white text-xs hover:text-red-300"
+                        className="text-white/80 hover:text-red-200 text-xs font-bold"
                         title="Excluir status"
                       >
                         ×
@@ -295,36 +339,7 @@ export function StatusDialog({
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Criar novo status */}
-          <div className="space-y-2">
-            <Label>Criar novo status</Label>
-            <Input
-              placeholder="Nome do status"
-              value={statusName}
-              onChange={(e) => setStatusName(e.target.value)}
-              maxLength={26}
-            />
-            <div className="text-right text-xs text-muted-foreground">
-              {statusName.length} / 26
-            </div>
-            <div className="flex gap-2 mt-2">
-              {colors.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setColor(c)}
-                  className={`w-6 h-6 rounded-full border-2 ${
-                    color === c ? "border-black" : "border-transparent"
-                  }`}
-                  style={{ backgroundColor: c }}
-                />
-              ))}
-              <Button onClick={handleCreateStatus} size="sm" disabled={loading}>
-                {loading ? "Criando..." : "Criar"}
-              </Button>
-            </div>
-          </div>
+          )}
         </div>
 
         <DialogFooter>
