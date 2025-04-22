@@ -22,8 +22,10 @@ import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import Link from "next/link";
 
 import { SkeletonTable } from "@/components/skeleton-table";
+import { useUserStore } from "@/stores/userStore";
 
 export default function DetalhesFolderPage() {
+  const user_id = useUserStore((state) => state.user?.id);
   const params = useParams();
   const folderId = params.id as string;
   const [folderLicitacoes, setFolderLicitacoes] = useState<FolderLicitacoes[]>(
@@ -34,6 +36,10 @@ export default function DetalhesFolderPage() {
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
+    if (!user_id) {
+      setLoadingTable(false);
+      return;
+    }
     const fetchData = async () => {
       setLoadingTable(true);
       const result = await getFolderLicitacoesByFolderId(folderId);
@@ -48,7 +54,7 @@ export default function DetalhesFolderPage() {
     };
 
     fetchData();
-  }, [folderId, refresh]);
+  }, [folderId, refresh, user_id]);
 
   return (
     <SidebarProvider>
@@ -86,6 +92,7 @@ export default function DetalhesFolderPage() {
                   folderLicitacoes={folderLicitacoes}
                   onUpdate={() => setRefresh((r) => r + 1)}
                   loading={loadingTable}
+                  user_id={user_id}
                 />
               </>
             )}

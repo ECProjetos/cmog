@@ -2,13 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import {
-  Search,
-  ExternalLink,
-  MoreHorizontal,
-  Trash,
-  PlusCircle,
-} from "lucide-react";
+import { Search, ExternalLink, MoreHorizontal, Trash } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -43,6 +37,7 @@ import { deletLicitacaoFromFolder } from "./actions";
 import { useState } from "react";
 import Link from "next/link";
 import { ObservacaoDialog } from "./observacao-dialog";
+import { StatusDialog } from "./status-dialog";
 
 function valorTotalEstimado(licitacao: LicitacaoType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
@@ -81,10 +76,12 @@ function formatDescricao(licitacao: LicitacaoType): string {
 
 type FolderDetailColumnsProps = {
   onUpdate: () => void;
+  user_id?: string;
 };
 
 export const FolderDetailColumns = ({
   onUpdate,
+  user_id,
 }: FolderDetailColumnsProps): ColumnDef<FolderLicitacoes>[] => [
   {
     id: "comprador",
@@ -198,24 +195,18 @@ export const FolderDetailColumns = ({
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
+      const { id_folders_licitacoes, id_licitacao, id_folder } = row.original;
       const status = row.original.status_licitacoes;
 
-      if (!status)
-        return (
-          <Button variant="ghost" size="sm" className="w-full">
-            <PlusCircle className="h-4 w-4" />
-            Status
-          </Button>
-        );
-
       return (
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ backgroundColor: status.cor || "#6B7280" }} // fallback: gray-500
-          />
-          <span>{status.nome_status}</span>
-        </div>
+        <StatusDialog
+          status={status}
+          folderLicitacao={String(id_folders_licitacoes)}
+          licitacao_id={Number(id_licitacao)}
+          folder_id={String(id_folder)}
+          onUpdate={onUpdate}
+          user_id={user_id}
+        />
       );
     },
   },

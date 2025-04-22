@@ -10,12 +10,14 @@ interface FolderLicitacoesProps {
   folderLicitacoes: FolderLicitacoes[];
   onUpdate: () => void;
   loading: boolean;
+  user_id?: string;
 }
 
 export default function DetalhesFolder({
   folderLicitacoes,
   onUpdate,
   loading,
+  user_id,
 }: FolderLicitacoesProps) {
   return (
     <div className="w-full">
@@ -31,7 +33,7 @@ export default function DetalhesFolder({
         <SkeletonTable />
       ) : (
         <FolderDetailTable
-          columns={FolderDetailColumns({ onUpdate })}
+          columns={FolderDetailColumns({ onUpdate, user_id })}
           data={folderLicitacoes}
         />
       )}

@@ -134,3 +134,187 @@ export async function addObservacaoToLicitacao(
         return { error: { message: "Erro interno do servidor" } };
     }
 }
+
+export async function createNewStatus(
+    user_id: string,
+    nome_status: string,
+    cor: string,
+) {
+    try {
+        if (!user_id || !nome_status || !cor) {
+            return { error: { message: "ID do usuário, nome do status ou cor não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("status_licitacoes")
+            .insert([
+                {
+                    user_id,
+                    nome_status,
+                    cor,
+                },
+            ]);
+
+        if (error) {
+            console.error("Erro ao adicionar status à licitação:", error);
+            return { error: { message: "Erro ao adicionar status à licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao adicionar status:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
+export async function getStatusLicitacoesByUserId(
+    user_id: string
+) {
+    try {
+        if (!user_id) {
+            return { error: { message: "ID do usuário não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { data: statusLicitacoesData, error } = await supabase
+            .from("status_licitacoes")
+            .select(`
+                        id_status,
+                        nome_status,
+                        cor,
+                    `)
+            .eq("user_id", user_id);
+
+        if (error || !statusLicitacoesData) {
+            console.error("Erro ao buscar status de licitações:", error);
+            return { data: [], error: { message: "Erro ao buscar informações" } };
+        }
+
+        if (statusLicitacoesData.length === 0) {
+            return { data: [], error: { message: "Sem status salvos" } };
+        }
+
+        return { data: statusLicitacoesData };
+    } catch (err) {
+        console.error("Erro inesperado:", err);
+        return { data: [], error: { message: "Erro inesperado" } };
+    }
+}
+
+export async function updateStatusLicitacao(
+    id_status: string,
+    nome_status: string,
+    cor: string,
+) {
+    try {
+        if (!id_status || !nome_status || !cor) {
+            return { error: { message: "ID do status, nome do status ou cor não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("status_licitacoes")
+            .update({ nome_status, cor })
+            .eq("id_status", id_status)
+
+        if (error) {
+            console.error("Erro ao atualizar status da licitação:", error);
+            return { error: { message: "Erro ao atualizar status da licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao atualizar status:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
+export async function deleteStatusLicitacao(
+    id_status: string,
+) {
+    try {
+        if (!id_status) {
+            return { error: { message: "ID do status não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("status_licitacoes")
+            .delete()
+            .eq("id_status", id_status)
+
+        if (error) {
+            console.error("Erro ao deletar status da licitação:", error);
+            return { error: { message: "Erro ao deletar status da licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao deletar status:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
+export async function addSatatusToLicitacao(
+    id_folders_licitacoes: string,
+    id_folder: string,
+    id_licitacao: number,
+    id_status: string,
+) {
+    try {
+        if (!id_folders_licitacoes || !id_folder || !id_licitacao || !id_status) {
+            return { error: { message: "ID da pasta, da licitação ou do status não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders_licitacoes")
+            .update({ id_status })
+            .eq("id_folders_licitacoes", id_folders_licitacoes)
+            .eq("id_folder", id_folder)
+            .eq("id_licitacao", id_licitacao)
+
+        if (error) {
+            console.error("Erro ao adicionar status à licitação:", error);
+            return { error: { message: "Erro ao adicionar status à licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao adicionar status:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
+export async function removeStatusFromLicitacao(
+    id_folders_licitacoes: string,
+    id_folder: string,
+    id_licitacao: number,
+    id_status: string,
+) {
+    try {
+        if (!id_folders_licitacoes || !id_folder || !id_licitacao || !id_status) {
+            return { error: { message: "ID da pasta, da licitação ou do status não fornecido" } };
+        }
+        const supabase = await createClient();
+
+        const { error } = await supabase
+            .from("folders_licitacoes")
+            .update({ id_status: null })
+            .eq("id_folders_licitacoes", id_folders_licitacoes)
+            .eq("id_folder", id_folder)
+            .eq("id_licitacao", id_licitacao)
+
+        if (error) {
+            console.error("Erro ao remover status da licitação:", error);
+            return { error: { message: "Erro ao remover status da licitação" } };
+        }
+
+        return { success: true };
+    } catch (err) {
+        console.error("Erro inesperado ao remover status:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
+
