@@ -5,6 +5,7 @@ import NavBar from "@/components/nav-bar";
 import { useEffect, useState } from "react";
 
 import { getUserSession } from "./(auth)/actions";
+import Hero from "@/components/lp/hero";
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -36,7 +37,7 @@ export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <NavBar isLoggedIn={isLoggedIn} />
-      <h1 className="text-3xl font-bold">Welcome to Next.js!</h1>
+      <Hero />
     </main>
   );
 }
