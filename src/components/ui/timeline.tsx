@@ -41,7 +41,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         </p>
       </div>
 
-      <div ref={ref} className="relative max-w-6xl mx-auto">
+      <div
+        ref={ref}
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         {data.map((item, index) => (
           <div
             key={index}
@@ -69,7 +72,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
         {/* Vertical progress bar */}
         <div
           style={{ height }}
-          className="absolute left-[21px] md:left-[23px] top-0 w-[2px] bg-neutral-200 dark:bg-neutral-700"
+          className="absolute left-0 md:left-[23px] top-0 w-[2px] bg-neutral-200 dark:bg-neutral-700"
         >
           <motion.div
             style={{
