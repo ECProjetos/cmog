@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getUserSession } from "./(auth)/actions";
 import Hero from "@/components/lp/hero";
 import HowWorks from "@/components/lp/how-works";
+import { WhyUseIt } from "@/components/lp/Why-use-it";
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -40,6 +41,7 @@ export default function HomePage() {
       <NavBar isLoggedIn={isLoggedIn} />
       <Hero />
       <HowWorks />
+      <WhyUseIt />
     </>
   );
 }
