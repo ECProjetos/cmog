@@ -1,33 +1,54 @@
 "use client";
 
 import Link from "next/link";
+import { AuroraBackground } from "../ui/aurora-background";
+import { motion } from "motion/react";
+import { buttonVariants } from "../ui/button";
 
 export default function Hero() {
   return (
-    <section className="pt-28 md:pt-36 pb-20 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-black">
-      <div className="max-w-4xl mx-auto px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+    <AuroraBackground>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.3,
+          duration: 0.8,
+          ease: "easeInOut",
+        }}
+        className="relative flex flex-col items-center justify-center px-6 md:px-12 text-center gap-6 max-w-4xl mx-auto py-24"
+      >
+        <h1 className="text-3xl md:text-6xl font-semibold tracking-tight dark:text-white leading-tight">
           Encontre e Vença Licitações Públicas com Facilidade
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-gray-700 dark:text-gray-300">
-          Uma plataforma inteligente que ajuda você a localizar, organizar e
-          ganhar licitações públicas no Brasil.
+
+        <p className="text-base md:text-2xl font-light text-neutral-600 dark:text-neutral-300 max-w-2xl">
+          Plataforma inteligente que localiza, organiza e ajuda você a ganhar
+          mais licitações públicas.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
           <Link
             href="/register"
-            className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold text-sm hover:bg-blue-700 transition"
+            className={buttonVariants({
+              variant: "default",
+              size: "lg",
+            })}
           >
             Criar Conta Grátis
           </Link>
           <Link
             href="#como-funciona"
-            className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-semibold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+            className={buttonVariants({
+              variant: "outline",
+              className:
+                "text-sm px-5 py-2.5 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800",
+            })}
           >
             Ver como funciona
           </Link>
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </AuroraBackground>
   );
 }
