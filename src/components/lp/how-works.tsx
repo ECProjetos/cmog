@@ -6,8 +6,8 @@ export default function HowWorks() {
     {
       title: "Crie sua conta",
       content: (
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-          <div className="flex-1 space-y-4 text-xs md:text-sm text-neutral-800 dark:text-neutral-200">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex-1 space-y-4 text-sm text-neutral-800 dark:text-neutral-200">
             <p>
               Cadastre-se rapidamente usando seu e-mail ou acesso social. O
               onboarding é direto: você informa o que procura e nós cuidamos do
@@ -23,11 +23,11 @@ export default function HowWorks() {
               oportunidades com potencial real de vitória.
             </p>
           </div>
-          <div className="flex-1">
+          <div className="w-full md:w-1/2 max-w-sm md:max-w-full">
             <img
               src="/saas.gif"
               alt="saas animation"
-              className="w-full h-auto max-h-72 rounded-lg object-cover shadow-md"
+              className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />
           </div>
         </div>
@@ -36,8 +36,8 @@ export default function HowWorks() {
     {
       title: "Encontre licitações certeiras",
       content: (
-        <div className="flex flex-col md:flex-row-reverse items-start md:items-center gap-6">
-          <div className="flex-1 space-y-4 text-xs md:text-sm text-neutral-800 dark:text-neutral-200">
+        <div className="flex flex-col md:flex-row-reverse items-center gap-6">
+          <div className="flex-1 space-y-4 text-sm text-neutral-800 dark:text-neutral-200">
             <p>
               Use filtros avançados para localizar licitações públicas por
               órgão, região, tipo de objeto, datas, e palavras-chave. Cada
@@ -52,11 +52,11 @@ export default function HowWorks() {
               recomendações a cada acesso.
             </p>
           </div>
-          <div className="flex-1">
+          <div className="w-full md:w-1/2 max-w-sm md:max-w-full">
             <img
               src="/saas.gif"
               alt="saas animation"
-              className="w-full h-auto max-h-72 rounded-lg object-cover shadow-md"
+              className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />
           </div>
         </div>
@@ -65,8 +65,8 @@ export default function HowWorks() {
     {
       title: "Gerencie e vença",
       content: (
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-          <div className="flex-1 space-y-4 text-xs md:text-sm text-neutral-800 dark:text-neutral-200">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex-1 space-y-4 text-sm text-neutral-800 dark:text-neutral-200">
             <p>
               Organize licitações em pastas inteligentes, registre observações,
               acompanhe prazos e status de propostas — tudo em um painel claro e
@@ -81,17 +81,18 @@ export default function HowWorks() {
               estratégia para ganhar.
             </p>
           </div>
-          <div className="flex-1">
+          <div className="w-full md:w-1/2 max-w-sm md:max-w-full">
             <img
               src="/saas.gif"
               alt="saas animation"
-              className="w-full h-auto max-h-72 rounded-lg object-cover shadow-md"
+              className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />
           </div>
         </div>
       ),
     },
   ];
+
   return (
     <div className="relative w-full overflow-clip">
       <Timeline data={data} />
