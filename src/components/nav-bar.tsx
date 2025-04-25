@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import * as React from "react";
 
@@ -17,11 +18,13 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "@/components/modle-toggle";
 import { LayoutDashboard, LogIn } from "lucide-react";
 import { ListItem } from "./ui/list-item";
-
+import { motion } from "motion/react";
+import { LinkPreview } from "@/components/ui/link-preview";
 type NavBarProps = {
   isLoggedIn: boolean;
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Busca Inteligente e Rápida",
@@ -207,12 +210,14 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="#pricing" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Preços
-                </NavigationMenuLink>
-              </Link>
+              <LinkPreview
+                url={`${BASE_URL}/#pricing`}
+                className={navigationMenuTriggerStyle()}
+              >
+                Preços
+              </LinkPreview>
             </NavigationMenuItem>
+            
           </NavigationMenuList>
         </NavigationMenu>
 
