@@ -1,21 +1,70 @@
 "use client";
+import * as React from "react";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "@/components/modle-toggle";
 import { LayoutDashboard, LogIn } from "lucide-react";
+import { ListItem } from "./ui/list-item";
 
 type NavBarProps = {
   isLoggedIn: boolean;
 };
 
+const components: { title: string; href: string; description: string }[] = [
+  {
+    title: "Busca Inteligente e Rápida",
+    href: "/busca-rapida",
+    description:
+      "Encontre licitações com filtros personalizados por área, localização, órgão e mais.",
+  },
+  {
+    title: "Organização Estratégica",
+    href: "/organizacao-estrategica",
+    description:
+      "Salve licitações em pastas, adicione observações e acompanhe o status.",
+  },
+  {
+    title: "Notificações Relevantes",
+    href: "/alertas",
+    description:
+      "Receba alertas das licitações que realmente importam para o seu negócio.",
+  },
+  {
+    title: "Foco no Sucesso",
+    href: "/monitoramento",
+    description:
+      "Acompanhe todo o ciclo da licitação, da descoberta à entrega da proposta.",
+  },
+  {
+    title: "Feito para Pequenas Empresas",
+    href: "/empresas",
+    description: "Interface simples, poderosa e pensada para produtividade.",
+  },
+  {
+    title: "Painel com Indicadores",
+    href: "/indicadores",
+    description:
+      "Visualize métricas e indicadores para decisões mais estratégicas.",
+  },
+];
+
 export default function NavBar({ isLoggedIn }: NavBarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm dark:bg-gray-950 transition-all">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm dark:bg-zinc-950 transition-all">
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:justify-between md:items-center">
         {/* MOBILE HEADER */}
         <div className="flex w-full justify-between items-center md:hidden">
@@ -88,15 +137,84 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
             className="rounded-full"
           />
         </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 dark:text-gray-200">
-          <Link href="#como-funciona">Como Funciona</Link>
-          <Link href="#funcionalidades">Funcionalidades</Link>
+        {/*
           <Link href="#planos">Planos</Link>
           <Link href="#sobre">Sobre Nós</Link>
           <Link href="#ajuda">Ajuda</Link>
-        </nav>
+        </nav> */}
+
+        {/* Desktop Navegation Menu */}
+        <NavigationMenu className="hidden md:flex w-full justify-center">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Como Funciona</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                  <li className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <a
+                        href="#como-funciona"
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                      >
+                        <Image
+                          src="/logo.png"
+                          alt="Logo"
+                          width={80}
+                          height={40}
+                          className="rounded-full"
+                        />
+                        <p className="text-sm leading-tight text-muted-foreground">
+                          Transforme oportunidades em contratos reais. Com
+                          inteligência, organização e foco
+                        </p>
+                      </a>
+                    </NavigationMenuLink>
+                  </li>
+                  <ListItem href="/register" title="Crie Sua Conta">
+                    Crie sua conta gratuitamente e comece a encontrar licitações
+                    agora
+                  </ListItem>
+                  <ListItem href="/busca-rapida" title="Buscas Inteligentes">
+                    Encontre licitações relevantes para o seu negócio com nossa
+                    tecnologia de busca avançada.
+                  </ListItem>
+                  <ListItem
+                    href="/indicadores"
+                    title="Indicadores de Desempenho"
+                  >
+                    Acompanhe o desempenho de suas propostas e melhore sua
+                    estratégia de participação em licitações.{" "}
+                    <span className="text-xs text-gray-500">(em breve)</span>
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Soluções</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  {components.map((component) => (
+                    <ListItem
+                      key={component.title}
+                      title={component.title}
+                      href={component.href}
+                    >
+                      {component.description}
+                    </ListItem>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="#pricing" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Preços
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
@@ -122,7 +240,6 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 href="/register"
                 className={buttonVariants({
                   variant: "default",
-                  
                 })}
               >
                 Criar Conta

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import { Timeline } from "@/components/ui/timeline";
@@ -95,7 +96,10 @@ export default function HowWorks() {
   ];
 
   return (
-    <div className="relative w-full overflow-clip px-4 sm:px-6 md:px-0">
+    <div
+      id="como-funciona"
+      className="relative w-full overflow-clip px-4 sm:px-6 md:px-0"
+    >
       <Timeline data={data} />
     </div>
   );

@@ -7,10 +7,7 @@ const pricingPlans = [
   {
     title: "Básico",
     price: "R$19,99/mês",
-    features: [
-      "1 usuário",
-      "Suporte por e-mail",
-    ],
+    features: ["1 usuário", "Suporte por e-mail"],
     highlight: false,
   },
   {
@@ -37,7 +34,7 @@ const pricingPlans = [
 
 export default function PricingSection() {
   return (
-    <section className="py-20 px-4 bg-muted">
+    <section id="pricing" className="py-20 px-4 bg-muted">
       <div className="max-w-6xl mx-auto text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">Planos e Preços</h2>
         <p className="text-muted-foreground text-lg">
