@@ -210,14 +210,20 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
+              <NavigationMenuLink>
+                <a href="#planos" className={navigationMenuTriggerStyle()}>
+                  Planos
+                </a>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <LinkPreview
-                url={`${BASE_URL}/#pricing`}
+                url={`${BASE_URL}/sobre`}
                 className={navigationMenuTriggerStyle()}
               >
                 Preços
               </LinkPreview>
             </NavigationMenuItem>
-            
           </NavigationMenuList>
         </NavigationMenu>
 
