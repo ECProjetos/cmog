@@ -35,7 +35,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
             <ModeToggle />
             {isLoggedIn ? (
               <Link
-                href="/dashboard"
+                href="/busca"
                 className={buttonVariants({
                   variant: "outline",
                   className: "px-4 py-2 text-sm",
@@ -122,8 +122,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 href="/register"
                 className={buttonVariants({
                   variant: "default",
-                  className:
-                    "bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition",
+                  
                 })}
               >
                 Criar Conta

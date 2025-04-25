@@ -60,12 +60,14 @@ export const HoverEffect = ({
               {item.icon && (
                 <item.icon className="w-5 h-5 text-zinc-500 dark:text-zinc-300" />
               )}
-              <span>{item.title}</span>
-              {item.commingSoon && (
-                <span className="text-xs text-purple-500 ml-auto">
-                  (Em breve)
-                </span>
-              )}
+              <span>
+                {item.title}
+                {item.commingSoon && (
+                  <span className="text-xs text-purple-500 ml-2">
+                    (Em breve)
+                  </span>
+                )}
+              </span>
             </CardTitle>
             <CardDescription>{item.description}</CardDescription>
           </Card>
@@ -107,7 +109,7 @@ export const CardTitle = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="flex items-start justify-between gap-2 flex-wrap w-full">
+    <div className="flex items-center gap-2">
       <h4
         className={cn(
           "text-zinc-800 dark:text-zinc-100 font-semibold text-base flex items-center gap-2 flex-wrap",
