@@ -210,10 +210,11 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink>
-                <a href="#planos" className={navigationMenuTriggerStyle()}>
-                  Planos
-                </a>
+              <NavigationMenuLink
+                href="#planos"
+                className={navigationMenuTriggerStyle()}
+              >
+                Planos
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
@@ -221,8 +222,15 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 url={`${BASE_URL}/sobre`}
                 className={navigationMenuTriggerStyle()}
               >
-                Preços
+                Sobre nós
               </LinkPreview>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link href="/contato" className={navigationMenuTriggerStyle()}>
+                  Contato
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
