@@ -10,6 +10,7 @@ import HowWorks from "@/components/lp/how-works";
 import { WhyUseIt } from "@/components/lp/Why-use-it";
 import Demo from "@/components/lp/demo";
 import PricingSection from "@/components/lp/pricing";
+import Footer from "@/components/footer";
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export default function HomePage() {
       <HowWorks />
       <WhyUseIt />
       <PricingSection />
+      <Footer />
     </>
   );
 }
