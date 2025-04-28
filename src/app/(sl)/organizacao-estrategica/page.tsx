@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 
 export default function OrganizacaoPage() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-      const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     
       useEffect(() => {
         const checkUserSession = async () => {
           const session = await getUserSession();
-          console.log("Session:", session); // Log the session object to see its contents
+         
           if (session) {
             setIsLoggedIn(true);
           } else {

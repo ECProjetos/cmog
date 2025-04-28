@@ -11,7 +11,7 @@ export default function IndicadoresPage() {
   useEffect(() => {
     const checkUserSession = async () => {
       const session = await getUserSession();
-      console.log("Session:", session); // Log the session object to see its contents
+      
       if (session) {
         setIsLoggedIn(true);
       } else {
