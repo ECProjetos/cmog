@@ -191,7 +191,7 @@ export default function Page() {
                 <BreadcrumbList>
                   <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                      <Link href="/minhas-buscas">Minhas Buscas</Link>
+                      <Link href="/busca">Minhas Buscas</Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator />

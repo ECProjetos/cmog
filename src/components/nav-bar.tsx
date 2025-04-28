@@ -239,7 +239,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
         <div className="hidden md:flex items-center gap-4">
           {isLoggedIn ? (
             <Link
-              href="/dashboard"
+              href="/busca"
               className={buttonVariants({
                 variant: "default",
                 className: "px-4 py-2 text-sm",
