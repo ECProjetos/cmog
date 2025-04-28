@@ -2,6 +2,8 @@
 "use client";
 import React from "react";
 import { Timeline } from "@/components/ui/timeline";
+import { buttonVariants } from "../ui/button";
+import Link from "next/link";
 
 export default function HowWorks() {
   const data = [
@@ -96,11 +98,23 @@ export default function HowWorks() {
   ];
 
   return (
-    <div
-      id="como-funciona"
-      className="relative w-full overflow-clip px-4 sm:px-6 md:px-0"
-    >
-      <Timeline data={data} />
+    <div className="text-center p-8 md:p-16 ">
+      <div
+        id="como-funciona"
+        className="relative w-full overflow-clip px-4 sm:px-6 md:px-0"
+      >
+        <Timeline data={data} />
+      </div>
+      <Link
+        className={buttonVariants({
+          variant: "default",
+          size: "lg",
+        })}
+        href="/login"
+      >
+        {" "}
+        Começe agora
+      </Link>
     </div>
   );
 }

@@ -5,23 +5,23 @@ import { motion } from "framer-motion";
 
 const pricingPlans = [
   {
-    title: "Básico",
-    price: "R$19,99/mês",
-    features: ["1 usuário", "Suporte por e-mail"],
+    title: "Free",
+    price: "Gratuito",
+    features: ["2 Consultas p/dia", "Suporte por e-mail", "Acesso básico"],
     highlight: false,
   },
   {
     title: "Profissional",
-    price: "R$99/mês",
+    price: "R$19,99/mês",
     features: [
-      "Usuários ilimitados",
+      "Consultas ilimitados",
       "Monitoramento em tempo real",
       "Suporte prioritário",
     ],
     highlight: true,
   },
   {
-    title: "Empresarial",
+    title: "Consultoria em licitação",
     price: "Sob consulta",
     features: [
       "Soluções personalizadas",

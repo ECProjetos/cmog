@@ -2,6 +2,8 @@
 "use client";
 
 import React from "react";
+import { buttonVariants } from "../ui/button";
+import Link from "next/link";
 
 const Demo: React.FC = () => {
   return (
@@ -13,12 +15,23 @@ const Demo: React.FC = () => {
         Explore as principais funcionalidades e veja como é simples navegar pela
         plataforma.
       </h2>
-      <div className="flex justify-center items-center h-[300px] w-full max-w-[600px] mx-auto rounded-lg overflow-hidden shadow-md bg-neutral-100">
+      <div className="flex justify-center items-center h-[300px] w-full max-w-[600px] mx-auto rounded-lg overflow-hidden shadow-md bg-neutral-100 mt-8">
         <img
           src="/saas.gif"
           alt="Demo Gif"
           className="w-full h-full object-cover"
         />
+      </div>
+      <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+        <Link
+          className={buttonVariants({
+            variant: "default",
+            size: "lg",
+          })}
+          href="/login"
+        >
+          Experimente agora
+        </Link>
       </div>
     </div>
   );
