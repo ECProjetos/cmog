@@ -11,6 +11,7 @@ import { WhyUseIt } from "@/components/lp/Why-use-it";
 import Demo from "@/components/lp/demo";
 import PricingSection from "@/components/lp/pricing";
 import Footer from "@/components/footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -19,7 +20,7 @@ export default function HomePage() {
   useEffect(() => {
     const checkUserSession = async () => {
       const session = await getUserSession();
-      console.log("Session:", session); // Log the session object to see its contents
+
       if (session) {
         setIsLoggedIn(true);
       } else {
@@ -34,7 +35,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1 className="text-3xl font-bold">Loading...</h1>
+        <Skeleton className="h-10 w-1/2" />
       </main>
     );
   }
