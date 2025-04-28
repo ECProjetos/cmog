@@ -135,7 +135,7 @@ export default function DetalhesBusca({
                   <div className="flex flex-col gap-4 mt-2 mb-4">
                     <div className="flex w-full gap-4 justify-between items-center">
                       <div className="flex gap-2 items-center">
-                        <h1 className="text-2xl font-bold text-gray-800">
+                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                           {busca.titulo}
                         </h1>
                       </div>
@@ -153,7 +153,7 @@ export default function DetalhesBusca({
                         </Button>
                       </div>
                     </div>
-                    <p className="text-gray-600 justify-start">
+                    <p className="text-gray-600 justify-start dark:text-white/80">
                       {busca.descricao}
                     </p>
                   </div>

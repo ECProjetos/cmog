@@ -184,20 +184,20 @@ export const licitacaoColumns = (
             <DropdownMenuItem asChild>
               <Link
                 href={`/busca/licitacao/${licitacao.id_licitacao}`}
-                className="flex items-center px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                className="flex items-center  gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
               >
-                <Search className="mr-2 h-4 w-4" />
-                Ver Detalhes
+                <Search className="h-4 w-4 dark:text-white" />
+                <span className="ml-2">Ver Detalhes</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
                 href={licitacao.url}
                 target="_blank"
-                className="flex items-center px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                className="flex items-center  gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
               >
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Ir para o edital
+                <ExternalLink className="h-4 w-4 dark:text-white" />
+                <span className="ml-2">Ir para o edital</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

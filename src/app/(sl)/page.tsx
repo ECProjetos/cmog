@@ -4,7 +4,7 @@ import NavBar from "@/components/nav-bar";
 
 import { useEffect, useState } from "react";
 
-import { getUserSession } from "./(auth)/actions";
+import { getUserSession } from "../(auth)/actions";
 import Hero from "@/components/lp/hero";
 import HowWorks from "@/components/lp/how-works";
 import { WhyUseIt } from "@/components/lp/Why-use-it";
