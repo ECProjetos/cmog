@@ -5,38 +5,19 @@ import React from "react";
 
 const Demo: React.FC = () => {
   return (
-    <div
-      style={{
-        padding: "2rem",
-        fontFamily: "Arial, sans-serif",
-        textAlign: "center",
-      }}
-    >
-      <h1 style={{ fontSize: "2.5rem", color: "#333", marginBottom: "1rem" }}>
-        Welcome to the Demo Page
+    <div className="text-center p-8 md:p-16 bg-neutral-50 dark:bg-zinc-950">
+      <h1 className="text-3xl md:text-5xl font-bold text-black dark:text-white mb-4">
+        Conheça a plataforma
       </h1>
-      <h2 style={{ fontSize: "1.5rem", color: "#555", marginBottom: "2rem" }}>
-        Explore the amazing features we have to offer
+      <h2 className="text-base md:text-lg text-neutral-600 dark:text-neutral-300 max-w-prose mx-auto">
+        Explore as principais funcionalidades e veja como é simples navegar pela
+        plataforma.
       </h2>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "300px",
-          width: "100%",
-          maxWidth: "600px",
-          margin: "0 auto",
-          borderRadius: "12px",
-          overflow: "hidden",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
+      <div className="flex justify-center items-center h-[300px] w-full max-w-[600px] mx-auto rounded-lg overflow-hidden shadow-md bg-neutral-100">
         <img
           src="/saas.gif"
           alt="Demo Gif"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          className="w-full h-full object-cover"
         />
       </div>
     </div>
