@@ -23,10 +23,13 @@ type CreateNewFolderProps = {
   onUpdate: () => void; // Função de atualização opcional
 };
 
-export function CreateNewFolder({ user_id, onUpdate }: CreateNewFolderProps) {
+export function CreateNewFolder({
+  user_id,
+  onUpdate,
+}: CreateNewFolderProps) {
   const [folderName, setFolderName] = useState<string>("");
   const [folderDescription, setFolderDescription] = useState<string>("");
-  const [isOpen, setIsOpen] = useState<boolean>(false); // Começa como false (não aberto)
+  const [isOpen2, setIsOpen2] = useState<boolean>(false); // Começa como false (não aberto)
 
   const handleCreateFolder = async () => {
     if (!user_id || !folderName) return;
@@ -58,14 +61,16 @@ export function CreateNewFolder({ user_id, onUpdate }: CreateNewFolderProps) {
     onUpdate();
 
     setFolderName("");
-    setIsOpen(false); // Fecha o dialog
+    setIsOpen2(false); // Fecha o dialog
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen2} onOpenChange={setIsOpen2}>
       <DialogTrigger asChild>
         <Button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsOpen2(true); // Abre o modal interno
+          }}
           variant="ghost"
           size="sm"
           className="justify-start"

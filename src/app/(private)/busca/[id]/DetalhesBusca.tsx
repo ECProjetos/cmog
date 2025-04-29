@@ -48,8 +48,6 @@ export default function DetalhesBusca({
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
 
-  console.log("Buscas:", busca);
-  console.log("Licitacoes:", licitacoes);
   useEffect(() => {
     setLoading(true);
     if (!user_id) {

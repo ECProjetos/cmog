@@ -36,7 +36,6 @@ export function SaveLicitacao({
   const user_id = useUserStore((state) => state.user?.id); // Obtém o ID do usuário
 
   const [error, setError] = useState<string | null>(null); // Estado para armazenar erros
-
   const handleSave = async () => {
     if (!licitacao_id || !selectedFolder) return; // Verifica se os IDs estão disponíveis
 
