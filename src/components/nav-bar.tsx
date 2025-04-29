@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import * as React from "react";
 
+import * as React from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,14 +17,14 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "@/components/modle-toggle";
 import { LayoutDashboard, LogIn } from "lucide-react";
 import { ListItem } from "./ui/list-item";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { motion } from "motion/react";
 import { LinkPreview } from "@/components/ui/link-preview";
-type NavBarProps = {
-  isLoggedIn: boolean;
-};
+import { useUserStore } from "@/stores/userStore"; // IMPORTANTE: agora usando a store
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-const components: { title: string; href: string; description: string }[] = [
+
+const components = [
   {
     title: "Busca Inteligente e Rápida",
     href: "/busca-rapida",
@@ -63,8 +62,9 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-export default function NavBar({ isLoggedIn }: NavBarProps) {
+export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useUserStore((state) => state.user); // <-- Pegando o user diretamente da global store
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm dark:bg-zinc-950 transition-all">
@@ -85,7 +85,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
           {/* Right Side: Theme Toggle + Menu Toggle */}
           <div className="flex items-center gap-2">
             <ModeToggle />
-            {isLoggedIn ? (
+            {user ? (
               <Link
                 href="/busca"
                 className={buttonVariants({
@@ -140,15 +140,18 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
             className="rounded-full"
           />
         </Link>
-        {/*
-          <Link href="#planos">Planos</Link>
-          <Link href="#sobre">Sobre Nós</Link>
-          <Link href="#ajuda">Ajuda</Link>
-        </nav> */}
 
-        {/* Desktop Navegation Menu */}
+        {/* Desktop Navigation Menu */}
         <NavigationMenu className="hidden md:flex w-full justify-center">
           <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/"
+                className={navigationMenuTriggerStyle()}
+              >
+                Início
+              </NavigationMenuLink>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>Como Funciona</NavigationMenuTrigger>
               <NavigationMenuContent>
@@ -168,7 +171,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                         />
                         <p className="text-sm leading-tight text-muted-foreground">
                           Transforme oportunidades em contratos reais. Com
-                          inteligência, organização e foco
+                          inteligência, organização e foco.
                         </p>
                       </a>
                     </NavigationMenuLink>
@@ -186,8 +189,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                     title="Indicadores de Desempenho"
                   >
                     Acompanhe o desempenho de suas propostas e melhore sua
-                    estratégia de participação em licitações.{" "}
-                    <span className="text-xs text-gray-500">(em breve)</span>
+                    estratégia de participação em licitações.
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
@@ -209,6 +211,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
+
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="#planos"
@@ -217,6 +220,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 Planos
               </NavigationMenuLink>
             </NavigationMenuItem>
+
             <NavigationMenuItem>
               <LinkPreview
                 url={`${BASE_URL}/sobre`}
@@ -225,6 +229,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
                 Sobre nós
               </LinkPreview>
             </NavigationMenuItem>
+
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link href="/contato" className={navigationMenuTriggerStyle()}>
@@ -237,7 +242,7 @@ export default function NavBar({ isLoggedIn }: NavBarProps) {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
-          {isLoggedIn ? (
+          {user ? (
             <Link
               href="/busca"
               className={buttonVariants({

@@ -25,7 +25,6 @@ import {
 
 import { STATES, STATES_BY_REGION } from "@/constants/states";
 import { MODALITY } from "@/constants/licitacao-modality";
-import { SITES } from "@/constants/licitacoes-sites";
 
 import { CreateNewShearch, updateSearch } from "./actions";
 import {
@@ -57,7 +56,6 @@ export default function SearchForm({
           badKeyWord: busca.bad_keywords.join("; "),
           states: busca.states,
           modality: busca.modality,
-          sites: ["pcp"],
         }
       : {
           title: "",
@@ -66,12 +64,10 @@ export default function SearchForm({
           badKeyWord: "",
           states: [],
           modality: [],
-          sites: [],
         },
   });
   const allStates = STATES.map((state) => state.value);
   const allModality = MODALITY.map((modality) => modality.value);
-  const allSites = SITES.map((site) => site.value);
   const user = useUserStore((state) => state.user);
   const hasBusca = !!busca?.id_busca;
 
@@ -344,58 +340,6 @@ export default function SearchForm({
           </div>
         </FormItem>
 
-        <FormItem>
-          <FormLabel>Dos seguintes portais:</FormLabel>
-          <div className="grid grid-cols-3 gap-2">
-            {SITES.map((site) => (
-              <FormField
-                key={site.value}
-                control={form.control}
-                name="sites"
-                render={({ field }) => {
-                  const isChecked = field.value?.includes(site.value);
-                  return (
-                    <FormItem
-                      key={site.value}
-                      className="flex items-center space-x-2"
-                    >
-                      <FormControl>
-                        <Switch
-                          checked={isChecked}
-                          onCheckedChange={(checked) => {
-                            const newValue = checked
-                              ? [...(field.value || []), site.value]
-                              : field.value?.filter(
-                                  (v: string) => v !== site.value
-                                );
-                            field.onChange(newValue);
-                          }}
-                        />
-                      </FormControl>
-                      <FormLabel className="text-sm">{site.label}</FormLabel>
-                    </FormItem>
-                  );
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.setValue("sites", allSites)}
-            >
-              Marcar tudo
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.setValue("sites", [])}
-            >
-              Desmarcar tudo
-            </Button>
-          </div>
-        </FormItem>
         <div className="flex items-center space-x-2">
           {hasBusca ? (
             <Button

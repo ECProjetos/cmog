@@ -42,7 +42,6 @@ export const searchSchema = z.object({
 
     states: z.array(z.string()).min(1, { message: "Selecione pelo menos um estado" }),
     modality: z.array(z.string()).min(1, { message: "Selecione pelo menos uma modalidade" }),
-    sites: z.array(z.string()).min(1, { message: "Selecione pelo menos um portal" }),
 });
 
 

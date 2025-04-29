@@ -1,38 +1,11 @@
 "use client";
 
 import Navbar from "@/components/nav-bar";
-import { useEffect, useState } from "react";
-import { getUserSession } from "../(auth)/actions";
 
 export default function LGPDPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkUserSession = async () => {
-      const session = await getUserSession();
-      console.log("Session:", session); // Log the session object to see its contents
-      if (session) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-      setLoading(false);
-    };
-
-    checkUserSession();
-  }, []);
-
-  if (loading) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1 className="text-3xl font-bold">Loading...</h1>
-      </main>
-    );
-  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar />
       <div className="max-w-3xl mx-auto px-6 py-16 text-gray-800 dark:text-gray-100 leading-relaxed">
         <h1 className="text-4xl font-bold mb-6 text-neutral-900 dark:text-white">
           Política de Privacidade e Proteção de Dados
