@@ -16,6 +16,7 @@ import { useState } from "react";
 import { saveLicitacao } from "./actions";
 import { toast } from "sonner";
 import { FolderType } from "../../minhas-licitacoes/zod-types";
+import { CreateNewFolder } from "./create-new-folder";
 
 type SaveLicitacaoProps = {
   licitacao_id: number | undefined;
@@ -68,10 +69,12 @@ export function SaveLicitacao({ licitacao_id, folders }: SaveLicitacaoProps) {
         {error && (
           <p className="text-red-500 text-sm mb-2">{error}</p> // Exibe mensagem de erro se houver
         )}
-
-        <Label htmlFor="folder" className="block text-sm font-medium mb-2">
-          Pasta
-        </Label>
+        <div className="flex items-center justify-between mb-2">
+          <Label htmlFor="folder" className="block text-sm font-medium">
+            Pasta
+          </Label>
+          <CreateNewFolder />
+        </div>
         <select
           id="folder"
           value={selectedFolder}
