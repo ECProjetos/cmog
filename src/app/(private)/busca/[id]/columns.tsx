@@ -41,6 +41,8 @@ function valorTotalEstimado(licitacao: LicitacaoType): string {
 }
 
 function formatDescricao(licitacao: LicitacaoType): string {
+  console.log("formatDescricao called with:", licitacao);
+
   const dsItens = licitacao.itens
     .map((i) => i.ds_item)
     .filter(Boolean)
@@ -55,7 +57,10 @@ function formatDescricao(licitacao: LicitacaoType): string {
     .flatMap((g) => g.classes_materiais.map((c) => c.nome_classe_material))
     .join(", ");
 
-  return [classes, grupos, dsItens].filter(Boolean).join(" — ");
+  const descricao = [classes, grupos, dsItens].filter(Boolean).join(" — ");
+  console.log("descricao gerada:", descricao);
+
+  return descricao;
 }
 
 export const licitacaoColumns = (

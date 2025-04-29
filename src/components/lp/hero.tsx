@@ -19,12 +19,12 @@ export default function Hero() {
         className="relative flex flex-col items-center justify-center px-6 md:px-12 text-center gap-6 max-w-4xl mx-auto py-24"
       >
         <h1 className="text-3xl md:text-6xl font-semibold tracking-tight dark:text-white leading-tight">
-          Encontre e Vença Licitações Públicas com Facilidade
+          Encontre Licitações Públicas com Mais Facilidade
         </h1>
 
         <p className="text-base md:text-2xl font-light text-neutral-600 dark:text-neutral-300 max-w-2xl">
-          Plataforma inteligente que localiza, organiza e ajuda você a ganhar
-          mais licitações públicas.
+          Descubra como nossa plataforma pode transformar a forma como você
+          participa licitações públicas.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">

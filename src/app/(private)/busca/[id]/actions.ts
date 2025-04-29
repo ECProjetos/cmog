@@ -70,32 +70,33 @@ export async function getLicitacoesByIds(ids: number[]): Promise<{ data?: Licita
     const supabase = await createClient();
 
     const { data, error } = await supabase
-        .from('licitacoes')
+        .from("licitacoes")
         .select(`
-            id_licitacao,
-            comprador,
-            data_abertura_propostas,
-            hora_abertura_propostas,
-            url,
-            municipios (
-                uf_municipio
-            ),
-            grupos_materiais (
-                id_grupo_material,
-                nome_grupo_material,
-                classes_materiais (
-                    id_classe_material,
-                    nome_classe_material
-                )
-            ),
-            itens (
-                id_item,
-                ds_item,
-                qt_itens,
-                vl_unitario_estimado
-            )
-        `)
-        .in('id_licitacao', ids);
+    id_licitacao,
+    comprador,
+    data_abertura_propostas,
+    hora_abertura_propostas,
+    url,
+    municipios (
+      uf_municipio
+    ),
+    grupos_materiais (
+      id_grupo_material,
+      nome_grupo_material,
+      classes_materiais (
+        id_classe_material,
+        nome_classe_material
+      )
+    ),
+    itens (
+      id_item,
+      ds_item,
+      qt_itens,
+      vl_unitario_estimado
+    )
+  `)
+        .in("id_licitacao", ids);
+
 
     if (error) {
         console.error('Erro ao buscar licitações:', error);

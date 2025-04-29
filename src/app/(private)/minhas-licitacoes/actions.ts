@@ -52,10 +52,6 @@ export async function getAllFolders(user_id: string) {
             return { error: { message: "Erro ao buscar informações" } };
         }
 
-        if (!data || data.length === 0) {
-            return { error: { message: "Nenhum dado encontrado" } };
-        }
-
         try {
             const folders = z.array(folderSchema).parse(data);
             return { data: folders };
