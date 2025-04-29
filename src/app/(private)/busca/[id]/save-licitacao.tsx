@@ -12,13 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { BookmarkPlus, FolderPlus } from "lucide-react";
+import { BookmarkPlus} from "lucide-react";
 import { toast } from "sonner";
 import { FolderType } from "../../minhas-licitacoes/zod-types";
 import { useUserStore } from "@/stores/userStore";
 import { saveLicitacao } from "./actions";
-import { createFolder } from "@/app/(private)/minhas-licitacoes/actions";
+import { CreateNewFolder } from "../../minhas-licitacoes/create-new-folder";
 
 type SaveLicitacaoProps = {
   licitacao_id: number | undefined;
@@ -32,14 +31,12 @@ export function SaveLicitacao({
   onUpdate,
 }: SaveLicitacaoProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [newFolderModalOpen, setNewFolderModalOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState("");
-  const [folderName, setFolderName] = useState("");
-  const [folderDescription, setFolderDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const user_id = useUserStore((state) => state.user?.id);
+
+  console.log("user_id", user_id);
 
   const handleSave = async () => {
     if (!licitacao_id || !selectedFolder) return;
@@ -58,36 +55,6 @@ export function SaveLicitacao({
     setLoading(false);
   };
 
-  const handleCreateFolder = async () => {
-    if (!user_id || !folderName) return;
-
-    const { data, error } = await createFolder(
-      folderName,
-      user_id,
-      folderDescription
-    );
-    if (error) {
-      toast.error("Erro ao criar pasta", { description: error.message });
-      return;
-    }
-
-    if (!data) {
-      toast.error("Erro ao criar pasta", {
-        description: "Pasta não foi criada",
-      });
-      return;
-    }
-
-    toast.success("Pasta criada com sucesso!", {
-      description: `Pasta ${folderName} criada com sucesso!`,
-    });
-
-    onUpdate();
-    setFolderName("");
-    setFolderDescription("");
-    setNewFolderModalOpen(false); // Volta à tela principal
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -99,106 +66,50 @@ export function SaveLicitacao({
 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
-            {newFolderModalOpen ? "Criar Nova Pasta" : "Salvar Licitação"}
-          </DialogTitle>
+          <DialogTitle>Salvar Licitação</DialogTitle>
           <DialogDescription>
-            {newFolderModalOpen
-              ? "Insira o nome da nova pasta para organizá-la."
-              : "Salve esta licitação em uma pasta para fácil acesso."}
+            Salve esta licitação em uma pasta para fácil acesso.
           </DialogDescription>
         </DialogHeader>
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-        {newFolderModalOpen ? (
-          <div className="grid gap-4">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="folderName">Nome</Label>
-                <Input
-                  id="folderName"
-                  value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
-                  placeholder="Nome da pasta"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="folderDescription">Descrição</Label>
-                <Input
-                  id="folderDescription"
-                  value={folderDescription}
-                  onChange={(e) => setFolderDescription(e.target.value)}
-                  placeholder="Descrição da pasta"
-                />
-              </div>
-            </div>
+        <div className="flex items-center justify-between mb-2">
+          <Label htmlFor="folder" className="block text-sm font-medium">
+            Pasta
+          </Label>
+          <CreateNewFolder user_id={user_id} onUpdate={onUpdate} />
+        </div>
 
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setNewFolderModalOpen(false)}
-              >
-                Voltar
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCreateFolder}
-                disabled={!folderName || !folderDescription}
-              >
-                Criar Pasta
-              </Button>
-            </DialogFooter>
-          </div>
-        ) : (
-          <>
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        <select
+          id="folder"
+          value={selectedFolder}
+          onChange={(e) => setSelectedFolder(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-md mb-4"
+        >
+          <option value="">Selecione uma pasta</option>
+          {folders?.map((folder) => (
+            <option key={folder.id_folder} value={folder.id_folder}>
+              {folder.nome_folder}
+            </option>
+          ))}
+        </select>
 
-            <div className="flex items-center justify-between mb-2">
-              <Label htmlFor="folder" className="block text-sm font-medium">
-                Pasta
-              </Label>
-              <Button
-                onClick={() => setNewFolderModalOpen(true)}
-                variant="ghost"
-                size="sm"
-              >
-                <FolderPlus className="h-4 w-4 mr-1" />
-                Nova pasta
-              </Button>
-            </div>
-
-            <select
-              id="folder"
-              value={selectedFolder}
-              onChange={(e) => setSelectedFolder(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md mb-4"
-            >
-              <option value="">Selecione uma pasta</option>
-              {folders?.map((folder) => (
-                <option key={folder.id_folder} value={folder.id_folder}>
-                  {folder.nome_folder}
-                </option>
-              ))}
-            </select>
-
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setIsOpen(false)}
-              >
-                Cancelar
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSave}
-                disabled={loading || !selectedFolder}
-              >
-                {loading ? "Salvando..." : "Salvar"}
-              </Button>
-            </DialogFooter>
-          </>
-        )}
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={loading || !selectedFolder}
+          >
+            {loading ? "Salvando..." : "Salvar"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
