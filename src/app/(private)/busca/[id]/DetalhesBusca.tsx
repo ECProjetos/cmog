@@ -46,6 +46,7 @@ export default function DetalhesBusca({
   const [folders, setFolders] = useState<FolderType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [refresh, setRefresh] = useState(0);
 
   console.log("Buscas:", busca);
   console.log("Licitacoes:", licitacoes);
@@ -70,7 +71,7 @@ export default function DetalhesBusca({
       .finally(() => {
         setLoading(false);
       });
-  }, [user_id]); // Adicione user.id como dependência
+  }, [user_id, refresh]); // Adicione user.id como dependência
   const handleUpdateButton = () => {
     startTransition(async () => {
       try {
@@ -167,7 +168,10 @@ export default function DetalhesBusca({
                     ) : (
                       <LicitacoesTable
                         data={licitacoes}
-                        columns={licitacaoColumns(folders)}
+                        columns={licitacaoColumns({
+                          folders,
+                          onUpdate: () => setRefresh((r) => r + 1),
+                        })}
                       />
                     )}
                   </div>

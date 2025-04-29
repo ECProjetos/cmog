@@ -17,16 +17,23 @@ import { saveLicitacao } from "./actions";
 import { toast } from "sonner";
 import { FolderType } from "../../minhas-licitacoes/zod-types";
 import { CreateNewFolder } from "./create-new-folder";
+import { useUserStore } from "@/stores/userStore";
 
 type SaveLicitacaoProps = {
   licitacao_id: number | undefined;
   folders: FolderType[] | undefined;
+  onUpdate: () => void; // Função de atualização opcional
 };
 
-export function SaveLicitacao({ licitacao_id, folders }: SaveLicitacaoProps) {
+export function SaveLicitacao({
+  licitacao_id,
+  folders,
+  onUpdate,
+}: SaveLicitacaoProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Começa como false (não aberto)
   const [selectedFolder, setSelectedFolder] = useState<string>(""); // Estado para armazenar a pasta selecionada
   const [loading, setLoading] = useState<boolean>(false); // Estado para controlar o carregamento
+  const user_id = useUserStore((state) => state.user?.id); // Obtém o ID do usuário
 
   const [error, setError] = useState<string | null>(null); // Estado para armazenar erros
 
@@ -73,7 +80,7 @@ export function SaveLicitacao({ licitacao_id, folders }: SaveLicitacaoProps) {
           <Label htmlFor="folder" className="block text-sm font-medium">
             Pasta
           </Label>
-          <CreateNewFolder />
+          <CreateNewFolder user_id={user_id} onUpdate={onUpdate} />
         </div>
         <select
           id="folder"
