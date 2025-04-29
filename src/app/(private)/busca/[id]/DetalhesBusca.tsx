@@ -47,6 +47,8 @@ export default function DetalhesBusca({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("Buscas:", busca);
+  console.log("Licitacoes:", licitacoes);
   useEffect(() => {
     setLoading(true);
     if (!user_id) {

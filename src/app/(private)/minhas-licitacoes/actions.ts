@@ -51,7 +51,6 @@ export async function getAllFolders(user_id: string) {
             console.error("Error fetching folders:", error);
             return { error: { message: "Erro ao buscar informações" } };
         }
-
         if (!data || data.length === 0) {
             return { error: { message: "Nenhum dado encontrado" } };
         }
