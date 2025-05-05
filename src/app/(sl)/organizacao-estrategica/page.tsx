@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "@/components/footer";
 import NavBar from "@/components/nav-bar";
 
 export default function OrganizacaoPage() {
@@ -12,6 +13,7 @@ export default function OrganizacaoPage() {
           Em breve, uma nova maneira de buscar!
         </p>
       </div>
+      <Footer />
     </>
   );
 }
