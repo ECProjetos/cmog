@@ -27,10 +27,9 @@ export async function ReRunSearch(buscaId: string) {
         ).join(" AND ");
 
     const positiveClause = buildLike(busca.good_keywords, [
-        "i.ds_item"
-        // ,
-        // "gm.nome_grupo_material",
-        // "cm.nome_classe_material"
+        "i.ds_item",
+        "gm.nome_grupo_material",
+        "cm.nome_classe_material"
     ]);
 
     const negativeClause = busca.bad_keywords?.length
