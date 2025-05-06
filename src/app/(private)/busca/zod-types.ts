@@ -80,8 +80,8 @@ export const licitacaoSchema = z.object({
 export const licitacaoSchemaIndividual = z.object({
     id_licitacao: z.string(),
     comprador: z.string(),
-    data_abertura_propostas: z.string(),
-    hora_abertura_propostas: z.string(),
+    data_abertura_proposta: z.string(),
+    hora_abertura_proposta: z.string(),
     url: z.string(),
     municipios: municipioSchema,
     itens: z.array(itemSchema),
@@ -90,6 +90,8 @@ export const licitacaoSchemaIndividual = z.object({
 });
 
 export const licitacaoIndividual = z.object({ licitacaoSchemaIndividual });
+
+export type licitacaoIndividualType = z.infer<typeof licitacaoSchemaIndividual>;
 
 export const LicitacoesArraySchema = z.array(licitacaoSchema);
 

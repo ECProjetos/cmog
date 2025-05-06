@@ -1,8 +1,7 @@
 'use server';
 
 import { createClient } from "@/utils/supabase/server";
-import { licitacaoIndividualType } from './zod-types-licitacao';
-import { licitacaoSchemaIndividual } from "./zod-types-licitacao";
+import { licitacaoSchemaIndividual, licitacaoIndividualType } from "../../zod-types"
 import { z } from "zod";
 
 
@@ -13,20 +12,21 @@ export async function getLicitacaoIndividualById(ids: string[]): Promise<{ data?
         .from('licitacoes')
         .select(`
         id_licitacao,
-        comprador,
-        data_abertura_proposta,
-        hora_abertura_proposta,
-        url,
-        tipo_licitacao,
-        municipios (
-            uf_municipio,
-            nome_municipio
-        ),
-        itens (
-            id_item,
-            ds_item,
-            qt_itens,
-            vl_unitario_estimado
+      comprador,
+      data_abertura_proposta,
+      hora_abertura_proposta,
+      url,
+      tipo_licitacao,
+      objeto,
+      municipios (
+        nome_municipio,
+        uf_municipio
+      ),
+      itens (
+        id_item,
+        ds_item,
+        qt_itens,
+        vl_unitario_estimado
         )
        
     `)
