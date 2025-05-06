@@ -123,7 +123,7 @@ export const licitacaoColumns = ({
             textAlign: "center",
           }}
         >
-          {data}
+          {data as string}
           <br />
           às {horas}
         </div>
