@@ -70,7 +70,7 @@ export default function Page() {
     if (!idParam) return;
 
     setIsLoading(true);
-    getLicitacaoIndividualById([Number(idParam)])
+    getLicitacaoIndividualById([String(idParam)])
       .then((res) => {
         if (res.error) {
           console.error(

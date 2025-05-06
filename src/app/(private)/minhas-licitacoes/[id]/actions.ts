@@ -2,9 +2,9 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { folderLicitacoesSchema } from "../zod-types";
-import { getLicitacoesByIds } from "@/app/(private)/busca/[id]/actions";
 
 import { z } from "zod";
+import { getLicitacaoIndividualById } from "../../busca/licitacao/[id]/actions";
 
 export async function getFolderLicitacoesByFolderId(
     folderId: string
@@ -47,8 +47,8 @@ export async function getFolderLicitacoesByFolderId(
             const parsedFolderLicitacoes = z.array(folderLicitacoesSchema).parse(folderLicitacoesData);
             const licitacaoIds = parsedFolderLicitacoes.map((item) => item.id_licitacao);
 
-            const validLicitacaoIds = licitacaoIds.filter((id): id is number => id !== undefined);
-            const { data: licitacoes, error: licitacoesError } = await getLicitacoesByIds(validLicitacaoIds);
+            const validLicitacaoIds = licitacaoIds.filter((id): id is string => id !== undefined);
+            const { data: licitacoes, error: licitacoesError } = await getLicitacaoIndividualById(validLicitacaoIds);
 
             if (licitacoesError || !licitacoes) {
                 return { data: [], error: { message: "Erro ao buscar licitações" } };
@@ -56,7 +56,7 @@ export async function getFolderLicitacoesByFolderId(
 
             // Juntar os dados
             const mergedData = parsedFolderLicitacoes.map((folderLicitacao) => {
-                const licitacao = licitacoes.find(l => l.id_licitacao === folderLicitacao.id_licitacao);
+                const licitacao = licitacoes.find(l => l.id_licitacao === Number(folderLicitacao.id_licitacao));
                 return {
                     ...folderLicitacao,
                     licitacao: licitacao || null,

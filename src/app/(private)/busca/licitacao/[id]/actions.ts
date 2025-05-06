@@ -6,12 +6,12 @@ import { licitacaoSchemaIndividual } from "./zod-types-licitacao";
 import { z } from "zod";
 
 
-export async function getLicitacaoIndividualById(ids: number[]): Promise<{ data?: licitacaoIndividualType[]; error?: string }> {
+export async function getLicitacaoIndividualById(ids: string[]): Promise<{ data?: licitacaoIndividualType[]; error?: string }> {
     const supabase = await createClient();
 
     const { data, error } = await supabase
-    .from('licitacoes')
-    .select(`
+        .from('licitacoes')
+        .select(`
         id_licitacao,
         comprador,
         data_abertura_proposta,
@@ -30,7 +30,7 @@ export async function getLicitacaoIndividualById(ids: number[]): Promise<{ data?
         )
        
     `)
-    .in('id_licitacao', ids);
+        .in('id_licitacao', ids);
 
 
     if (error) {

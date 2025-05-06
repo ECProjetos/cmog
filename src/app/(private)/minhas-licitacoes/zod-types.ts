@@ -20,7 +20,7 @@ export const statusLicitacoesSchema = z.object({
 export const folderLicitacoesSchema = z.object({
     id_folders_licitacoes: z.string().uuid(),
     id_folder: z.string().uuid(),
-    id_licitacao: z.number().optional(),
+    id_licitacao: z.string().optional(),
     id_status: z.string().uuid().nullable().optional(),
     observacao: z.string().nullable().optional(),
     created_at: z.string(),
