@@ -92,26 +92,27 @@ export async function getLicitacoesByBusca(buscaId: string): Promise<{ data?: an
     const { data, error } = await supabase
         .from("buscas_licitacoes")
         .select(`
-            avaliacao,
-            licitacoes (
-                id_licitacao,
-                comprador,
-                data_abertura_propostas,
-                hora_abertura_propostas,
-                url,
-                objeto,
-                municipios (
-                    nome_municipio,
-                    uf_municipio
-                ),
-                itens (
-                    id_item,
-                    ds_item,
-                    qt_itens,
-                    vl_unitario_estimado
-                )
-            )
-        `)
+    avaliacao,
+    licitacao:licitacoes (
+      id_licitacao,
+      comprador,
+      data_abertura_proposta,
+      hora_abertura_proposta,
+      url,
+      tipo_licitacao,
+      objeto,
+      municipios (
+        nome_municipio,
+        uf_municipio
+      ),
+      itens (
+        id_item,
+        ds_item,
+        qt_itens,
+        vl_unitario_estimado
+      )
+    )
+  `)
         .eq("id_busca", buscaId);
 
     if (error) {
@@ -122,9 +123,10 @@ export async function getLicitacoesByBusca(buscaId: string): Promise<{ data?: an
     // Normaliza estrutura para facilitar o uso no front
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = data.map((entry: any) => ({
-        ...entry.licitacoes,
+        ...entry.licitacao,
         avaliacao: entry.avaliacao ?? "nao_avaliado",
     }));
+
 
     return { data: result };
 }
