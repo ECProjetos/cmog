@@ -19,7 +19,6 @@ const keywordRefine = (value: string) => {
     return parts.length > 0;
 };
 
-
 export const searchSchema = z.object({
     title: z.string().min(1, { message: "Título é obrigatório" }),
     description: z.string().min(1, { message: "Descrição é obrigatória" }),
@@ -44,8 +43,6 @@ export const searchSchema = z.object({
     modality: z.array(z.string()).min(1, { message: "Selecione pelo menos uma modalidade" }),
 });
 
-
-
 export const searchSchemaView = z.object({
     id_busca: z.string(),
     id_user: z.string(),
@@ -55,30 +52,13 @@ export const searchSchemaView = z.object({
     bad_keywords: z.array(z.string()),
     states: z.array(z.string()),
     modality: z.array(z.string()),
-    id_licitacoes: z.array(z.number()),
-});
-
-export const cnaeSchema = z.object({
-    cnae: z.string(),
-    descricao: z.string()
 });
 
 export const itemSchema = z.object({
-    id_item: z.number(),
+    id_item: z.string(),
     ds_item: z.string(),
     qt_itens: z.string(),
     vl_unitario_estimado: z.string().nullable(),
-});
-
-export const classeMaterialSchema = z.object({
-    id_classe_material: z.number(),
-    nome_classe_material: z.string(),
-});
-
-export const grupoMaterialSchema = z.object({
-    id_grupo_material: z.number(),
-    nome_grupo_material: z.string(),
-    classes_materiais: z.array(classeMaterialSchema),
 });
 
 export const municipioSchema = z.object({
@@ -86,27 +66,27 @@ export const municipioSchema = z.object({
 });
 
 export const licitacaoSchema = z.object({
-    id_licitacao: z.number(),
+    id_licitacao: z.string(),
     comprador: z.string(),
-    data_abertura_propostas: z.string(),
-    hora_abertura_propostas: z.string(),
+    data_abertura_proposta: z.string(),
+    hora_abertura_proposta: z.string(),
     url: z.string(),
     municipios: municipioSchema,
-    grupos_materiais: z.array(grupoMaterialSchema),
     itens: z.array(itemSchema),
+    objeto: z.string(),
+    avaliacao: z.enum(["bom", "ruim", "nao_avaliado"]),
 });
 
 export const licitacaoSchemaIndividual = z.object({
-    id_licitacao: z.number(),
+    id_licitacao: z.string(),
     comprador: z.string(),
     data_abertura_propostas: z.string(),
     hora_abertura_propostas: z.string(),
     url: z.string(),
     municipios: municipioSchema,
-    grupos_materiais: z.array(grupoMaterialSchema),
     itens: z.array(itemSchema),
-    cnae: z.array(cnaeSchema),
     tipo_licitacao: z.string(),
+    objeto: z.string(),
 });
 
 export const licitacaoIndividual = z.object({ licitacaoSchemaIndividual });
