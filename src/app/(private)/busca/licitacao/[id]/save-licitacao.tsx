@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 
 type SaveLicitacaoProps = {
-  licitacao_id: number | undefined;
+  licitacao_id: string | undefined;
   folders: FolderType[] | undefined;
 };
 

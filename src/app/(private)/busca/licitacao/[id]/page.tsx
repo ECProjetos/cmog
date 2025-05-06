@@ -221,7 +221,7 @@ export default function Page() {
                     Voltar
                   </Button>
                   <SaveLicitacao
-                    licitacao_id={Number(idParam)}
+                    licitacao_id={String(idParam)}
                     folders={folders}
                   />
                 </div>

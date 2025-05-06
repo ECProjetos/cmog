@@ -14,21 +14,13 @@ export async function getLicitacaoIndividualById(ids: number[]): Promise<{ data?
     .select(`
         id_licitacao,
         comprador,
-        data_abertura_propostas,
-        hora_abertura_propostas,
+        data_abertura_proposta,
+        hora_abertura_proposta,
         url,
         tipo_licitacao,
         municipios (
             uf_municipio,
             nome_municipio
-        ),
-        grupos_materiais (
-            id_grupo_material,
-            nome_grupo_material,
-            classes_materiais (
-                id_classe_material,
-                nome_classe_material
-            )
         ),
         itens (
             id_item,
