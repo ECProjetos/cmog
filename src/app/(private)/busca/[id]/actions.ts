@@ -35,14 +35,14 @@ export async function ReRunSearch(buscaId: string) {
         : "";
 
     const sql = `
-        SELECT DISTINCT l.id_licitacao
-        FROM licitacoes l
-        JOIN municipios m ON l.id_municipio = m.codigo_ibge
-        WHERE
-            m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")})
-            AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
-            AND (${positiveClause})
-            ${negativeClause};
+        SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
+FROM licitacoes l
+LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+WHERE
+    (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")}))
+    AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
+    AND (${positiveClause})
+    ${negativeClause};
     `;
 
     const { data: results, error: sqlError } = await supabase.rpc("run_sql", { query: sql });

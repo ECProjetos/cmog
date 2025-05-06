@@ -19,5 +19,6 @@ export const MODALITY = [
     { label: 'Concorrência por Maior Desconto', value: 'Concorrência por Maior Desconto' },
     { label: 'Concorrência por Técnica e Preço', value: 'Concorrência por Técnica e Preço' },
     { label: 'Pregão por Maior Preço', value: 'Pregão por Maior Preço' },
-    { label: 'Concorrência por Menor Preço', value: 'Concorrência por Menor Preço' }
+    { label: 'Concorrência por Menor Preço', value: 'Concorrência por Menor Preço' },
+    { label: 'Menor Preço', value: 'Menor preço' },
 ];
