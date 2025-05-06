@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { createFolder } from "../../minhas-licitacoes/actions";
 
 type SaveLicitacaoProps = {
-  licitacao_id: number | undefined;
+  licitacao_id: string | undefined;
   folders: FolderType[] | undefined;
   onUpdate: () => void;
 };

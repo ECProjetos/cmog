@@ -169,6 +169,7 @@ export default function DetalhesBusca({
                         columns={licitacaoColumns({
                           folders,
                           onUpdate: () => setRefresh((r) => r + 1),
+                          buscaId: busca.id_busca,
                         })}
                       />
                     )}

@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 import { SaveLicitacao } from "./save-licitacao";
+import { updateAvaliacaoLicitacao } from "./actions";
 
 function valorTotalEstimado(licitacao: LicitacaoType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
@@ -30,7 +31,7 @@ function valorTotalEstimado(licitacao: LicitacaoType): string {
     return total + valorUnitario * quantidade;
   }, 0);
 
-  if (isNaN(totalEstimado)) {
+  if (isNaN(totalEstimado) || totalEstimado <= 0 || !licitacao.itens.length) {
     return "Indisponível";
   }
 
@@ -40,55 +41,28 @@ function valorTotalEstimado(licitacao: LicitacaoType): string {
   });
 }
 
-function formatDescricao(licitacao: LicitacaoType): string {
-  const dsItens = licitacao.itens
-    .map((i) => i.ds_item)
-    .filter(Boolean)
-    .slice(0, 3)
-    .join(", ");
-
-  const grupos = licitacao.grupos_materiais
-    .map((g) => g.nome_grupo_material)
-    .join(", ");
-
-  const classes = licitacao.grupos_materiais
-    .flatMap((g) => g.classes_materiais.map((c) => c.nome_classe_material))
-    .join(", ");
-
-  const descricao = [classes, grupos, dsItens].filter(Boolean).join(" — ");
-
-  return descricao;
-}
-
 type LicitacaoColumnsProps = {
   folders: FolderType[];
   onUpdate: () => void;
+  buscaId: string;
 };
 
 export const licitacaoColumns = ({
   folders,
   onUpdate,
+  buscaId,
 }: LicitacaoColumnsProps): ColumnDef<LicitacaoType>[] => [
   {
-    id: "comprador",
-    accessorFn: (row) => formatDescricao(row),
+    accessorKey: "comprador",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
-    cell: ({ row }) => {
-      const licitacao = row.original;
-      return (
-        <div
-          style={{
-            whiteSpace: "normal",
-            wordBreak: "break-word",
-            maxWidth: "300px",
-          }}
-        >
-          {licitacao.comprador}
-        </div>
-      );
-    },
+  },
+  {
+    accessorKey: "modalidade",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Modalidade" />
+    ),
   },
   {
     accessorKey: "municipios.uf_municipio",
@@ -112,14 +86,13 @@ export const licitacaoColumns = ({
   },
 
   {
-    id: "descricao",
-    accessorFn: (row) => formatDescricao(row),
+    accessorKey: "objeto",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Objeto" />
     ),
     cell: ({ row }) => {
       const licitacao = row.original;
-      const descricaoCompleta = formatDescricao(licitacao);
+      const descricaoCompleta = licitacao.objeto;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [expanded, setExpanded] = useState(false);
       const limiteCaracteres = 250; // ajuste conforme necessário
@@ -151,16 +124,76 @@ export const licitacaoColumns = ({
     },
   },
   {
-    id: "valor_estimado",
-    accessorFn: (row) => formatDescricao(row),
+    id: "valorEstimado",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valor Estimado" />
     ),
     cell: ({ row }) => {
       const licitacao = row.original;
+      const valorEstimado = valorTotalEstimado(licitacao);
       return (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {valorTotalEstimado(licitacao)}
+          {valorEstimado}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "avaliacao",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Avaliação" />
+    ),
+    cell: ({ row }) => {
+      const licitacao = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [avaliacao, setAvaliacao] = useState(licitacao.avaliacao);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [loading, setLoading] = useState(false);
+
+      const getEstilos = (valor: string) => {
+        switch (valor) {
+          case "bom":
+            return { backgroundColor: "#d1fae5", color: "#065f46" }; // verde claro
+          case "ruim":
+            return { backgroundColor: "#fee2e2", color: "#991b1b" }; // vermelho claro
+          default:
+            return { backgroundColor: "#f3f4f6", color: "#374151" }; // cinza claro
+        }
+      };
+
+      const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const novaAvaliacao = e.target.value as "bom" | "ruim" | "nao_avaliado";
+        setLoading(true);
+        const result = await updateAvaliacaoLicitacao(
+          buscaId, // certifique-se de que esse campo existe no objeto
+          licitacao.id_licitacao,
+          novaAvaliacao
+        );
+        if (result.success) {
+          setAvaliacao(novaAvaliacao);
+        }
+        setLoading(false);
+      };
+
+      return (
+        <div>
+          <select
+            value={avaliacao}
+            onChange={handleChange}
+            disabled={loading}
+            style={{
+              ...getEstilos(avaliacao),
+              padding: "4px 8px",
+              borderRadius: "4px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            <option value="nao_avaliado">Não Avaliado</option>
+            <option value="bom">Bom</option>
+            <option value="ruim">Ruim</option>
+          </select>
         </div>
       );
     },

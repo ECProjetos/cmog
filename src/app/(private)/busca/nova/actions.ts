@@ -40,33 +40,25 @@ export async function CreateNewShearch(
         .map(s => s.trim())
         .filter(Boolean);
 
-
-    const positiveClause = buildLike(positiveKeywords, [
-        "i.ds_item",
-        "gm.nome_grupo_material",
-        "cm.nome_classe_material"
-    ]);
-
+    const positiveClause = buildLike(positiveKeywords, ["l.objeto"]);
     const negativeClause = negativeKeywords.length
-        ? "AND " + buildNotLike(negativeKeywords, ["i.ds_item"])
+        ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
     const sql = `
-        SELECT DISTINCT l.id_licitacao
-        FROM licitacoes l
-        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-        LEFT JOIN cnaes cnae ON l.id_licitacao = cnae.id_licitacao
-        LEFT JOIN grupos_materiais gm ON l.id_licitacao = gm.id_licitacao
-        LEFT JOIN classes_materiais cm ON gm.id_grupo_material = cm.id_grupo_material
-        LEFT JOIN itens i ON l.id_licitacao = i.id_licitacao
-        WHERE
-            m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")})
-            AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-            AND (${positiveClause})
-            ${negativeClause};
+        SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
+    FROM licitacoes l
+    JOIN municipios m ON l.id_municipio = m.codigo_ibge
+    WHERE
+        m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")})
+        AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+        AND (${positiveClause})
+        ${negativeClause};
     `;
 
-    const { data: results, error } = await supabase.rpc("run_sql", { query: sql });
+    const { data: results, error } = await supabase.rpc("run_sql", {
+        query: sql
+    });
 
     if (error) {
         console.error("Erro na execução da query:", error);
@@ -83,7 +75,6 @@ export async function CreateNewShearch(
                 id_user: userId,
                 titulo: title,
                 descricao: description,
-                id_licitacoes: licitacoesIds,
                 good_keywords: positiveKeywords,
                 bad_keywords: negativeKeywords,
                 states,
@@ -98,10 +89,26 @@ export async function CreateNewShearch(
         return { error: "Erro ao salvar busca" };
     }
 
+    const id_busca = insertResult.id_busca;
+
+    const { error: relationError } = await supabase
+        .from("buscas_licitacoes")
+        .insert(
+            licitacoesIds.map((id_licitacao: string) => ({
+                id_busca,
+                id_licitacao,
+            }))
+        );
+
+    if (relationError) {
+        console.error("Erro ao salvar relação busca/licitação:", relationError);
+        return { error: "Erro ao relacionar licitações com a busca" };
+    }
+
     return {
         message: "Busca criada com sucesso",
         quantidadeLicitacoes: licitacoesIds.length,
-        id_busca: insertResult?.id_busca,
+        id_busca,
     };
 }
 
@@ -131,25 +138,15 @@ export async function updateSearch(
         .map(s => s.trim())
         .filter(Boolean);
 
-
-    const positiveClause = buildLike(positiveKeywords, [
-        "i.ds_item",
-        "gm.nome_grupo_material",
-        "cm.nome_classe_material"
-    ]);
-
+    const positiveClause = buildLike(positiveKeywords, ["l.objeto"]);
     const negativeClause = negativeKeywords.length
-        ? "AND " + buildNotLike(negativeKeywords, ["i.ds_item"])
+        ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
     const sql = `
-        SELECT DISTINCT l.id_licitacao
+        SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
         FROM licitacoes l
-        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-        LEFT JOIN cnaes cnae ON l.id_licitacao = cnae.id_licitacao
-        LEFT JOIN grupos_materiais gm ON l.id_licitacao = gm.id_licitacao
-        LEFT JOIN classes_materiais cm ON gm.id_grupo_material = cm.id_grupo_material
-        LEFT JOIN itens i ON l.id_licitacao = i.id_licitacao
+        JOIN municipios m ON l.id_municipio = m.codigo_ibge
         WHERE
             m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")})
             AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
@@ -157,7 +154,9 @@ export async function updateSearch(
             ${negativeClause};
     `;
 
-    const { data: results, error } = await supabase.rpc("run_sql", { query: sql });
+    const { data: results, error } = await supabase.rpc("run_sql", {
+        query: sql
+    });
 
     if (error) {
         console.error("Erro na execução da query:", error);
@@ -173,7 +172,6 @@ export async function updateSearch(
             id_user: userId,
             titulo: title,
             descricao: description,
-            id_licitacoes: licitacoesIds,
             good_keywords: positiveKeywords,
             bad_keywords: negativeKeywords,
             states,
@@ -188,10 +186,36 @@ export async function updateSearch(
         return { error: "Erro ao atualizar busca" };
     }
 
+    // Remove antigas relações
+    const { error: deleteError } = await supabase
+        .from("buscas_licitacoes")
+        .delete()
+        .eq("id_busca", busca_id);
+
+    if (deleteError) {
+        console.error("Erro ao remover antigas relações:", deleteError);
+        return { error: "Erro ao atualizar relações da busca" };
+    }
+
+    // Insere novas
+    const { error: insertRelationError } = await supabase
+        .from("buscas_licitacoes")
+        .insert(
+            licitacoesIds.map((id_licitacao: string) => ({
+                id_busca: busca_id,
+                id_licitacao,
+            }))
+        );
+
+    if (insertRelationError) {
+        console.error("Erro ao inserir novas relações:", insertRelationError);
+        return { error: "Erro ao atualizar relações da busca" };
+    }
+
     return {
         message: "Busca atualizada com sucesso",
         quantidadeLicitacoes: licitacoesIds.length,
         id_busca: updateResult?.id_busca,
     };
-
 }
+
