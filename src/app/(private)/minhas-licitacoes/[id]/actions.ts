@@ -56,7 +56,7 @@ export async function getFolderLicitacoesByFolderId(
 
             // Juntar os dados
             const mergedData = parsedFolderLicitacoes.map((folderLicitacao) => {
-                const licitacao = licitacoes.find(l => l.id_licitacao === Number(folderLicitacao.id_licitacao));
+                const licitacao = licitacoes.find(l => l.id_licitacao === String(folderLicitacao.id_licitacao));
                 return {
                     ...folderLicitacao,
                     licitacao: licitacao || null,

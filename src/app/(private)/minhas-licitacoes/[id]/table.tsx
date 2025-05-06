@@ -73,11 +73,14 @@ export function FolderDetailTable<TData, TValue>({
         <Input
           placeholder="Pesquisar em objeto..."
           value={
-            (table.getColumn("descricao")?.getFilterValue() as string) ?? "" // Define o valor do filtro
+            (table.getColumn("licitacao.objeto")?.getFilterValue() as string) ??
+            "" // Define o valor do filtro
           }
           onChange={
             (event) =>
-              table.getColumn("descricao")?.setFilterValue(event.target.value) // Define o valor do filtro}
+              table
+                .getColumn("licitacao.objeto")
+                ?.setFilterValue(event.target.value) // Define o valor do filtro}
           }
           className="max-w-sm"
         />
