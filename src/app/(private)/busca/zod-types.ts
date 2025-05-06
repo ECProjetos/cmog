@@ -63,6 +63,7 @@ export const itemSchema = z.object({
 
 export const municipioSchema = z.object({
     uf_municipio: z.string(),
+    nome_municipio: z.string().optional(),
 });
 
 export const licitacaoSchema = z.object({

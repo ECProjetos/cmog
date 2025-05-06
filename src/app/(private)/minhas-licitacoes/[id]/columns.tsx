@@ -32,21 +32,21 @@ import {
 import { toast } from "sonner";
 
 import { FolderLicitacoes } from "../zod-types";
-import { LicitacaoType } from "@/app/(private)/busca/zod-types";
+import { licitacaoIndividualType } from "@/app/(private)/busca/zod-types";
 import { deletLicitacaoFromFolder } from "./actions";
 import { useState } from "react";
 import Link from "next/link";
 import { ObservacaoDialog } from "./observacao-dialog";
 import { StatusDialog } from "./status-dialog";
 
-function valorTotalEstimado(licitacao: LicitacaoType): string {
+function valorTotalEstimado(licitacao: licitacaoIndividualType): string {
   const totalEstimado = licitacao.itens.reduce((total, item) => {
     const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
     const quantidade = parseFloat(item.qt_itens || "0");
     return total + valorUnitario * quantidade;
   }, 0);
 
-  if (isNaN(totalEstimado)) {
+  if (isNaN(totalEstimado) || totalEstimado <= 0 || !licitacao.itens.length) {
     return "Indisponível";
   }
 
@@ -54,24 +54,6 @@ function valorTotalEstimado(licitacao: LicitacaoType): string {
     style: "currency",
     currency: "BRL",
   });
-}
-
-function formatDescricao(licitacao: LicitacaoType): string {
-  const dsItens = licitacao.itens
-    .map((i) => i.ds_item)
-    .filter(Boolean)
-    .slice(0, 3)
-    .join(", ");
-
-  const grupos = licitacao.grupos_materiais
-    .map((g) => g.nome_grupo_material)
-    .join(", ");
-
-  const classes = licitacao.grupos_materiais
-    .flatMap((g) => g.classes_materiais.map((c) => c.nome_classe_material))
-    .join(", ");
-
-  return [classes, grupos, dsItens].filter(Boolean).join(" — ");
 }
 
 type FolderDetailColumnsProps = {
@@ -84,22 +66,47 @@ export const FolderDetailColumns = ({
   user_id,
 }: FolderDetailColumnsProps): ColumnDef<FolderLicitacoes>[] => [
   {
-    id: "comprador",
+    accessorKey: "licitacao.comprador",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
-    accessorFn: (row) => row.licitacao?.comprador || "—",
     cell: ({ row }) => (
       <div
         style={{
           whiteSpace: "normal",
-          wordBreak: "break-word",
-          maxWidth: "150px",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+          maxWidth: "100%",
         }}
       >
-        {row.original.licitacao?.comprador || "—"}
+        {row.original.licitacao?.comprador}
       </div>
     ),
+    size: 220,
+    minSize: 180,
+    maxSize: 300,
+  },
+
+  {
+    accessorKey: "licitacao.tipo_licitacao",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Modalidade" />
+    ),
+    cell: ({ row }) => (
+      <div
+        style={{
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+          maxWidth: "100%",
+        }}
+      >
+        {row.original.licitacao?.tipo_licitacao}
+      </div>
+    ),
+    size: 160,
+    minSize: 120,
+    maxSize: 200,
   },
 
   {
@@ -107,56 +114,69 @@ export const FolderDetailColumns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="UF" />
     ),
+    size: 80,
+    minSize: 60,
+    maxSize: 100,
   },
   {
-    id: "data_abertura_propostas", // Define o id manualmente
-    accessorFn: (row) => row.licitacao?.data_abertura_propostas || "—",
+    accessorKey: "licitacao.data_abertura_proposta",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data de Abertura" />
     ),
     cell: ({ row }) => {
-      const data = row.original.licitacao?.data_abertura_propostas || "—";
-      const hora = row.original.licitacao?.hora_abertura_propostas || "—";
+      const data = row.original.licitacao?.data_abertura_proposta;
+      const horas = row.original.licitacao?.hora_abertura_proposta;
       return (
         <div
           style={{
             whiteSpace: "normal",
-            wordBreak: "break-word",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
             textAlign: "center",
           }}
         >
-          <div>{data}</div>
-          <div>às {hora}</div>
+          {data as string}
+          <br />
+          às {horas}
         </div>
       );
     },
+    size: 135,
+    minSize: 120,
+    maxSize: 150,
   },
+
   {
-    id: "descricao",
-    accessorFn: (row) =>
-      row.licitacao ? formatDescricao(row.licitacao) : "Descrição indisponível",
+    id: "licitacao.objeto",
+    accessorKey: "licitacao.objeto",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Objeto" />
     ),
     cell: ({ row }) => {
-      const licitacao = row.original.licitacao;
-      const descricaoCompleta = licitacao
-        ? formatDescricao(licitacao)
-        : "Descrição indisponível";
+      const licitacao = row.original.licitacao?.objeto;
+      const descricaoCompleta = licitacao;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [expanded, setExpanded] = useState(false);
-      const limiteCaracteres = 250; // ajuste conforme necessário
+      const limiteCaracteres = 250;
 
       const textoExibido = expanded
         ? descricaoCompleta
-        : descricaoCompleta.slice(0, limiteCaracteres) +
-          (descricaoCompleta.length > limiteCaracteres ? "..." : "");
+        : (descricaoCompleta ?? "").slice(0, limiteCaracteres) +
+          ((descricaoCompleta ?? "").length > limiteCaracteres ? "..." : "");
 
       return (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+          }}
+        >
           {textoExibido}
           <br />
-          {descricaoCompleta.length > limiteCaracteres && (
+          {descricaoCompleta && descricaoCompleta.length > limiteCaracteres && (
             <button
               onClick={() => setExpanded(!expanded)}
               style={{
@@ -164,6 +184,7 @@ export const FolderDetailColumns = ({
                 color: "GrayText",
                 border: "none",
                 cursor: "pointer",
+                fontSize: "0.85rem",
               }}
             >
               {expanded ? "Mostrar menos" : "Mostrar mais"}
@@ -172,22 +193,29 @@ export const FolderDetailColumns = ({
         </div>
       );
     },
+    size: 400,
+    minSize: 300,
+    maxSize: 600,
   },
   {
-    id: "valor_estimado",
-    accessorFn: (row) =>
-      row.licitacao ? valorTotalEstimado(row.licitacao) : "Indisponível",
+    id: "valorEstimado",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valor Estimado" />
     ),
     cell: ({ row }) => {
       const licitacao = row.original.licitacao;
+      const valorEstimado = licitacao
+        ? valorTotalEstimado(licitacao)
+        : "Indisponível";
       return (
         <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {licitacao ? valorTotalEstimado(licitacao) : "Indisponível"}
+          {valorEstimado}
         </div>
       );
     },
+    size: 160,
+    minSize: 120,
+    maxSize: 200,
   },
   {
     id: "status",
@@ -198,7 +226,6 @@ export const FolderDetailColumns = ({
       const { id_folders_licitacoes, id_licitacao, id_folder } = row.original;
       const status = row.original.status_licitacoes;
       console.log("status", status);
-      
 
       return (
         <StatusDialog
