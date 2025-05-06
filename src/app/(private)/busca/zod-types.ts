@@ -68,8 +68,8 @@ export const municipioSchema = z.object({
 export const licitacaoSchema = z.object({
     id_licitacao: z.string(),
     comprador: z.string(),
-    data_abertura_propostas: z.string(),
-    hora_abertura_propostas: z.string(),
+    data_abertura_proposta: z.string(),
+    hora_abertura_proposta: z.string(),
     url: z.string(),
     municipios: municipioSchema,
     itens: z.array(itemSchema),

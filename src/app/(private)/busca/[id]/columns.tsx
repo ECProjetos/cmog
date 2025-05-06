@@ -57,32 +57,81 @@ export const licitacaoColumns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
+    cell: ({ row }) => (
+      <div
+        style={{
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+          maxWidth: "100%",
+        }}
+      >
+        {row.getValue("comprador")}
+      </div>
+    ),
+    size: 220,
+    minSize: 180,
+    maxSize: 300,
   },
+
   {
-    accessorKey: "modalidade",
+    accessorKey: "tipo_licitacao",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Modalidade" />
     ),
+    cell: ({ row }) => (
+      <div
+        style={{
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+          maxWidth: "100%",
+        }}
+      >
+        {row.getValue("tipo_licitacao")}
+      </div>
+    ),
+    size: 160,
+    minSize: 120,
+    maxSize: 200,
   },
+
   {
     accessorKey: "municipios.uf_municipio",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="UF" />
     ),
+    size: 80,
+    minSize: 60,
+    maxSize: 100,
   },
   {
-    accessorKey: "data_abertura_propostas",
+    accessorKey: "data_abertura_proposta",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Data de Abertura" />
     ),
     cell: ({ row }) => {
-      const horas = row.original.hora_abertura_propostas;
+      const data = row.getValue("data_abertura_proposta");
+      const horas = row.original.hora_abertura_proposta;
       return (
-        <div style={{ whiteSpace: "balance", wordWrap: "break-word" }}>
-          {row.getValue("data_abertura_propostas")} às {horas}
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+            textAlign: "center",
+          }}
+        >
+          {data}
+          <br />
+          às {horas}
         </div>
       );
     },
+    size: 135,
+    minSize: 120,
+    maxSize: 150,
   },
 
   {
@@ -95,7 +144,7 @@ export const licitacaoColumns = ({
       const descricaoCompleta = licitacao.objeto;
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [expanded, setExpanded] = useState(false);
-      const limiteCaracteres = 250; // ajuste conforme necessário
+      const limiteCaracteres = 250;
 
       const textoExibido = expanded
         ? descricaoCompleta
@@ -103,7 +152,14 @@ export const licitacaoColumns = ({
           (descricaoCompleta.length > limiteCaracteres ? "..." : "");
 
       return (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+        <div
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+          }}
+        >
           {textoExibido}
           <br />
           {descricaoCompleta.length > limiteCaracteres && (
@@ -114,6 +170,7 @@ export const licitacaoColumns = ({
                 color: "GrayText",
                 border: "none",
                 cursor: "pointer",
+                fontSize: "0.85rem",
               }}
             >
               {expanded ? "Mostrar menos" : "Mostrar mais"}
@@ -122,6 +179,9 @@ export const licitacaoColumns = ({
         </div>
       );
     },
+    size: 400,
+    minSize: 300,
+    maxSize: 600,
   },
   {
     id: "valorEstimado",
@@ -137,6 +197,9 @@ export const licitacaoColumns = ({
         </div>
       );
     },
+    size: 160,
+    minSize: 120,
+    maxSize: 200,
   },
   {
     accessorKey: "avaliacao",
@@ -153,11 +216,11 @@ export const licitacaoColumns = ({
       const getEstilos = (valor: string) => {
         switch (valor) {
           case "bom":
-            return { backgroundColor: "#d1fae5", color: "#065f46" }; // verde claro
+            return { backgroundColor: "#d1fae5", color: "#065f46" };
           case "ruim":
-            return { backgroundColor: "#fee2e2", color: "#991b1b" }; // vermelho claro
+            return { backgroundColor: "#fee2e2", color: "#991b1b" };
           default:
-            return { backgroundColor: "#f3f4f6", color: "#374151" }; // cinza claro
+            return { backgroundColor: "#f3f4f6", color: "#374151" };
         }
       };
 
@@ -165,7 +228,7 @@ export const licitacaoColumns = ({
         const novaAvaliacao = e.target.value as "bom" | "ruim" | "nao_avaliado";
         setLoading(true);
         const result = await updateAvaliacaoLicitacao(
-          buscaId, // certifique-se de que esse campo existe no objeto
+          buscaId,
           licitacao.id_licitacao,
           novaAvaliacao
         );
@@ -197,6 +260,9 @@ export const licitacaoColumns = ({
         </div>
       );
     },
+    size: 140,
+    minSize: 120,
+    maxSize: 180,
   },
   {
     id: "actions",
