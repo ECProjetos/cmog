@@ -85,7 +85,7 @@ export function BuscaTable<TData, TValue>({
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto hidden h-8 lg:flex cursor-pointer"
+            className="ml-auto hidden h-8 lg:flex"
             onClick={handleResetFiltersButtonClick}
           >
             <ListRestart />
@@ -144,7 +144,7 @@ export function BuscaTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="py-4 cursor">
+      <div className="py-4">
         <DataTablePagination table={table} />
       </div>
     </div>
