@@ -128,6 +128,7 @@ export async function updateSearch(
         modality,
     } = data;
 
+    // Gerar listas de palavras-chave positivas e negativas
     const positiveKeywords = goodKeyWord
         .split(";")
         .map(s => s.trim())
@@ -143,15 +144,16 @@ export async function updateSearch(
         ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
+    // SQL para buscar as licitações relevantes
     const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-FROM licitacoes l
-LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-WHERE
-    (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
-    AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-    AND (${positiveClause})
-    ${negativeClause};
+        FROM licitacoes l
+        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+        WHERE
+            (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
+            AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+            AND (${positiveClause})
+            ${negativeClause};
     `;
 
     const { data: results, error } = await supabase.rpc("run_sql", {
@@ -166,6 +168,7 @@ WHERE
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const licitacoesIds = results?.map((r: any) => r.id_licitacao) ?? [];
 
+    // Atualiza a tabela "buscas"
     const { data: updateResult, error: updateError } = await supabase
         .from("buscas")
         .update({
@@ -186,36 +189,61 @@ WHERE
         return { error: "Erro ao atualizar busca" };
     }
 
-    // Remove antigas relações
-    const { error: deleteError } = await supabase
+    //Buscar licitações já existentes para a busca
+    const { data: existingLicitacoes, error: fetchError } = await supabase
         .from("buscas_licitacoes")
-        .delete()
+        .select("id_licitacao")
         .eq("id_busca", busca_id);
 
-    if (deleteError) {
-        console.error("Erro ao remover antigas relações:", deleteError);
-        return { error: "Erro ao atualizar relações da busca" };
+    if (fetchError) {
+        console.error("Erro ao buscar licitações existentes:", fetchError);
+        return { error: "Erro ao verificar as licitações existentes" };
     }
 
-    // Insere novas
-    const { error: insertRelationError } = await supabase
-        .from("buscas_licitacoes")
-        .insert(
-            licitacoesIds.map((id_licitacao: string) => ({
-                id_busca: busca_id,
-                id_licitacao,
-            }))
-        );
+    const existingIds = new Set(existingLicitacoes?.map(l => l.id_licitacao));
 
-    if (insertRelationError) {
-        console.error("Erro ao inserir novas relações:", insertRelationError);
-        return { error: "Erro ao atualizar relações da busca" };
+    // Identificar novas e antigas licitações
+    const newLicitacoes = licitacoesIds.filter((id: string) => !existingIds.has(id));
+    const removedLicitacoes = [...existingIds].filter(id => !licitacoesIds.includes(id));
+
+    // Remover apenas as antigas que não pertencem mais à busca
+    if (removedLicitacoes.length > 0) {
+        const { error: deleteError } = await supabase
+            .from("buscas_licitacoes")
+            .delete()
+            .eq("id_busca", busca_id)
+            .in("id_licitacao", removedLicitacoes);
+
+        if (deleteError) {
+            console.error("Erro ao remover relações antigas:", deleteError);
+            return { error: "Erro ao atualizar relações da busca" };
+        }
+    }
+
+    // Adicionar apenas as novas licitações
+    if (newLicitacoes.length > 0) {
+        const { error: insertRelationError } = await supabase
+            .from("buscas_licitacoes")
+            .insert(
+                newLicitacoes.map((id_licitacao: string) => ({
+                    id_busca: busca_id,
+                    id_licitacao,
+                }))
+            );
+
+        if (insertRelationError) {
+            console.error("Erro ao inserir novas relações:", insertRelationError);
+            return { error: "Erro ao atualizar relações da busca" };
+        }
     }
 
     return {
         message: "Busca atualizada com sucesso",
         quantidadeLicitacoes: licitacoesIds.length,
         id_busca: updateResult?.id_busca,
+        novasLicitacoes: newLicitacoes.length,
+        licitacoesRemovidas: removedLicitacoes.length,
     };
 }
+
 

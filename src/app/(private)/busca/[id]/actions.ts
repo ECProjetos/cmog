@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
 
+    // Buscar a definição da busca
     const { data: busca, error } = await supabase
         .from("buscas")
         .select("*")
@@ -15,6 +16,7 @@ export async function ReRunSearch(buscaId: string) {
         throw new Error("Busca não encontrada");
     }
 
+    // Construção dos filtros de palavras-chave
     const buildLike = (keywords: string[], fields: string[]) =>
         keywords.flatMap((word) =>
             fields.map((field) => `${field} ILIKE '%${word}%'`)
@@ -36,13 +38,13 @@ export async function ReRunSearch(buscaId: string) {
 
     const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-FROM licitacoes l
-LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-WHERE
-    (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")}))
-    AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
-    AND (${positiveClause})
-    ${negativeClause};
+        FROM licitacoes l
+        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+        WHERE
+            (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")}))
+            AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
+            AND (${positiveClause})
+            ${negativeClause};
     `;
 
     const { data: results, error: sqlError } = await supabase.rpc("run_sql", { query: sql });
@@ -55,22 +57,31 @@ WHERE
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const licitacoesIds = results?.map((r: any) => r.id_licitacao) ?? [];
 
-    // Remove relações antigas
-    const { error: deleteError } = await supabase
+    // Passo 1: Buscar as licitações já existentes
+    const { data: existingLicitacoes, error: existingError } = await supabase
         .from("buscas_licitacoes")
-        .delete()
+        .select("id_licitacao")
         .eq("id_busca", buscaId);
 
-    if (deleteError) {
-        console.error("Erro ao remover relações antigas:", deleteError);
-        throw new Error("Erro ao atualizar as licitações da busca");
+    if (existingError) {
+        console.error("Erro ao buscar licitações existentes:", existingError);
+        throw new Error("Erro ao verificar as licitações existentes");
     }
 
-    // Insere novas relações
+    // Passo 2: Filtrar apenas novas licitações
+    const existingIds = new Set(existingLicitacoes?.map((l) => l.id_licitacao));
+    const newLicitacoes = licitacoesIds.filter((id: string) => !existingIds.has(id));
+
+    if (newLicitacoes.length === 0) {
+        console.log("Nenhuma nova licitação para adicionar.");
+        return [];
+    }
+
+    // Passo 3: Inserir apenas as novas licitações
     const { error: insertError } = await supabase
         .from("buscas_licitacoes")
         .insert(
-            licitacoesIds.map((id_licitacao: string) => ({
+            newLicitacoes.map((id_licitacao: string) => ({
                 id_busca: buscaId,
                 id_licitacao,
             }))
@@ -81,8 +92,10 @@ WHERE
         throw new Error("Erro ao salvar as novas licitações da busca");
     }
 
-    return licitacoesIds;
+    console.log(`${newLicitacoes.length} novas licitações adicionadas.`);
+    return newLicitacoes;
 }
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getLicitacoesByBusca(buscaId: string): Promise<{ data?: any[]; error?: string }> {
