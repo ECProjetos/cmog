@@ -218,7 +218,7 @@ export const licitacaoColumns = ({
           case "bom":
             return { backgroundColor: "#d1fae5", color: "#065f46" };
           case "ruim":
-            return { backgroundColor: "#808080", color: "#374151" };
+            return { backgroundColor: "#C8C8C8", color: "#374151" };
           default:
             return { backgroundColor: "#f3f4f6", color: "#374151" };
         }
