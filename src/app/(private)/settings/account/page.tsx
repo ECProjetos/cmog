@@ -48,6 +48,7 @@ export default function AccountPage() {
   const [loginEmail, setLoginEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (user?.user_metadata) {
@@ -180,6 +181,13 @@ export default function AccountPage() {
   };
 
   async function handlePasswordSubmit() {
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem", {
+        description: "Por favor, verifique se as senhas digitadas são iguais.",
+      });
+      return;
+    }
+  
     const formData = new FormData();
     formData.append("current_password", currentPassword);
     formData.append("password", password);
@@ -389,6 +397,13 @@ export default function AccountPage() {
                         placeholder="Digite sua nova senha"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <Input
+                      className="mb-4"
+                      type="password"
+                      placeholder="Confirmar senha"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </div>
                     <Button
