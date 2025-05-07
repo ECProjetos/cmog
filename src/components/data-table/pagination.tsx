@@ -53,7 +53,7 @@ export function DataTablePagination<TData>({
           Página {table.getState().pagination.pageIndex + 1} de{" "}
           {table.getPageCount()}
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 cursor-pointer">
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"

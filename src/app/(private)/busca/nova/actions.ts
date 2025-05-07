@@ -5,13 +5,13 @@ import { SearchSchemaType } from "../zod-types";
 
 const buildLike = (keywords: string[], fields: string[]) => {
     return keywords.flatMap((word) =>
-        fields.map((field) => `${field} ILIKE '%${word}%'`)
+        fields.map((field) => `${field} ~* '\\m${word}\\M'`)
     ).join(" OR ");
 };
 
 const buildNotLike = (keywords: string[], fields: string[]) => {
     return keywords.flatMap((word) =>
-        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
+        fields.map((field) => `${field} !~* '\\m${word}\\M'`)
     ).join(" AND ");
 };
 
