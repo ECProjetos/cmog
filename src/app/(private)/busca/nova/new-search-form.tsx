@@ -90,12 +90,15 @@ export default function SearchForm({
       }
 
       toast.success(
-        `Busca ${hasBusca ? "criada" : "atualizada"} com sucesso!`,
+        `Busca ${hasBusca ? "atualizada" : "criada"} com sucesso!`,
         {
           description: `Encontramos ${res.quantidadeLicitacoes} licitações!`,
         }
       );
       if (hasBusca && setFormModalOpen) {
+        setTimeout(() => {
+          redirect(`/busca/${res.id_busca}`);
+        }, 2000);
         setFormModalOpen(false);
       } else {
         setTimeout(() => {
@@ -290,7 +293,11 @@ export default function SearchForm({
           <div className="grid grid-cols-3 gap-2">
             {MODALITY.map((modality) => (
               <FormField
-                key={typeof modality.value === "string" ? modality.value : modality.value.join("-")}
+                key={
+                  typeof modality.value === "string"
+                    ? modality.value
+                    : modality.value.join("-")
+                }
                 control={form.control}
                 name="modality"
                 render={({ field }) => {
@@ -300,7 +307,11 @@ export default function SearchForm({
 
                   return (
                     <FormItem
-                      key={typeof modality.value === "string" ? modality.value : modality.value.join("-")}
+                      key={
+                        typeof modality.value === "string"
+                          ? modality.value
+                          : modality.value.join("-")
+                      }
                       className="flex items-center space-x-2"
                     >
                       <FormControl>
@@ -361,11 +372,8 @@ export default function SearchForm({
               Voltar
             </Button>
           )}
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Resetar
-          </Button>
 
-          <Button type="submit">Buscar</Button>
+          <Button type="submit">Salvar</Button>
         </div>
       </form>
     </Form>
