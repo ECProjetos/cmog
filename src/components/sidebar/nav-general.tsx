@@ -66,7 +66,7 @@ export function NavGeneral({
                         <item.icon className="h-4 w-4 text-gray-500" />
                       )}
                       <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 cursor-pointer" />
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -77,7 +77,7 @@ export function NavGeneral({
                             <button
                               onClick={() => router.push(subItem.url)}
                               className={cn(
-                                "flex w-full items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer",
+                                "flex w-full items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
                                 subItem.isActive && activeItemStyles
                               )}
                             >
