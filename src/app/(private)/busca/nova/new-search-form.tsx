@@ -90,7 +90,7 @@ export default function SearchForm({
       }
 
       toast.success(
-        `Busca ${hasBusca ? "criada" : "atualizada"} com sucesso!`,
+        `Busca ${hasBusca ? "atualizada" : "criada"} com sucesso!`,
         {
           description: `Encontramos ${res.quantidadeLicitacoes} licitações!`,
         }
@@ -99,6 +99,7 @@ export default function SearchForm({
         setTimeout(() => {
           redirect(`/busca/${res.id_busca}`);
         }, 2000);
+        setFormModalOpen(false);
       } else {
         setTimeout(() => {
           redirect(`/busca/${res.id_busca}`);

@@ -19,12 +19,12 @@ export async function ReRunSearch(buscaId: string) {
     // Construção dos filtros de palavras-chave
     const buildLike = (keywords: string[], fields: string[]) =>
         keywords.flatMap((word) =>
-            fields.map((field) => `${field} ILIKE '%${word}%'`)
+            fields.map((field) => `${field} !~* '\\m${word}\\M'`)
         ).join(" OR ");
 
     const buildNotLike = (keywords: string[], fields: string[]) =>
         keywords.flatMap((word) =>
-            fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
+            fields.map((field) => `${field} !~* '\\m${word}\\M'`)
         ).join(" AND ");
 
     const positiveKeywords = busca.good_keywords ?? [];
