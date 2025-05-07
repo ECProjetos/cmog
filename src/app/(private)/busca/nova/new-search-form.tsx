@@ -67,7 +67,7 @@ export default function SearchForm({
         },
   });
   const allStates = STATES.map((state) => state.value);
-  const allModality = MODALITY.map((modality) => modality.value);
+  const allModality = MODALITY.map((modality) => modality.value).flat();
   const user = useUserStore((state) => state.user);
   const hasBusca = !!busca?.id_busca;
 
@@ -290,14 +290,17 @@ export default function SearchForm({
           <div className="grid grid-cols-3 gap-2">
             {MODALITY.map((modality) => (
               <FormField
-                key={modality.value}
+                key={typeof modality.value === "string" ? modality.value : modality.value.join("-")}
                 control={form.control}
                 name="modality"
                 render={({ field }) => {
-                  const isChecked = field.value?.includes(modality.value);
+                  const isChecked = Array.isArray(modality.value)
+                    ? modality.value.some((val) => field.value?.includes(val))
+                    : field.value?.includes(modality.value);
+
                   return (
                     <FormItem
-                      key={modality.value}
+                      key={typeof modality.value === "string" ? modality.value : modality.value.join("-")}
                       className="flex items-center space-x-2"
                     >
                       <FormControl>
