@@ -4,18 +4,24 @@ import { createClient } from "@/utils/supabase/server";
 import { SearchSchemaType } from "../zod-types";
 
 const buildLike = (keywords: string[], fields: string[]) => {
-    return keywords.flatMap((word) => {
-        const likeClause = fields.map((field) => `${field} ILIKE '%${word}%'`).join(" OR ");
-        return likeClause;
-    }).join(" OR ");
+    return keywords
+        .map((word) =>
+            fields
+                .map((field) => `${field} ~* '\\m${word}\\M'`)
+                .join(" OR ")
+        )
+        .join(" OR ");
 };
 
 const buildNotLike = (keywords: string[], fields: string[]) => {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
-    ).join(" AND ");
+    return keywords
+        .map((word) =>
+            fields
+                .map((field) => `${field} !~* '\\m${word}\\M'`)
+                .join(" AND ")
+        )
+        .join(" AND ");
 };
-
 
 
 export async function CreateNewShearch(
