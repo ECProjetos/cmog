@@ -88,6 +88,7 @@ export default function AccountPage() {
 
       setCurrentPassword("");
       setPassword("");
+      setConfirmPassword("");
     },
   });
 
@@ -367,13 +368,14 @@ export default function AccountPage() {
                   </h1>
                   <Separator className="mb-6" />
                   <p className="text-sm text-muted-foreground mb-4">
-                    Você pode alterar seu e-mail ou senha aqui.
+                    Para alteração de email entrar em contato com o suporte.
                   </p>
                   <div className="grid gap-4">
                     <div className="grid gap-1">
                       <Label>Email</Label>
                       <Input
                         value={loginEmail}
+                        disabled = {true}
                         onChange={(e) => setLoginEmail(e.target.value)}
                       />
                     </div>
