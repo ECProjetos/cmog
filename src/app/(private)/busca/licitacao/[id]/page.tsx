@@ -125,8 +125,10 @@ export default function Page() {
             {licitacao.hora_abertura_proposta}
           </p>
           <p>
-            <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} -{" "}
-            {licitacao.municipios?.uf_municipio || "Indisponível"}
+            <strong>Municipio:</strong>{" "}
+            {licitacao.municipios
+              ? `${licitacao.municipios.nome_municipio} - ${licitacao.municipios.uf_municipio || "Indisponível"}`
+              : "Indisponível"}
           </p>
           <p>
             <strong>Valor Total Estimado:</strong>{" "}

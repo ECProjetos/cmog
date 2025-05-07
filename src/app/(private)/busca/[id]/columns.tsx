@@ -292,6 +292,7 @@ export const licitacaoColumns = ({
             <DropdownMenuItem asChild>
               <Link
                 href={`/busca/licitacao/${licitacao.id_licitacao}`}
+                target="_blank"
                 className="flex items-center  gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
               >
                 <Search className="h-4 w-4 dark:text-white" />

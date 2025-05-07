@@ -62,8 +62,8 @@ export const itemSchema = z.object({
 });
 
 export const municipioSchema = z.object({
-    uf_municipio: z.string(),
-    nome_municipio: z.string().optional(),
+    uf_municipio: z.string().optional().nullable(),
+    nome_municipio: z.string().optional().nullable(),
 });
 
 export const licitacaoSchema = z.object({
@@ -84,7 +84,7 @@ export const licitacaoSchemaIndividual = z.object({
     data_abertura_proposta: z.string(),
     hora_abertura_proposta: z.string(),
     url: z.string(),
-    municipios: municipioSchema,
+    municipios: municipioSchema.optional().nullable(),
     itens: z.array(itemSchema),
     tipo_licitacao: z.string(),
     objeto: z.string(),
