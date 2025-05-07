@@ -22,23 +22,39 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
+  const totalRows = table.getFilteredRowModel().rows.length;
+
+  // Verifica se está em modo "Mostrar todos"
+  const isShowingAll = table.getState().pagination.pageSize === totalRows;
+
   return (
     <div className="flex items-center justify-between px-2">
       <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} de{" "}
-        {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
+        {table.getFilteredSelectedRowModel().rows.length} de {totalRows}{" "}
+        linha(s) selecionada(s).
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Linhas por página</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={
+              isShowingAll
+                ? `${totalRows}`
+                : `${table.getState().pagination.pageSize}`
+            }
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              const pageSize = Number(value);
+              table.setPageSize(pageSize === -1 ? totalRows : pageSize);
             }}
           >
-            <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            <SelectTrigger className="h-8 w-[90px]">
+              <SelectValue
+                placeholder={
+                  isShowingAll
+                    ? `${totalRows}`
+                    : `${table.getState().pagination.pageSize}`
+                }
+              />
             </SelectTrigger>
             <SelectContent side="top">
               {[5, 10, 15, 20, 25].map((pageSize) => (
@@ -46,12 +62,15 @@ export function DataTablePagination<TData>({
                   {pageSize}
                 </SelectItem>
               ))}
+              <SelectItem key={"all"} value="-1">
+                Mostrar todos
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
+          {isShowingAll ? 1 : table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button
