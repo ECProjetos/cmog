@@ -218,7 +218,7 @@ export const licitacaoColumns = ({
           case "bom":
             return { backgroundColor: "#d1fae5", color: "#065f46" };
           case "ruim":
-            return { backgroundColor: "#fee2e2", color: "#991b1b" };
+            return { backgroundColor: "#808080", color: "#374151" };
           default:
             return { backgroundColor: "#f3f4f6", color: "#374151" };
         }
@@ -255,7 +255,7 @@ export const licitacaoColumns = ({
           >
             <option value="nao_avaliado">Não Avaliado</option>
             <option value="bom">Bom</option>
-            <option value="ruim">Ruim</option>
+            <option value="ruim">Sem interesse</option>
           </select>
         </div>
       );
