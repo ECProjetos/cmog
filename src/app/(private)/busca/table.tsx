@@ -59,12 +59,14 @@ export function BuscaTable<TData, TValue>({
 
     initialState: {
       pagination: {
-        pageSize: 5, // Define o padrão para 5 linhas por página
+        pageSize:
+         5, // Define o padrão para 5 linhas por página
       },
     },
     state: {
       sorting,
       columnFilters,
+      
     },
   });
   return (
@@ -85,7 +87,7 @@ export function BuscaTable<TData, TValue>({
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto hidden h-8 lg:flex"
+            className="ml-auto hidden h-8 lg:flex cursor-pointer"
             onClick={handleResetFiltersButtonClick}
           >
             <ListRestart />

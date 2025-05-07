@@ -100,7 +100,7 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -109,7 +109,7 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/busca/${id}`} className="flex items-center">
+              <Link href={`/busca/${id}`} className="flex items-center cursor-pointer">
                 <Search className="mr-2 h-4 w-4" />
                 Ver
               </Link>

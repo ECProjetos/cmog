@@ -48,6 +48,7 @@ export default function AccountPage() {
   const [loginEmail, setLoginEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (user?.user_metadata) {
@@ -87,6 +88,7 @@ export default function AccountPage() {
 
       setCurrentPassword("");
       setPassword("");
+      setConfirmPassword("");
     },
   });
 
@@ -180,6 +182,13 @@ export default function AccountPage() {
   };
 
   async function handlePasswordSubmit() {
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem", {
+        description: "Por favor, verifique se as senhas digitadas são iguais.",
+      });
+      return;
+    }
+  
     const formData = new FormData();
     formData.append("current_password", currentPassword);
     formData.append("password", password);
@@ -359,13 +368,14 @@ export default function AccountPage() {
                   </h1>
                   <Separator className="mb-6" />
                   <p className="text-sm text-muted-foreground mb-4">
-                    Você pode alterar seu e-mail ou senha aqui.
+                    Para alteração de email entrar em contato com o suporte.
                   </p>
                   <div className="grid gap-4">
                     <div className="grid gap-1">
                       <Label>Email</Label>
                       <Input
                         value={loginEmail}
+                        disabled = {true}
                         onChange={(e) => setLoginEmail(e.target.value)}
                       />
                     </div>
@@ -389,6 +399,13 @@ export default function AccountPage() {
                         placeholder="Digite sua nova senha"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <Input
+                      className="mb-4"
+                      type="password"
+                      placeholder="Confirmar senha"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </div>
                     <Button
