@@ -2,6 +2,21 @@
 
 import { createClient } from "@/utils/supabase/server";
 
+
+const buildLike = (keywords: string[], fields: string[]) => {
+    return keywords.flatMap((word) => {
+        const likeClause = fields.map((field) => `${field} ILIKE '%${word}%'`).join(" OR ");
+        return likeClause;
+    }).join(" OR ");
+};
+
+const buildNotLike = (keywords: string[], fields: string[]) => {
+    return keywords.flatMap((word) =>
+        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
+    ).join(" AND ");
+};
+
+
 export async function ReRunSearch(buscaId: string) {
     const supabase = await createClient();
 
@@ -16,16 +31,6 @@ export async function ReRunSearch(buscaId: string) {
         throw new Error("Busca não encontrada");
     }
 
-    // Construção dos filtros de palavras-chave
-    const buildLike = (keywords: string[], fields: string[]) =>
-        keywords.flatMap((word) =>
-            fields.map((field) => `${field} !~* '\\m${word}\\M'`)
-        ).join(" OR ");
-
-    const buildNotLike = (keywords: string[], fields: string[]) =>
-        keywords.flatMap((word) =>
-            fields.map((field) => `${field} !~* '\\m${word}\\M'`)
-        ).join(" AND ");
 
     const positiveKeywords = busca.good_keywords ?? [];
     const negativeKeywords = busca.bad_keywords ?? [];
@@ -36,15 +41,15 @@ export async function ReRunSearch(buscaId: string) {
         ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
-    const sql = `
+        const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
         FROM licitacoes l
         LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
         WHERE
-            (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")}))
-            AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
-            AND (${positiveClause})
-            ${negativeClause};
+        (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s:string) => `'${s}'`).join(", ")}))
+        AND l.tipo_licitacao IN (${busca.modality.map((m:string) => `'${m}'`).join(", ")})
+        AND (${positiveClause})
+        ${negativeClause};
     `;
 
     const { data: results, error: sqlError } = await supabase.rpc("run_sql", { query: sql });

@@ -4,16 +4,19 @@ import { createClient } from "@/utils/supabase/server";
 import { SearchSchemaType } from "../zod-types";
 
 const buildLike = (keywords: string[], fields: string[]) => {
-    return keywords.flatMap((word) =>
-        fields.map((field) => `${field} !~* '\\m${word}\\M'`)
-    ).join(" OR ");
+    return keywords.flatMap((word) => {
+        const likeClause = fields.map((field) => `${field} ILIKE '%${word}%'`).join(" OR ");
+        return likeClause;
+    }).join(" OR ");
 };
 
 const buildNotLike = (keywords: string[], fields: string[]) => {
     return keywords.flatMap((word) =>
-        fields.map((field) => `${field} !~* '\\m${word}\\M'`)
+        fields.map((field) => `${field} NOT ILIKE '%${word}%'`)
     ).join(" AND ");
 };
+
+
 
 export async function CreateNewShearch(
     data: SearchSchemaType,
@@ -45,15 +48,15 @@ export async function CreateNewShearch(
         ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
-    const sql = `
+        const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-FROM licitacoes l
-LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-WHERE
-    (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
-    AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-    AND (${positiveClause})
-    ${negativeClause};
+        FROM licitacoes l
+        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+        WHERE
+        (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
+        AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+        AND (${positiveClause})
+        ${negativeClause};
     `;
 
     const { data: results, error } = await supabase.rpc("run_sql", {
@@ -146,15 +149,15 @@ export async function updateSearch(
 
     // SQL para buscar as licitações relevantes
     const sql = `
-        SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-        FROM licitacoes l
-        LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
-        WHERE
-            (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
-            AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-            AND (${positiveClause})
-            ${negativeClause};
-    `;
+    SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
+    FROM licitacoes l
+    LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+    WHERE
+    (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
+    AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+    AND (${positiveClause})
+    ${negativeClause};
+`;
 
     const { data: results, error } = await supabase.rpc("run_sql", {
         query: sql
