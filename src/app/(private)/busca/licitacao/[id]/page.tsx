@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { getLicitacaoIndividualById } from "./actions";
-import { licitacaoIndividualType } from "./zod-types-licitacao";
+import { licitacaoIndividualType } from "../../zod-types";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -70,7 +70,7 @@ export default function Page() {
     if (!idParam) return;
 
     setIsLoading(true);
-    getLicitacaoIndividualById([Number(idParam)])
+    getLicitacaoIndividualById([String(idParam)])
       .then((res) => {
         if (res.error) {
           console.error(
@@ -121,8 +121,8 @@ export default function Page() {
         <div className="mb-4 space-y-2 mt-4">
           <p>
             <strong>Data de Abertura:</strong>{" "}
-            {licitacao.data_abertura_propostas} às{" "}
-            {licitacao.hora_abertura_propostas}
+            {licitacao.data_abertura_proposta} às{" "}
+            {licitacao.hora_abertura_proposta}
           </p>
           <p>
             <strong>Municipio:</strong> {licitacao.municipios.nome_municipio} -{" "}
@@ -133,13 +133,9 @@ export default function Page() {
             {valorTotalEstimado(licitacao)}
           </p>
 
-          {licitacao.grupos_materiais.map((grupo) =>
-            grupo.classes_materiais.map((classe) => (
-              <p key={classe.id_classe_material}>
-                {classe.nome_classe_material}
-              </p>
-            ))
-          )}
+          <p>
+            <strong>Objeto:</strong>: {licitacao.objeto}
+          </p>
 
           <a
             href={licitacao.url}
@@ -221,7 +217,7 @@ export default function Page() {
                     Voltar
                   </Button>
                   <SaveLicitacao
-                    licitacao_id={Number(idParam)}
+                    licitacao_id={String(idParam)}
                     folders={folders}
                   />
                 </div>

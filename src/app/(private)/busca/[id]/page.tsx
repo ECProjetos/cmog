@@ -1,6 +1,6 @@
 "use server";
 
-import { getLicitacoesByIds } from "./actions";
+import { getLicitacoesByBusca } from "./actions";
 import DetalhesBusca from "./DetalhesBusca";
 import { createClient } from "@/utils/supabase/server";
 
@@ -18,9 +18,8 @@ export default async function DetalhesBuscaPage({ params }: PageProps) {
     .eq("id_busca", id)
     .single();
 
-  const licitacoes = await getLicitacoesByIds(busca.id_licitacoes);
+  const licitacoes = await getLicitacoesByBusca(busca.id_busca);
   if (!busca) return <div>Busca não encontrada</div>;
-  
 
   return <DetalhesBusca busca={busca} licitacoes={licitacoes.data ?? []} />;
 }

@@ -28,18 +28,18 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export default function BuscasPage() {
-  const user = useUserStore((state) => state.user);
+  const userID = useUserStore((state) => state.user?.id);
   const [data, setData] = useState<SearchSchemaViewType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
-    if (!user) {
+    if (!userID) {
       setLoading(false);
       return;
     }
-    getAllBuscas(user.id)
+    getAllBuscas(userID)
       .then((res) => {
         if (res.error) {
           setError(res.error.message);
@@ -54,7 +54,7 @@ export default function BuscasPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [user]); // Adicione user.id como dependência
+  }, [userID]); // Adicione user.id como dependência
 
   return (
     <SidebarProvider>
@@ -102,3 +102,32 @@ export default function BuscasPage() {
     </SidebarProvider>
   );
 }
+
+/**
+ * BuscasPage Component
+ * 
+ * This component renders a page where users can view and manage their searches ("buscas").
+ * 
+ * Features:
+ * - Fetches and displays a list of searches for the logged-in user.
+ * - Handles loading and error states.
+ * - Provides a button to create a new search.
+ * 
+ * State:
+ * - `userID`: The ID of the currently logged-in user (retrieved from global state).
+ * - `data`: An array of search data fetched from the server.
+ * - `loading`: A boolean indicating whether data is being loaded.
+ * - `error`: A string containing an error message if the fetch fails.
+ * 
+ * Dependencies:
+ * - `useUserStore`: Custom hook for accessing global state.
+ * - `getAllBuscas`: Function to fetch search data from the server.
+ * - `BuscaTable`: Component to display the search data in a table format.
+ * 
+ * UI States:
+ * - Loading: Displays a skeleton loader.
+ * - Error: Shows an error message.
+ * - Data: Renders the search data in a table.
+ * 
+ * returns JSX.Element
+ */

@@ -1,44 +1,36 @@
 'use server';
 
 import { createClient } from "@/utils/supabase/server";
-import { licitacaoIndividualType } from './zod-types-licitacao';
-import { licitacaoSchemaIndividual } from "./zod-types-licitacao";
+import { licitacaoSchemaIndividual, licitacaoIndividualType } from "../../zod-types"
 import { z } from "zod";
 
 
-export async function getLicitacaoIndividualById(ids: number[]): Promise<{ data?: licitacaoIndividualType[]; error?: string }> {
+export async function getLicitacaoIndividualById(ids: string[]): Promise<{ data?: licitacaoIndividualType[]; error?: string }> {
     const supabase = await createClient();
 
     const { data, error } = await supabase
-    .from('licitacoes')
-    .select(`
+        .from('licitacoes')
+        .select(`
         id_licitacao,
-        comprador,
-        data_abertura_propostas,
-        hora_abertura_propostas,
-        url,
-        tipo_licitacao,
-        municipios (
-            uf_municipio,
-            nome_municipio
-        ),
-        grupos_materiais (
-            id_grupo_material,
-            nome_grupo_material,
-            classes_materiais (
-                id_classe_material,
-                nome_classe_material
-            )
-        ),
-        itens (
-            id_item,
-            ds_item,
-            qt_itens,
-            vl_unitario_estimado
+      comprador,
+      data_abertura_proposta,
+      hora_abertura_proposta,
+      url,
+      tipo_licitacao,
+      objeto,
+      municipios (
+        nome_municipio,
+        uf_municipio
+      ),
+      itens (
+        id_item,
+        ds_item,
+        qt_itens,
+        vl_unitario_estimado
         )
        
     `)
-    .in('id_licitacao', ids);
+        .in('id_licitacao', ids);
 
 
     if (error) {
