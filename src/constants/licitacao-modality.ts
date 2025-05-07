@@ -28,3 +28,4 @@ export const MODALITY = [
     {label: 'Pregão Maior oferta', value: 'Pregão Maior oferta'},
 
 ];
+

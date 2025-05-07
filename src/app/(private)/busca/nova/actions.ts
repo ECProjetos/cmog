@@ -47,13 +47,13 @@ export async function CreateNewShearch(
 
     const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-    FROM licitacoes l
-    JOIN municipios m ON l.id_municipio = m.codigo_ibge
-    WHERE
-        m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")})
-        AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-        AND (${positiveClause})
-        ${negativeClause};
+FROM licitacoes l
+LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+WHERE
+    (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
+    AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+    AND (${positiveClause})
+    ${negativeClause};
     `;
 
     const { data: results, error } = await supabase.rpc("run_sql", {
@@ -145,13 +145,13 @@ export async function updateSearch(
 
     const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
-        FROM licitacoes l
-        JOIN municipios m ON l.id_municipio = m.codigo_ibge
-        WHERE
-            m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")})
-            AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
-            AND (${positiveClause})
-            ${negativeClause};
+FROM licitacoes l
+LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
+WHERE
+    (m.uf_municipio IS NULL OR m.uf_municipio IN (${states.map(s => `'${s}'`).join(", ")}))
+    AND l.tipo_licitacao IN (${modality.map(m => `'${m}'`).join(", ")})
+    AND (${positiveClause})
+    ${negativeClause};
     `;
 
     const { data: results, error } = await supabase.rpc("run_sql", {
