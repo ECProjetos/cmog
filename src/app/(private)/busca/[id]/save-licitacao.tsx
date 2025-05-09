@@ -19,6 +19,7 @@ import { saveLicitacao } from "./actions";
 import { Input } from "@/components/ui/input";
 import { createFolder, getAllFolders } from "../../minhas-licitacoes/actions";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import Link from "next/link";
 
 type SaveLicitacaoProps = {
   licitacao_id: string | undefined;
@@ -105,7 +106,17 @@ export function SaveLicitacao({ licitacao_id }: SaveLicitacaoProps) {
       });
       setError(error.message);
     } else {
-      toast.success("Licitação salva com sucesso!");
+      toast.success("Licitação salva com sucesso!", {
+        description: (
+          <Link
+            href={`/minhas-licitacoes/${selectedFolder}`}
+            target="_blank"
+            className="text-blue-500 dark:text-blue-400"
+          >
+            Clique aqui para ver a pasta
+          </Link>
+        ),
+      });
       setIsOpen(false);
     }
 
