@@ -2,9 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import {  ExternalLink } from "lucide-react";
-
-
+import { ExternalLink } from "lucide-react";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
@@ -13,6 +11,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { SaveLicitacao } from "./save-licitacao";
 import { updateAvaliacaoLicitacao } from "./actions";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 type LicitacaoColumnsProps = {
   buscaId: string;
@@ -243,15 +243,19 @@ export const licitacaoColumns = ({
         <div className="flex flex-col gap-2">
           <SaveLicitacao licitacao_id={licitacao.id_licitacao} />
           <Link
-        href={`/busca/licitacao/${licitacao.id_licitacao}`}
-        target="_blank"
-        className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
+            href={`/busca/licitacao/${licitacao.id_licitacao}`}
+            target="_blank"
+            className={cn(
+              buttonVariants({
+                variant: "ghost",
+                size: "icon",
+              })
+            )}
           >
-        <ExternalLink className="h-4 w-4 dark:text-white" />
-        <span>Ir para o edital</span>
+            <ExternalLink className="h-4 w-4 dark:text-white" />
           </Link>
         </div>
       );
-        },
-      },
-        ];
+    },
+  },
+];

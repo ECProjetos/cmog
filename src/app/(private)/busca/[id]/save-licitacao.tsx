@@ -115,10 +115,9 @@ export function SaveLicitacao({ licitacao_id }: SaveLicitacaoProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white">
-          <BookmarkPlus className="h-4 w-4" />
-          <span className="ml-2">Salvar Licitação</span>
-        </button>
+        <Button variant="ghost" size="icon">
+          <BookmarkPlus />
+        </Button>
       </DialogTrigger>
       <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
