@@ -115,7 +115,7 @@ export function SaveLicitacao({ licitacao_id }: SaveLicitacaoProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" className="cursor-pointer">
           <BookmarkPlus />
         </Button>
       </DialogTrigger>
