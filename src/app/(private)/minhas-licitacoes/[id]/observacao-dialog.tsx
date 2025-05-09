@@ -20,7 +20,7 @@ import { addObservacaoToLicitacao } from "./actions";
 
 type ObservacaoDialogProps = {
   folderLicitacao: string;
-  licitacao_id: number;
+  licitacao_id: string;
   folder_id: string;
   existingObservacao?: string | null;
   onUpdate: () => void;
@@ -44,7 +44,7 @@ export function ObservacaoDialog({
     const { error } = await addObservacaoToLicitacao(
       folderLicitacao, // string
       folder_id, // string
-      licitacao_id, // number
+      licitacao_id, // string
       observacao // string
     );
 
@@ -65,19 +65,16 @@ export function ObservacaoDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          {existingObservacao ? (
-            <>
-              <Pencil className="h-1 w-1 mr-1" />
-              <span className="text-xs">Editar Observação</span>
-            </>
-          ) : (
-            <>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Adicionar Observação
-            </>
-          )}
-        </Button>
+        {existingObservacao ? (
+          <Button variant="ghost" size="sm" className="justify-start">
+            <Pencil className="h-1 w-1" />
+          </Button>
+        ) : (
+          <Button variant="ghost" size="sm" className="justify-start">
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Adicionar Observação
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[500px]">

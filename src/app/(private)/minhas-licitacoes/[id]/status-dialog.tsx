@@ -48,7 +48,7 @@ const colors = [
 
 type StatusDialogProps = {
   folderLicitacao: string;
-  licitacao_id: number;
+  licitacao_id: string;
   folder_id: string;
   status?: StatusLicitacoes | null;
   onUpdate?: () => void;

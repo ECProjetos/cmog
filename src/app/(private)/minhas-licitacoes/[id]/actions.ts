@@ -107,7 +107,7 @@ export async function deletLicitacaoFromFolder(
 export async function addObservacaoToLicitacao(
     folderLicitacaoId: string,
     folderId: string,
-    licitacaoId: number,
+    licitacaoId: string,
     observacao: string
 ) {
     try {
@@ -259,7 +259,7 @@ export async function deleteStatusLicitacao(
 export async function addSatatusToLicitacao(
     id_folders_licitacoes: string,
     id_folder: string,
-    id_licitacao: number,
+    id_licitacao: string,
     id_status: string,
 ) {
     try {

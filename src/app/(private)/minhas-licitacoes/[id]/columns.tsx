@@ -32,29 +32,11 @@ import {
 import { toast } from "sonner";
 
 import { FolderLicitacoes } from "../zod-types";
-import { licitacaoIndividualType } from "@/app/(private)/busca/zod-types";
 import { deletLicitacaoFromFolder } from "./actions";
 import { useState } from "react";
 import Link from "next/link";
 import { ObservacaoDialog } from "./observacao-dialog";
 import { StatusDialog } from "./status-dialog";
-
-function valorTotalEstimado(licitacao: licitacaoIndividualType): string {
-  const totalEstimado = licitacao.itens.reduce((total, item) => {
-    const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
-    const quantidade = parseFloat(item.qt_itens || "0");
-    return total + valorUnitario * quantidade;
-  }, 0);
-
-  if (isNaN(totalEstimado) || totalEstimado <= 0 || !licitacao.itens.length) {
-    return "Indisponível";
-  }
-
-  return totalEstimado.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-}
 
 type FolderDetailColumnsProps = {
   onUpdate: () => void;
@@ -198,26 +180,6 @@ export const FolderDetailColumns = ({
     maxSize: 600,
   },
   {
-    id: "valorEstimado",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Valor Estimado" />
-    ),
-    cell: ({ row }) => {
-      const licitacao = row.original.licitacao;
-      const valorEstimado = licitacao
-        ? valorTotalEstimado(licitacao)
-        : "Indisponível";
-      return (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {valorEstimado}
-        </div>
-      );
-    },
-    size: 160,
-    minSize: 120,
-    maxSize: 200,
-  },
-  {
     id: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
@@ -231,7 +193,7 @@ export const FolderDetailColumns = ({
         <StatusDialog
           status={status}
           folderLicitacao={String(id_folders_licitacoes)}
-          licitacao_id={Number(id_licitacao)}
+          licitacao_id={String(id_licitacao)}
           folder_id={String(id_folder)}
           onUpdate={onUpdate}
           user_id={user_id}
@@ -259,34 +221,38 @@ export const FolderDetailColumns = ({
           : observacao;
 
       return (
-        <div className="flex flex-col gap-1 text-sm text-gray-700">
-          {/* Botão editar sempre visível no topo */}
-          <ObservacaoDialog
-            folderLicitacao={String(id_folders_licitacoes)}
-            licitacao_id={Number(id_licitacao)}
-            folder_id={String(id_folder)}
-            existingObservacao={observacao}
-            onUpdate={onUpdate}
-          />
+        <div className="flex flex-col text-sm text-gray-700">
+          {/* Linha superior com o texto e o botão de diálogo */}
+          <div className="flex  items-start ">
+            <div
+              style={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                flex: 1,
+              }}
+            >
+              {textToDisplay || null}
+            </div>
 
-          {/* Texto da observação */}
-          <div
-            style={{
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-          >
-            {textToDisplay || null}
+            <ObservacaoDialog
+              folderLicitacao={String(id_folders_licitacoes)}
+              licitacao_id={String(id_licitacao)}
+              folder_id={String(id_folder)}
+              existingObservacao={observacao}
+              onUpdate={onUpdate}
+            />
           </div>
 
-          {/* Mostrar mais/menos se necessário */}
+          {/* Linha inferior com o botão centralizado */}
           {hasLongText && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="text-xs text-muted-foreground hover:underline w-fit"
-            >
-              {expanded ? "Mostrar menos" : "Mostrar mais"}
-            </button>
+            <div className="flex justify-center mt-2">
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="text-xs text-muted-foreground hover:underline"
+              >
+                {expanded ? "Mostrar menos" : "Mostrar mais"}
+              </button>
+            </div>
           )}
         </div>
       );
