@@ -2,18 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Search, ExternalLink, MoreHorizontal } from "lucide-react";
+import {  ExternalLink } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-import { Button } from "@/components/ui/button";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
@@ -249,44 +240,18 @@ export const licitacaoColumns = ({
     cell: ({ row }) => {
       const licitacao = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
-              <SaveLicitacao
-                licitacao_id={licitacao.id_licitacao}
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/busca/licitacao/${licitacao.id_licitacao}`}
-                target="_blank"
-                className="flex items-center  gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
-              >
-                <Search className="h-4 w-4 dark:text-white" />
-                <span className="ml-2">Ver Detalhes</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                href={licitacao.url}
-                target="_blank"
-                className="flex items-center  gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
-              >
-                <ExternalLink className="h-4 w-4 dark:text-white" />
-                <span className="ml-2">Ir para o edital</span>
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex flex-col gap-2">
+          <SaveLicitacao licitacao_id={licitacao.id_licitacao} />
+          <Link
+        href={`/busca/licitacao/${licitacao.id_licitacao}`}
+        target="_blank"
+        className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200 dark:hover:bg-gray-700 dark:text-gray-200 dark:hover:text-white"
+          >
+        <ExternalLink className="h-4 w-4 dark:text-white" />
+        <span>Ir para o edital</span>
+          </Link>
+        </div>
       );
-    },
-  },
-];
+        },
+      },
+        ];
