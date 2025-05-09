@@ -24,23 +24,6 @@ import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 import { SaveLicitacao } from "./save-licitacao";
 import { updateAvaliacaoLicitacao } from "./actions";
 
-function valorTotalEstimado(licitacao: LicitacaoType): string {
-  const totalEstimado = licitacao.itens.reduce((total, item) => {
-    const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
-    const quantidade = parseFloat(item.qt_itens || "0");
-    return total + valorUnitario * quantidade;
-  }, 0);
-
-  if (isNaN(totalEstimado) || totalEstimado <= 0 || !licitacao.itens.length) {
-    return "Indisponível";
-  }
-
-  return totalEstimado.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-}
-
 type LicitacaoColumnsProps = {
   folders: FolderType[];
   onUpdate: () => void;
@@ -58,16 +41,20 @@ export const licitacaoColumns = ({
       <DataTableColumnHeader column={column} title="Comprador" />
     ),
     cell: ({ row }) => (
-      <div
+      <Link
+        href={`/busca/licitacao/${row.original.id_licitacao}`}
+        target="_blank"
         style={{
           whiteSpace: "normal",
           wordWrap: "break-word",
           overflowWrap: "break-word",
           maxWidth: "100%",
+          color: "inherit",
+          textDecoration: "none",
         }}
       >
         {row.getValue("comprador")}
-      </div>
+      </Link>
     ),
     size: 220,
     minSize: 180,
@@ -80,31 +67,52 @@ export const licitacaoColumns = ({
       <DataTableColumnHeader column={column} title="Modalidade" />
     ),
     cell: ({ row }) => (
-      <div
+      <Link
+        href={`/busca/licitacao/${row.original.id_licitacao}`}
+        target="_blank"
         style={{
           whiteSpace: "normal",
           wordWrap: "break-word",
           overflowWrap: "break-word",
           maxWidth: "100%",
+          color: "inherit",
+          textDecoration: "none",
         }}
       >
         {row.getValue("tipo_licitacao")}
-      </div>
+      </Link>
     ),
     size: 160,
     minSize: 120,
     maxSize: 200,
   },
-
   {
-    accessorKey: "municipios.uf_municipio",
+    accessorKey: "municipios",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="UF" />
     ),
-    size: 80,
-    minSize: 60,
-    maxSize: 100,
+    cell: ({ row }) => {
+      const uf = row.original.municipios?.uf_municipio as string | "";
+
+      return (
+        <Link
+          href={`/busca/licitacao/${row.original.id_licitacao}`}
+          target="_blank"
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          {uf}
+        </Link>
+      );
+    },
   },
+
   {
     accessorKey: "data_abertura_proposta",
     header: ({ column }) => (
@@ -113,20 +121,25 @@ export const licitacaoColumns = ({
     cell: ({ row }) => {
       const data = row.getValue("data_abertura_proposta");
       const horas = row.original.hora_abertura_proposta;
+
       return (
-        <div
+        <Link
+          href={`/busca/licitacao/${row.original.id_licitacao}`}
+          target="_blank"
           style={{
             whiteSpace: "normal",
             wordWrap: "break-word",
             overflowWrap: "break-word",
             maxWidth: "100%",
             textAlign: "center",
+            color: "inherit",
+            textDecoration: "none",
           }}
         >
           {data as string}
           <br />
           às {horas}
-        </div>
+        </Link>
       );
     },
     size: 135,
@@ -142,64 +155,33 @@ export const licitacaoColumns = ({
     cell: ({ row }) => {
       const licitacao = row.original;
       const descricaoCompleta = licitacao.objeto;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [expanded, setExpanded] = useState(false);
       const limiteCaracteres = 250;
 
-      const textoExibido = expanded
-        ? descricaoCompleta
-        : descricaoCompleta.slice(0, limiteCaracteres) +
-          (descricaoCompleta.length > limiteCaracteres ? "..." : "");
+      const textoExibido =
+        descricaoCompleta.length > limiteCaracteres
+          ? descricaoCompleta.slice(0, limiteCaracteres) + "..."
+          : descricaoCompleta;
 
       return (
-        <div
+        <Link
+          href={`/busca/licitacao/${licitacao.id_licitacao}`}
+          target="_blank"
           style={{
             whiteSpace: "normal",
             wordWrap: "break-word",
             overflowWrap: "break-word",
             maxWidth: "100%",
+            color: "inherit",
+            textDecoration: "none",
           }}
         >
           {textoExibido}
-          <br />
-          {descricaoCompleta.length > limiteCaracteres && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              style={{
-                background: "none",
-                color: "GrayText",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "0.85rem",
-              }}
-            >
-              {expanded ? "Mostrar menos" : "Mostrar mais"}
-            </button>
-          )}
-        </div>
+        </Link>
       );
     },
     size: 400,
     minSize: 300,
     maxSize: 600,
-  },
-  {
-    id: "valorEstimado",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Valor Estimado" />
-    ),
-    cell: ({ row }) => {
-      const licitacao = row.original;
-      const valorEstimado = valorTotalEstimado(licitacao);
-      return (
-        <div style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-          {valorEstimado}
-        </div>
-      );
-    },
-    size: 160,
-    minSize: 120,
-    maxSize: 200,
   },
   {
     accessorKey: "avaliacao",
