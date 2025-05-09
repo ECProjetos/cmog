@@ -20,19 +20,14 @@ import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { LicitacaoType } from "../zod-types";
 import Link from "next/link";
 import { useState } from "react";
-import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 import { SaveLicitacao } from "./save-licitacao";
 import { updateAvaliacaoLicitacao } from "./actions";
 
 type LicitacaoColumnsProps = {
-  folders: FolderType[];
-  onUpdate: () => void;
   buscaId: string;
 };
 
 export const licitacaoColumns = ({
-  folders,
-  onUpdate,
   buscaId,
 }: LicitacaoColumnsProps): ColumnDef<LicitacaoType>[] => [
   {
@@ -267,8 +262,6 @@ export const licitacaoColumns = ({
             <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
               <SaveLicitacao
                 licitacao_id={licitacao.id_licitacao}
-                folders={folders}
-                onUpdate={onUpdate}
               />
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
