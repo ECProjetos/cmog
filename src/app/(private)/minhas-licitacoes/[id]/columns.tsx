@@ -231,7 +231,7 @@ export const FolderDetailColumns = ({
         <StatusDialog
           status={status}
           folderLicitacao={String(id_folders_licitacoes)}
-          licitacao_id={Number(id_licitacao)}
+          licitacao_id={String(id_licitacao)}
           folder_id={String(id_folder)}
           onUpdate={onUpdate}
           user_id={user_id}
@@ -263,7 +263,7 @@ export const FolderDetailColumns = ({
           {/* Botão editar sempre visível no topo */}
           <ObservacaoDialog
             folderLicitacao={String(id_folders_licitacoes)}
-            licitacao_id={Number(id_licitacao)}
+            licitacao_id={String(id_licitacao)}
             folder_id={String(id_folder)}
             existingObservacao={observacao}
             onUpdate={onUpdate}

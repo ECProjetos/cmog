@@ -20,7 +20,7 @@ import { addObservacaoToLicitacao } from "./actions";
 
 type ObservacaoDialogProps = {
   folderLicitacao: string;
-  licitacao_id: number;
+  licitacao_id: string;
   folder_id: string;
   existingObservacao?: string | null;
   onUpdate: () => void;
