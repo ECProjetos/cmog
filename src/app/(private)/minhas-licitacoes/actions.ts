@@ -89,3 +89,41 @@ export async function deleteFolder(folder_id: string) {
         return { error: { message: "Erro interno do servidor" } };
     }
 }
+
+export async function updateFolder(
+    folder_id: string,
+    nome_folder: string,
+    descricao: string
+) {
+    try {
+        const supabase = await createClient();
+
+        const { data, error } = await supabase
+            .from("folders")
+            .update({ nome_folder, descricao })
+            .eq("id_folder", folder_id)
+            .select("*");
+
+        if (error) {
+            console.error("Erro ao atualizar pasta:", error);
+            return { error: { message: "Erro ao atualizar pasta" } };
+        }
+
+        if (!data || data.length === 0) {
+            return { error: { message: "Pasta não foi atualizada" } };
+        }
+
+        try {
+            const parsedData = folderSchema.parse(data[0]);
+            return { data: parsedData };
+        } catch (validationError) {
+            console.error("Erro de validação:", validationError);
+            return { error: { message: "Erro ao validar os dados retornados" } };
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+        console.error("Erro inesperado ao atualizar pasta:", err);
+        return { error: { message: "Erro interno do servidor" } };
+    }
+}
