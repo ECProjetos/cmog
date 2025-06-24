@@ -84,7 +84,7 @@ export default function MinhasLicitacoesPage() {
                 <FolderTable
                   data={folders}
                   columns={FolderColumns({
-                    onUpdate: () => setRefresh((r) => r + 1),
+                    onUpdate: () => setRefresh((r) => r + 1)
                   })}
                 />
               )}

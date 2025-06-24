@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-
-import { Trash, MoreHorizontal, FolderOpen, Folder } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Trash, MoreHorizontal, FolderOpen, Folder, Pen } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -30,9 +31,11 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { toast } from "sonner";
-import { deleteFolder } from "./actions";
+import { deleteFolder, updateFolder } from "./actions";
 import { FolderType } from "./zod-types";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 type FolderColumnsProps = {
   onUpdate: () => void;
@@ -117,6 +120,9 @@ export const FolderColumns = ({
     ),
     cell: ({ row }) => {
       const id = row.original.id_folder;
+      const [name, setName] = useState<string>(row.getValue("nome_folder") as string);
+      const [description, setDescription] = useState<string>(row.getValue("descricao") as string);
+      const [isPending, startTransition] = useTransition();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -137,6 +143,75 @@ export const FolderColumns = ({
                 Ver
               </Link>
             </DropdownMenuItem>
+
+            {/* AlertDialog para Editar nome e descrição do folder pela id_folder */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  <Pen className="mr-2 h-4 w-4" />
+                  Editar
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Editar Pasta</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Insira o novo nome e descrição da pasta.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="grid gap-4">
+                  <div className="flex flex-col gap-4">
+                    {/* Campo Nome */}
+                    <div className="space-y-2">
+                      <Label htmlFor={`folderName-${id}`}>Nome:</Label>
+                      <Input
+                        id={`folderName-${id}`}
+                        // 2) Agora `value` é string, sem erro
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Nome da pasta"
+                        className="border p-2 rounded"
+                      />
+                    </div>
+                    {/* Campo Descrição */}
+                    <div className="space-y-2">
+                      <Label htmlFor={`folderDesc-${id}`}>Descrição:</Label>
+                      <Input
+                        id={`folderDesc-${id}`}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Descrição da pasta"
+                        className="border p-2 rounded"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-blue-800 text-white hover:bg-blue-600"
+                    onClick={() => {
+                      startTransition(async () => {
+                        // 3) Chama updateFolder com id, name e description (todos strings)
+                        const res = await updateFolder(id, name, description);
+                        if (res.error) {
+                          toast.error(res.error.message);
+                        } else {
+                          toast.success("Pasta atualizada com sucesso!");
+                          onUpdate();
+                        }
+                      });
+                    }}
+                    disabled={isPending}
+                  >
+                    {isPending ? "Salvando..." : "Salvar"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
