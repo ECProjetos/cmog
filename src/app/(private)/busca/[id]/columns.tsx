@@ -142,7 +142,24 @@ export const licitacaoColumns = ({
       const licitacao = row.original;
       const descricaoCompleta = licitacao.objeto;
       const limiteCaracteres = 250;
-
+      if (!descricaoCompleta) {
+        return (
+          <Link
+            href={`/busca/licitacao/${licitacao.id_licitacao}`}
+            target="_blank"
+            style={{
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              maxWidth: "100%",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Descrição não disponível
+          </Link>
+        );
+      }
       const textoExibido =
         descricaoCompleta.length > limiteCaracteres
           ? descricaoCompleta.slice(0, limiteCaracteres) + "..."
