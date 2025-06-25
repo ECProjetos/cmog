@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
+
 import {
   ColumnDef,
   flexRender,
@@ -13,6 +14,7 @@ import {
   getSortedRowModel,
   SortingState,
 } from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -21,27 +23,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/column-toggle";
 import { Button } from "@/components/ui/button";
 import { ListRestart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-interface LicitacoesTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface LicitacoesTable<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]; // Define as colunas da tabela
+  data: TData[]; // Define os dados da tabela
 }
 
 export function LicitacoesTable<TData, TValue>({
   columns,
   data,
-}: LicitacoesTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+}: LicitacoesTable<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]); // Define o estado de ordenação
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]); // Define o estado de filtro
 
   const handleResetFiltersButtonClick = () => {
-    setColumnFilters([]);
-    setSorting([]);
+    setColumnFilters([]); // Reseta os filtros
+    setSorting([]); // Reseta a ordenação
   };
 
   const table = useReactTable({
@@ -53,77 +56,71 @@ export function LicitacoesTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: { pageSize: 5 },
-    },
-    state: { sorting, columnFilters },
-  });
 
+    initialState: {
+      pagination: {
+        pageSize: 5, // Define o padrão para 5 linhas por página
+      },
+    },
+    state: {
+      sorting,
+      columnFilters,
+    },
+  });
   return (
     <div className="overflow-x-auto">
-      <div className="flex flex-col lg:flex-row items-center justify-between p-4 gap-2">
+      <div className="flex items-center justify-between p-4 ">
         <Input
           placeholder="Pesquisar em objeto..."
-          value={(table.getColumn("objeto")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("objeto")?.setFilterValue(event.target.value)
+          value={
+            (table.getColumn("objeto")?.getFilterValue() as string) ?? "" // Define o valor do filtro
+          }
+          onChange={
+            (event) =>
+              table.getColumn("objeto")?.setFilterValue(event.target.value) // Define o valor do filtro}
           }
           className="max-w-sm"
         />
-
-        <select
-          className="border rounded p-2 bg-white dark:bg-gray-800"
-          value={
-            (table.getColumn("avaliacao")?.getFilterValue() as string) || ""
-          }
-          onChange={(e) => {
-            table
-              .getColumn("avaliacao")
-              ?.setFilterValue(e.target.value || undefined);
-          }}
-        >
-          <option value="">Todas Avaliações</option>
-          <option value="bom">Bom</option>
-          <option value="ruim">Sem interesse</option>
-          <option value="nao_avaliado">Não Avaliado</option>
-        </select>
-
         <div className="flex items-center space-x-4">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 flex items-center gap-2"
+            className="ml-auto hidden h-8 lg:flex"
             onClick={handleResetFiltersButtonClick}
           >
-            <ListRestart className="w-4 h-4" />
+            <ListRestart />
             Resetar Filtros
           </Button>
           <DataTableViewOptions table={table} />
         </div>
       </div>
-
       <div className="rounded-md border overflow-x-auto px-4">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -147,7 +144,6 @@ export function LicitacoesTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
       <div className="py-4">
         <DataTablePagination table={table} />
       </div>
