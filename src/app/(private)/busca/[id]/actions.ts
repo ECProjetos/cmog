@@ -167,28 +167,6 @@ export async function getLicitacoesByBusca(
     return { data: result };
 }
 
-
-export async function updateAvaliacaoLicitacao(
-    buscaId: string,
-    licitacaoId: string,
-    avaliacao: "bom" | "ruim" | "nao_avaliado"
-): Promise<{ success: boolean; error?: string }> {
-    const supabase = await createClient();
-
-    const { error } = await supabase
-        .from("buscas_licitacoes")
-        .update({ avaliacao })
-        .eq("id_busca", buscaId)
-        .eq("id_licitacao", licitacaoId);
-
-    if (error) {
-        console.error("Erro ao atualizar avaliação:", error);
-        return { success: false, error: "Erro ao atualizar avaliação" };
-    }
-
-    return { success: true };
-}
-
 export async function saveLicitacao(
     licitacao_id: string,
     folder_id: string
@@ -214,3 +192,23 @@ export async function saveLicitacao(
     }
 }
 
+export async function updateAvaliacaoLicitacao(
+    buscaId: string,
+    licitacaoId: string,
+    avaliacao: "bom" | "ruim" | "nao_avaliado"
+): Promise<{ success: boolean; error?: string }> {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+        .from("buscas_licitacoes")
+        .update({ avaliacao })
+        .eq("id_busca", buscaId)
+        .eq("id_licitacao", licitacaoId);
+
+    if (error) {
+        console.error("Erro ao atualizar avaliação:", error);
+        return { success: false, error: error.message };
+    }
+
+    return { success: true };
+}

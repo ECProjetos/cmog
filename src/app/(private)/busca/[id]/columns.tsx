@@ -8,11 +8,10 @@ import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
 import { LicitacaoType } from "../zod-types";
 import Link from "next/link";
-import { useState } from "react";
 import { SaveLicitacao } from "./save-licitacao";
-import { updateAvaliacaoLicitacao } from "./actions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { AvaliacaoCell } from "./AvaliacaoCell";
 
 type LicitacaoColumnsProps = {
   buscaId: string;
@@ -192,57 +191,12 @@ export const licitacaoColumns = ({
       <DataTableColumnHeader column={column} title="Avaliação" />
     ),
     cell: ({ row }) => {
-      const licitacao = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [avaliacao, setAvaliacao] = useState(licitacao.avaliacao);
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [loading, setLoading] = useState(false);
-
-      const getEstilos = (valor: string) => {
-        switch (valor) {
-          case "bom":
-            return { backgroundColor: "#d1fae5", color: "#065f46" };
-          case "ruim":
-            return { backgroundColor: "#C8C8C8", color: "#374151" };
-          default:
-            return { backgroundColor: "#f3f4f6", color: "#374151" };
-        }
-      };
-
-      const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const novaAvaliacao = e.target.value as "bom" | "ruim" | "nao_avaliado";
-        setLoading(true);
-        const result = await updateAvaliacaoLicitacao(
-          buscaId,
-          licitacao.id_licitacao,
-          novaAvaliacao
-        );
-        if (result.success) {
-          setAvaliacao(novaAvaliacao);
-        }
-        setLoading(false);
-      };
-
       return (
-        <div>
-          <select
-            value={avaliacao}
-            onChange={handleChange}
-            disabled={loading}
-            style={{
-              ...getEstilos(avaliacao),
-              padding: "4px 8px",
-              borderRadius: "4px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            <option value="nao_avaliado">Não Avaliado</option>
-            <option value="bom">Bom</option>
-            <option value="ruim">Sem interesse</option>
-          </select>
-        </div>
+        <AvaliacaoCell
+          buscaId={buscaId}
+          licitacaoId={row.original.id_licitacao}
+          avaliacaoInicial={row.original.avaliacao}
+        />
       );
     },
     size: 140,
