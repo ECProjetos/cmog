@@ -48,13 +48,13 @@ export async function ReRunSearch(buscaId: string) {
         ? "AND " + buildNotLike(negativeKeywords, ["l.objeto"])
         : "";
 
-        const sql = `
+    const sql = `
         SELECT DISTINCT l.id_licitacao::TEXT AS id_licitacao
         FROM licitacoes l
         LEFT JOIN municipios m ON l.id_municipio = m.codigo_ibge
         WHERE
-        (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s:string) => `'${s}'`).join(", ")}))
-        AND l.tipo_licitacao IN (${busca.modality.map((m:string) => `'${m}'`).join(", ")})
+        (m.uf_municipio IS NULL OR m.uf_municipio IN (${busca.states.map((s: string) => `'${s}'`).join(", ")}))
+        AND l.tipo_licitacao IN (${busca.modality.map((m: string) => `'${m}'`).join(", ")})
         AND (${positiveClause})
         ${negativeClause};
     `;
@@ -108,73 +108,63 @@ export async function ReRunSearch(buscaId: string) {
     return newLicitacoes;
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function getLicitacoesByBusca(buscaId: string): Promise<{ data?: any[]; error?: string }> {
+export async function getLicitacoesByBusca(
+    buscaId: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<{ data?: any[]; error?: string }> {
     const supabase = await createClient();
+    const today = new Date();
 
-    // Buscar as licitações com avaliação
+    // 1) Carrega todos os registros da junção
     const { data, error } = await supabase
-        .from("buscas_licitacoes")
+        .from('buscas_licitacoes')
         .select(`
-    avaliacao,
-    licitacao:licitacoes (
-      id_licitacao,
-      comprador,
-      data_abertura_proposta,
-      hora_abertura_proposta,
-      url,
-      tipo_licitacao,
-      objeto,
-      municipios (
-        nome_municipio,
-        uf_municipio
-      ),
-      itens (
-        id_item,
-        ds_item,
-        qt_itens,
-        vl_unitario_estimado
-      )
-    )
-  `)
-        .eq("id_busca", buscaId);
+        avaliacao,
+        licitacao:licitacoes (
+          id_licitacao,
+          comprador,
+          data_abertura_proposta,
+          hora_abertura_proposta,
+          url,
+          tipo_licitacao,
+          objeto,
+          municipios (
+            nome_municipio,
+            uf_municipio
+          ),
+          itens (
+            id_item,
+            ds_item,
+            qt_itens,
+            vl_unitario_estimado
+          )
+        )
+      `)
+        .eq('id_busca', buscaId);
 
     if (error) {
-        console.error("Erro ao buscar licitações com avaliação:", error);
-        return { error: "Erro ao buscar dados" };
+        return { error: error.message };
     }
 
-    // Normaliza estrutura para facilitar o uso no front
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = data.map((entry: any) => ({
-        ...entry.licitacao,
-        avaliacao: entry.avaliacao ?? "nao_avaliado",
-    }));
+    // 2) Normaliza licitacao (array ou objeto) e filtra por data
+    const normalized = (data ?? []).map(r => {
+        const licObj = Array.isArray(r.licitacao)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ? (r.licitacao[0] as any)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            : (r.licitacao as any);
+        return { avaliacao: r.avaliacao, ...licObj };
+    });
 
+    const result = normalized
+        .filter(item => typeof item.data_abertura_proposta === 'string')
+        .filter(item => {
+            const [dd, mm, yyyy] = item.data_abertura_proposta.split('/');
+            const dt = new Date(+yyyy, +mm - 1, +dd);
+            return dt > today;
+        });
 
     return { data: result };
-}
-
-export async function updateAvaliacaoLicitacao(
-    buscaId: string,
-    licitacaoId: string,
-    avaliacao: "bom" | "ruim" | "nao_avaliado"
-): Promise<{ success: boolean; error?: string }> {
-    const supabase = await createClient();
-
-    const { error } = await supabase
-        .from("buscas_licitacoes")
-        .update({ avaliacao })
-        .eq("id_busca", buscaId)
-        .eq("id_licitacao", licitacaoId);
-
-    if (error) {
-        console.error("Erro ao atualizar avaliação:", error);
-        return { success: false, error: "Erro ao atualizar avaliação" };
-    }
-
-    return { success: true };
 }
 
 export async function saveLicitacao(
@@ -202,3 +192,23 @@ export async function saveLicitacao(
     }
 }
 
+export async function updateAvaliacaoLicitacao(
+    buscaId: string,
+    licitacaoId: string,
+    avaliacao: "bom" | "ruim" | "nao_avaliado"
+): Promise<{ success: boolean; error?: string }> {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+        .from("buscas_licitacoes")
+        .update({ avaliacao })
+        .eq("id_busca", buscaId)
+        .eq("id_licitacao", licitacaoId);
+
+    if (error) {
+        console.error("Erro ao atualizar avaliação:", error);
+        return { success: false, error: error.message };
+    }
+
+    return { success: true };
+}
