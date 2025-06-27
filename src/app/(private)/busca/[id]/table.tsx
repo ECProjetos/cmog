@@ -71,23 +71,6 @@ export function LicitacoesTable<TData, TValue>({
           className="max-w-sm"
         />
 
-        <select
-          className="border rounded p-2 bg-white dark:bg-gray-800"
-          value={
-            (table.getColumn("avaliacao")?.getFilterValue() as string) || ""
-          }
-          onChange={(e) => {
-            table
-              .getColumn("avaliacao")
-              ?.setFilterValue(e.target.value || undefined);
-          }}
-        >
-          <option value="">Todas Avaliações</option>
-          <option value="bom">Bom</option>
-          <option value="ruim">Sem interesse</option>
-          <option value="nao_avaliado">Não Avaliado</option>
-        </select>
-
         <div className="flex items-center space-x-4">
           <Button
             variant="outline"

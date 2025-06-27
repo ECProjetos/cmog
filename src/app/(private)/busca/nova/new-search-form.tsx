@@ -165,8 +165,18 @@ export default function SearchForm({
                 <InfoTooltip text="Escreva Palavras que você gostaria que buscassemos em suas licitações, varie entre plural e singular. Separe cada palavra ou expressão com ';'. Ex: prato; garfo; talher descartável" />
               </div>
               <FormControl>
+                {/* limite de 10 palavras desconsiderando ; como palavra */}
                 <Textarea
                   placeholder="Ex: prato; garfo; talher descartável"
+                  maxLength={200}
+                  onInput={(e) => {
+                    const value = e.currentTarget.value;
+                    const words = value.split(";").map((word) => word.trim());
+                    if (words.length > 10) {
+                      e.currentTarget.value = words.slice(0, 10).join("; ");
+                      toast.error("Máximo de 10 palavras-chave.");
+                    }
+                  }}
                   {...field}
                 />
               </FormControl>
@@ -187,6 +197,15 @@ export default function SearchForm({
               <FormControl>
                 <Textarea
                   placeholder="Ex: caneca; garrafa térmica; pano de prato"
+                  maxLength={200}
+                  onInput={(e) => {
+                    const value = e.currentTarget.value;
+                    const words = value.split(";").map((word) => word.trim());
+                    if (words.length > 10) {
+                      e.currentTarget.value = words.slice(0, 10).join("; ");
+                      toast.error("Máximo de 10 palavras-chave.");
+                    }
+                  }}
                   {...field}
                 />
               </FormControl>

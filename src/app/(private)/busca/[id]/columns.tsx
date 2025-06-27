@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ExternalLink } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink, EyeOff } from "lucide-react";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
@@ -10,8 +10,10 @@ import { LicitacaoType } from "../zod-types";
 import Link from "next/link";
 import { SaveLicitacao } from "./save-licitacao";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { AvaliacaoCell } from "./AvaliacaoCell";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
 type LicitacaoColumnsProps = {
   buscaId: string;
@@ -188,17 +190,76 @@ export const licitacaoColumns = ({
   {
     accessorKey: "avaliacao",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Avaliação" />
+      <div className="flex items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="-ml-3 h-8 data-[state=open]:bg-accent"
+            >
+              <span>Avaliação</span>
+              {column.getIsSorted() === "desc" ? (
+                <ArrowDown />
+              ) : column.getIsSorted() === "asc" ? (
+                <ArrowUp />
+              ) : (
+                <ChevronsUpDown />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="start">
+            {/* Ordenação */}
+            <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+              <ArrowUp className="h-3.5 w-3.5 text-muted-foreground/70" />
+              Ascendente
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+              <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
+              Descendente
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {/* Visibilidade */}
+            <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+              <EyeOff className="h-3.5 w-3.5 text-muted-foreground/70" />
+              Ocultar
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {/* Filtro de Avaliação */}
+            <DropdownMenuLabel>Filtrar Avaliação</DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              value={(column.getFilterValue() as string) ?? ""}
+              onValueChange={(value) =>
+                column.setFilterValue(value || undefined)
+              }
+            >
+              <DropdownMenuRadioItem value="">
+                Todas Avaliações
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="bom">Bom</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="ruim">
+                Sem interesse
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="nao_avaliado">
+                Não Avaliado
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     ),
-    cell: ({ row }) => {
-      return (
-        <AvaliacaoCell
-          buscaId={buscaId}
-          licitacaoId={row.original.id_licitacao}
-          avaliacaoInicial={row.original.avaliacao}
-        />
-      );
-    },
+    cell: ({ row }) => (
+      <AvaliacaoCell
+        buscaId={buscaId}
+        licitacaoId={row.original.id_licitacao}
+        avaliacaoInicial={row.original.avaliacao}
+      />
+    ),
     size: 140,
     minSize: 120,
     maxSize: 180,
