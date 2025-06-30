@@ -39,27 +39,26 @@ export function SaveLicitacao({ licitacao_id }: SaveLicitacaoProps) {
   const [isPending, startTransition] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    if (!user_id) {
-      setLoading(false);
-      return;
+    // só busca quando o modal estiver aberto e eu tiver user_id
+    if (isOpen && user_id) {
+      setLoading(true);
+      getAllFolders(user_id)
+        .then((res) => {
+          if (res.error) {
+            setError(res.error.message);
+          } else {
+            setFolders(res.data);
+          }
+        })
+        .catch((err) => {
+          console.error("Erro ao buscar dados:", err);
+          setError("Erro ao buscar dados");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-    getAllFolders(user_id)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error.message);
-        } else {
-          setFolders(res.data);
-        }
-      })
-      .catch((err) => {
-        console.error("Erro ao buscar dados:", err);
-        setError("Erro ao buscar dados");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [user_id, refresh]); // Adicione user.id como dependência
+  }, [isOpen, user_id, refresh]);
 
   const handleCreateFolder = async () => {
     if (!user_id || !folderName || !folderDescription) {

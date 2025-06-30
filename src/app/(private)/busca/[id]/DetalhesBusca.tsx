@@ -121,7 +121,10 @@ export default function DetalhesBusca({
                         </h1>
                       </div>
                       <div className="flex gap-2 items-center">
-                        <Button onClick={() => setFormModalOpen(true)}>
+                        <Button
+                          onClick={() => setFormModalOpen(true)}
+                          disabled={isPending}
+                        >
                           <ClipboardEditIcon className="h-4 w-4" />
                           Editar Filtros
                         </Button>
