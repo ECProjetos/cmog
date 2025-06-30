@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const [theme, setTheme] = useState("light");
@@ -120,7 +121,7 @@ export default function Page() {
                   />
                 </div>
               </div>
-              <button
+              <Button
                 className="mt-4 px-4 py-2 left-10 bg-primary text-white rounded-md flex justify-center items-center"
                 onClick={() => {
                   const formData = new FormData();
@@ -128,7 +129,7 @@ export default function Page() {
                 }}
               >
                 Salvar preferencias
-              </button>
+              </Button>
             </div>
           </div>
         </div>

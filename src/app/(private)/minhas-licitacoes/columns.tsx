@@ -120,8 +120,12 @@ export const FolderColumns = ({
     ),
     cell: ({ row }) => {
       const id = row.original.id_folder;
-      const [name, setName] = useState<string>(row.getValue("nome_folder") as string);
-      const [description, setDescription] = useState<string>(row.getValue("descricao") as string);
+      const [name, setName] = useState<string>(
+        row.getValue("nome_folder") as string
+      );
+      const [description, setDescription] = useState<string>(
+        row.getValue("descricao") as string
+      );
       const [isPending, startTransition] = useTransition();
       return (
         <DropdownMenu>
@@ -137,7 +141,7 @@ export const FolderColumns = ({
             <DropdownMenuItem asChild>
               <Link
                 href={`minhas-licitacoes/${id}`}
-                className="flex items-center"
+                className="flex items-center cursor-pointer"
               >
                 <FolderOpen className="mr-2 h-4 w-4" />
                 Ver

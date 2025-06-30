@@ -109,7 +109,10 @@ export const buscaColumns: ColumnDef<SearchSchemaViewType>[] = [
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={`/busca/${id}`} className="flex items-center">
+              <Link
+                href={`/busca/${id}`}
+                className="flex items-center cursor-pointer"
+              >
                 <Search className="mr-2 h-4 w-4" />
                 Ver
               </Link>

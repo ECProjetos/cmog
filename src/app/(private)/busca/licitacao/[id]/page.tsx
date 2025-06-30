@@ -25,7 +25,6 @@ import { SaveLicitacao } from "./save-licitacao";
 import { getUserSession } from "@/app/(auth)/actions";
 import { getAllFolders } from "@/app/(private)/minhas-licitacoes/actions";
 import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
-import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const params = useParams();
@@ -127,7 +126,9 @@ export default function Page() {
           <p>
             <strong>Municipio:</strong>{" "}
             {licitacao.municipios
-              ? `${licitacao.municipios.nome_municipio} - ${licitacao.municipios.uf_municipio || "Indisponível"}`
+              ? `${licitacao.municipios.nome_municipio} - ${
+                  licitacao.municipios.uf_municipio || "Indisponível"
+                }`
               : "Indisponível"}
           </p>
           <p>
@@ -210,14 +211,6 @@ export default function Page() {
               <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Detalhes da Licitação</h1>
                 <div className="flex gap-2">
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.history.back();
-                    }}
-                  >
-                    Voltar
-                  </Button>
                   <SaveLicitacao
                     licitacao_id={String(idParam)}
                     folders={folders}

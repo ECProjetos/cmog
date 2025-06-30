@@ -40,11 +40,13 @@ import { redirect } from "next/navigation";
 type SearchFormProps = {
   busca?: SearchSchemaViewType;
   setFormModalOpen?: (open: boolean) => void;
+  relodPage?: () => void;
 };
 
 export default function SearchForm({
   busca,
   setFormModalOpen,
+  relodPage,
 }: SearchFormProps) {
   const form = useForm<z.infer<typeof searchSchema>>({
     resolver: zodResolver(searchSchema),
@@ -116,6 +118,9 @@ export default function SearchForm({
 
   const onSubmit = (data: SearchSchemaType) => {
     mutation.mutate(data);
+    if (relodPage) {
+      relodPage();
+    }
   };
 
   return (

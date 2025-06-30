@@ -53,6 +53,12 @@ export default function DetalhesBusca({
     });
   };
 
+  const relodPage = () => {
+    startTransition(() => {
+      router.refresh();
+    });
+  };
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -80,7 +86,11 @@ export default function DetalhesBusca({
                   </Breadcrumb>
                 </div>
                 <br className="mb-4" />
-                <SearchForm busca={busca} setFormModalOpen={setFormModalOpen} />
+                <SearchForm
+                  busca={busca}
+                  setFormModalOpen={setFormModalOpen}
+                  relodPage={relodPage}
+                />
               </>
             ) : (
               <>

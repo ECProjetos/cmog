@@ -62,14 +62,22 @@ export function LicitacoesTable<TData, TValue>({
   return (
     <div className="overflow-x-auto">
       <div className="flex flex-col lg:flex-row items-center justify-between p-4 gap-2">
-        <Input
-          placeholder="Pesquisar em objeto..."
-          value={(table.getColumn("objeto")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("objeto")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-center justify-between gap-2 lg:gap-4">
+          <Input
+            placeholder="Pesquisar em objeto..."
+            value={
+              (table.getColumn("objeto")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("objeto")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          {/* Exibe o número total de linhas filtradas  com um fundo purple-200 e border solid purple-*/}
+          <div className="flex justify-center items-center text-sm text-muted-foreground border border-purple-200 bg-purple-50 px-2 py-1 rounded-md">
+            {table.getFilteredRowModel().flatRows.length}{" "}
+          </div>
+        </div>
 
         <div className="flex items-center space-x-4">
           <Button
