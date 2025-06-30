@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink, EyeOff } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, ExternalLink } from "lucide-react";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 
@@ -12,7 +12,7 @@ import { SaveLicitacao } from "./save-licitacao";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AvaliacaoCell } from "./AvaliacaoCell";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
 type LicitacaoColumnsProps = {
@@ -210,25 +210,7 @@ export const licitacaoColumns = ({
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start">
-            {/* Ordenação */}
-            <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-              <ArrowUp className="h-3.5 w-3.5 text-muted-foreground/70" />
-              Ascendente
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-              <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
-              Descendente
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            {/* Visibilidade */}
-            <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-              <EyeOff className="h-3.5 w-3.5 text-muted-foreground/70" />
-              Ocultar
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
+            
 
             {/* Filtro de Avaliação */}
             <DropdownMenuLabel>Filtrar Avaliação</DropdownMenuLabel>
