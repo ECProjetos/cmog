@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import { LicitacaoType, SearchSchemaViewType } from "../zod-types";
 import { LicitacoesTable } from "./table";
 import { licitacaoColumns } from "./columns";
 import SearchForm from "../nova/new-search-form";
+import { createClient } from "@/utils/supabase/client";
 
 interface DetalhesBuscaProps {
   busca: SearchSchemaViewType;
@@ -34,11 +35,41 @@ interface DetalhesBuscaProps {
 
 export default function DetalhesBusca({
   busca,
-  licitacoes,
+  licitacoes: initialLicitacoes,
 }: DetalhesBuscaProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [formModalOpen, setFormModalOpen] = useState(false);
+  const [licitacoes, setLicitacoes] =
+    useState<LicitacaoType[]>(initialLicitacoes);
+
+  useEffect(() => {
+    setLicitacoes(initialLicitacoes);
+  }, [initialLicitacoes]);
+
+  useEffect(() => {
+    const client = createClient();
+    const channel = client
+      .channel("realtime_licitacoes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "licitacoes",
+          filter: `id_busca=eq.${busca.id_busca}`,
+        },
+        (payload) => {
+          console.log("Realtime update received:", payload);
+          router.refresh();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      client.removeChannel(channel);
+    };
+  }, [busca.id_busca, router]);
 
   const handleUpdateButton = () => {
     startTransition(async () => {
