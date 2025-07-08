@@ -104,8 +104,7 @@ CREATE TABLE public.users_profiles (
   theme text,
   stripe_customer_id text,
   stripe_subscription_id text,
-  subscription_status text DEFAULT 'inactive'::text,
-  current_period_end timestamp with time zone,
+  stripe_subscription_status text,
   CONSTRAINT users_profiles_pkey PRIMARY KEY (user_id),
   CONSTRAINT users_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
