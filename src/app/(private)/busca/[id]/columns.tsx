@@ -21,6 +21,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
+// função para calcular o valor estimado de uma licitação atras dos itens
+function calcularValorEstimado(licitacao: LicitacaoType): number {
+  if (!licitacao.itens || licitacao.itens.length === 0) {
+    return 0;
+  }
+
+  return licitacao.itens.reduce((total, item) => {
+    const valorUnitario = parseFloat(item.vl_unitario_estimado || "0");
+    const quantidade = parseFloat(item.qt_itens || "0");
+    return total + valorUnitario * quantidade;
+  }, 0);
+}
+
 type LicitacaoColumnsProps = {
   buscaId: string;
 };
@@ -53,6 +66,66 @@ export const licitacaoColumns = ({
     minSize: 180,
     maxSize: 300,
   },
+
+  {
+    id: "valor_estimado",
+    accessorFn: (row) => calcularValorEstimado(row),
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Valor Estimado" />
+    ),
+    cell: ({ row }) => {
+      const valorEstimado = calcularValorEstimado(row.original);
+      return (
+        <Link
+          href={`/busca/licitacao/${row.original.id_licitacao}`}
+          target="_blank"
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+            textAlign: "center",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          {valorEstimado === 0 || isNaN(valorEstimado)
+            ? "Não disponível"
+            : `R$ ${valorEstimado.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`}
+        </Link>
+      );
+    },
+  },
+  {
+    accessorKey: "municipios",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="UF" />
+    ),
+    cell: ({ row }) => {
+      const uf = row.original.municipios?.uf_municipio as string | "";
+
+      return (
+        <Link
+          href={`/busca/licitacao/${row.original.id_licitacao}`}
+          target="_blank"
+          style={{
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            maxWidth: "100%",
+            color: "inherit",
+            textDecoration: "none",
+          }}
+        >
+          {uf}
+        </Link>
+      );
+    },
+  },
+
   {
     accessorKey: "data_abertura_proposta",
     header: ({ column }) => (
