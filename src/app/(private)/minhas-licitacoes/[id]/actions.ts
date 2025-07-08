@@ -146,7 +146,7 @@ export async function createNewStatus(
         }
         const supabase = await createClient();
 
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from("status_licitacoes")
             .insert([
                 {
@@ -154,14 +154,17 @@ export async function createNewStatus(
                     nome_status,
                     cor,
                 },
-            ]);
+            ])
+            .select("id_status")
+            .single();
+
 
         if (error) {
             console.error("Erro ao adicionar status à licitação:", error);
             return { error: { message: "Erro ao adicionar status à licitação" } };
         }
 
-        return { success: true };
+        return { data: data };
     } catch (err) {
         console.error("Erro inesperado ao adicionar status:", err);
         return { error: { message: "Erro interno do servidor" } };
