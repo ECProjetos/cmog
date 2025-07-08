@@ -45,12 +45,11 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    if (!searchParams) return;
     const code = searchParams.get("code");
     if (code) {
       tokenMutation.mutate(code);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const loginMutation = useMutation({

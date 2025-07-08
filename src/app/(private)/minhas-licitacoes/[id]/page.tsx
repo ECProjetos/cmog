@@ -27,7 +27,7 @@ import { useUserStore } from "@/stores/userStore";
 export default function DetalhesFolderPage() {
   const user_id = useUserStore((state) => state.user?.id);
   const params = useParams();
-  const folderId = params?.id as string;
+  const folderId = params.id as string;
   const [folderLicitacoes, setFolderLicitacoes] = useState<FolderLicitacoes[]>(
     []
   );
