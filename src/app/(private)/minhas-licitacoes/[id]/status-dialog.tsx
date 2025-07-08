@@ -89,7 +89,7 @@ export function StatusDialog({
     if (isOpen && user_id) {
       fetchStatuses();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, user_id]);
 
   async function fetchStatuses() {
@@ -117,34 +117,62 @@ export function StatusDialog({
     }
 
     setLoading(true);
-    const { error } = await createNewStatus(user_id!, statusName, color);
-    setLoading(false);
 
-    if (error) {
-      toast.error(error.message);
+    const { data, error } = await createNewStatus(user_id!, statusName, color);
+    //salvando o status para a licitação apos a criação
+    if (!error) {
+      await addSatatusToLicitacao(
+        folderLicitacao,
+        folder_id,
+        licitacao_id,
+        statusName
+      );
+    }
+    // saçva satatus a licitação
+    if (!data || !data.id_status) {
+      setLoading(false);
+      toast.error("Erro ao criar status");
       return;
     }
-
-    toast.success("Status criado com sucesso");
-    setStatusName("");
-    setColor(colors[0]);
-    await fetchStatuses();
-  }
-
-  async function handleSaveStatus() {
-    if (!selectedStatus) return;
-
-    setLoading(true);
-    const res = await addSatatusToLicitacao(
+    const { error: addError } = await addSatatusToLicitacao(
       folderLicitacao,
       folder_id,
       licitacao_id,
-      selectedStatus
+      data.id_status
     );
+    if (addError) {
+      setLoading(false);
+      toast.error(addError.message);
+      return;
+    }
+
     setLoading(false);
 
-    if (res.error) {
-      toast.error(res.error.message);
+    // toast.success("Status criado com sucesso");
+    // setStatusName("");
+    // setColor(colors[0]);
+    // await fetchStatuses();
+    toast.success("Status salvo com sucesso!");
+    onUpdate?.();
+    setIsOpen(false);
+  }
+
+  async function handleSaveStatus() {
+    if (!selectedStatus) return toast.error("Selecione um status");
+
+    setLoading(true);
+    try {
+      const res = await addSatatusToLicitacao(
+        folderLicitacao,
+        folder_id,
+        licitacao_id,
+        selectedStatus
+      );
+      // pega o id do status adicionado no res e adcinoa o status a licitação
+      console.log("Status adicionado:", res);
+    } catch {
+      setLoading(false);
+      toast.error("Erro ao salvar status na licitação");
       return;
     }
 
@@ -239,6 +267,8 @@ export function StatusDialog({
                 value={statusName}
                 onChange={(e) => setStatusName(e.target.value)}
                 maxLength={26}
+                onBlur={(e) => setStatusName(e.target.value.trim())}
+                autoFocus
               />
               <div className="text-right text-xs text-muted-foreground">
                 {statusName.length} / 26
