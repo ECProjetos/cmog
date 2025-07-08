@@ -28,7 +28,7 @@ import { FolderType } from "@/app/(private)/minhas-licitacoes/zod-types";
 
 export default function Page() {
   const params = useParams();
-  const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
+  const idParam = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
   const [licitacoes, setLicitacoes] = useState<licitacaoIndividualType[]>([]);
   const [isLoading, setIsLoading] = useState(true);

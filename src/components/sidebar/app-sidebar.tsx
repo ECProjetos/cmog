@@ -81,12 +81,12 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       });
   }, []);
 
-  const data = createData(pathname);
+  const data = createData(pathname!);
   const navData = {
     ...data,
     navGeneral: data.navGeneral.map((item) => ({
       ...item,
-      isActive: pathname.startsWith("/settings"),
+      isActive: pathname!.startsWith("/settings"),
       items: item.items?.map((subItem) => ({
         ...subItem,
         isActive: pathname === subItem.url,

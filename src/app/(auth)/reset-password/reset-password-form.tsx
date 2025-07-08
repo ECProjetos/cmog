@@ -53,7 +53,7 @@ export default function ResetPasswordForm() {
     formData.append("password", values.password);
     formData.append("password_confirmation", values.password_confirmation);
 
-    const token = searchParams.get("token") || searchParams.get("code");
+    const token = searchParams?.get("token") || searchParams?.get("code");
 
     if (!token) {
       form.setError("password", { message: "Token inválido ou ausente." });
