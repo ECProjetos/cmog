@@ -1,36 +1,8 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { type NextRequest } from 'next/server'
 import { updateSession } from '@/utils/supabase/middleware'
-import { createClient } from '@/utils/supabase/server'
 
 export async function middleware(request: NextRequest) {
-    const { response, user } = (await updateSession(request)) as unknown as {
-        response: NextResponse
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        user: any
-    }
-
-    if (
-        !user &&
-        !request.nextUrl.pathname.startsWith('/login') &&
-        !request.nextUrl.pathname.startsWith('/register')
-    ) {
-        return NextResponse.redirect(new URL('/login', request.url))
-    }
-
-    if (user && !request.nextUrl.pathname.startsWith('/subscribe')) {
-        const supabase = await createClient()
-        const { data: subscription, error } = await supabase
-            .from('users')
-            .select('stripe_subscription_status')
-            .eq('id', user.id)
-            .single()
-
-        if (error || !subscription || (subscription.stripe_subscription_status !== 'active' && subscription.stripe_subscription_status !== 'trialing')) {
-            return NextResponse.redirect(new URL('/subscribe', request.url))
-        }
-    }
-
-    return response
+    return await updateSession(request)
 }
 
 export const config = {
