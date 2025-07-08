@@ -178,11 +178,6 @@ export async function saveLicitacao(
             .from("folders_licitacoes")
             .insert([{ id_licitacao: licitacao_id, id_folder: folder_id }])
 
-        if (error?.code === "23505") {
-            // Erro de duplicação, significa que a licitação já está na pasta
-            return { error: { message: "Licitacao já está na pasta selecionada." } };
-        }
-
         if (error) {
             console.error("Erro ao salvar licitação:", error);
             return { error: { message: error.message } };
