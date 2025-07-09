@@ -1,94 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useUserStore } from "@/stores/userStore";
-import { toast } from "sonner";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
-
-function CheckoutForm() {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-  const user = useUserStore((state) => state.user);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setLoading(true);
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-
-    if (!cardElement) {
-      return;
-    }
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardElement,
-    });
-
-    if (error) {
-      toast.error(error.message);
-      setLoading(false);
-      return;
-    }
-
-    const response = await fetch("/api/create-subscription", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        paymentMethodId: paymentMethod.id,
-        userId: user?.id,
-      }),
-    });
-
-    const subscription = await response.json();
-
-    if (subscription.error) {
-      toast.error(subscription.error);
-    } else {
-      toast.success("Inscrição realizada com sucesso!");
-    }
-
-    setLoading(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <CardElement />
-      <Button type="submit" disabled={!stripe || loading}>
-        {loading ? "Carregando..." : "Iniciar teste gratuito"}
-      </Button>
-    </form>
-  );
-}
 
 export default function SubscribePage() {
+  const paymentLink = "https://buy.stripe.com/test_aFa14p2widaR3Vnc1rgQE00";
+
+  useEffect(() => {
+    window.location.href = paymentLink;
+  }, []);
+
+  const handleRedirect = () => {
+    window.location.href = paymentLink;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Inscreva-se para um teste gratuito de 7 dias
+          Você está sendo redirecionado para a página de pagamento
         </h1>
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          Se você não for redirecionado automaticamente, clique no botão abaixo.
+        </p>
+        <Button
+          onClick={handleRedirect}
+          className="w-full px-4 py-2 font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+        >
+          Ir para a página de pagamento
+        </Button>
       </div>
     </div>
   );

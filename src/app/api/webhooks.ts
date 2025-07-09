@@ -64,6 +64,34 @@ export default async function handler(
           })
           .eq("stripe_subscription_id", event.data.object.id);
         break;
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const customerEmail = session.customer_details?.email;
+        const stripeCustomerId = session.customer as string;
+        const stripeSubscriptionId = session.subscription as string;
+
+        if (customerEmail && stripeSubscriptionId) {
+          const { data: user, error } = await supabase
+            .from("users")
+            .select("id")
+            .eq("email", customerEmail)
+            .single();
+
+          if (user) {
+            await supabase
+              .from("users")
+              .update({
+                stripe_customer_id: stripeCustomerId,
+                stripe_subscription_id: stripeSubscriptionId,
+                stripe_subscription_status: "active",
+              })
+              .eq("id", user.id);
+          } else if (error) {
+            console.error("Error fetching user by email:", error);
+          }
+        }
+        break;
+      }
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
