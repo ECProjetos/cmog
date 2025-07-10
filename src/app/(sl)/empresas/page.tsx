@@ -24,11 +24,11 @@ export default function EmpresasPage() {
 
         <section className="grid md:grid-cols-2 gap-12 items-center mb-20">
           <div className="flex justify-center">
-            <img
+            {/* <img
               src="/images/company-growth.svg"
               alt="Gráfico de crescimento empresarial"
               className="w-full max-w-lg"
-            />
+            /> */}
           </div>
           <div>
             <h2 className="text-3xl font-bold mb-4">

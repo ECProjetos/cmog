@@ -2,7 +2,7 @@
 
 import Footer from "@/components/footer";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Handshake, Glasses, Lightbulb } from "lucide-react";
 import Image from "next/image";

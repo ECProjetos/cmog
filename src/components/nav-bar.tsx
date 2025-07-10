@@ -84,8 +84,11 @@ export default function NavBar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm shadow-md" : "bg-transparent"
-      }`}>
+        scrolled
+          ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm shadow-md"
+          : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:justify-between md:items-center">
         {/* MOBILE HEADER */}
         <div className="flex w-full justify-between items-center md:hidden">
@@ -203,11 +206,11 @@ export default function NavBar() {
                     tecnologia de busca avançada.
                   </ListItem>
                   <ListItem
-                    href="/indicadores"
-                    title="Indicadores de Desempenho"
+                    href="/organizacao-estrategica"
+                    title="Organização Estratégica"
                   >
-                    Acompanhe o desempenho de suas propostas e melhore sua
-                    estratégia de participação em licitações.
+                    Organize suas licitações em pastas, adicione observações e
+                    acompanhe o status de cada proposta.
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

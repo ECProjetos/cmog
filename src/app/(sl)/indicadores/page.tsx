@@ -4,7 +4,7 @@ import Footer from "@/components/footer";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, PieChart, TrendingUp, Target } from "lucide-react";
+import { BarChart, PieChart, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function IndicadoresPage() {
@@ -59,11 +59,11 @@ export default function IndicadoresPage() {
             </ul>
           </div>
           <div className="flex justify-center">
-            <img
+            {/* <img
               src="/images/dashboard-analytics.svg"
               alt="Dashboard com gráficos e indicadores"
               className="w-full max-w-lg"
-            />
+            /> */}
           </div>
         </section>
 
