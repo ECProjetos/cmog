@@ -1,10 +1,11 @@
 "use client";
 
 import Footer from "@/components/footer";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { sendEmail } from "./actions";
+import { Label } from "@radix-ui/react-label";
 
 export default function ContatoPage() {
   return (
@@ -13,39 +14,61 @@ export default function ContatoPage() {
         <div className="flex flex-col items-center justify-center  mb-12">
           <section className="w-full max-w-2xl">
             <h2 className="text-2xl font-bold mb-6">Envie uma Mensagem</h2>
-            <form className="space-y-4">
+            <form
+              action={async (formData) => {
+                const result = await sendEmail(formData);
+                if (result.success) {
+                  alert(result.message);
+                } else {
+                  alert(result.message);
+                }
+              }}
+              className="space-y-4"
+            >
               <div>
-                <label htmlFor="name" className="font-medium">
+                <Label htmlFor="name" className="font-medium">
                   Nome
-                </label>
-                <Input id="name" type="text" placeholder="Seu nome completo" />
+                </Label>
+                <Input
+                  required
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Seu nome completo"
+                />
               </div>
               <div>
-                <label htmlFor="email" className="font-medium">
+                <Label htmlFor="email" className="font-medium">
                   E-mail
-                </label>
+                </Label>
                 <Input
+                  required
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="seu.email@exemplo.com"
                 />
               </div>
               <div>
-                <label htmlFor="subject" className="font-medium">
+                <Label htmlFor="subject" className="font-medium">
                   Assunto
-                </label>
+                </Label>
                 <Input
+                  required
                   id="subject"
+                  name="subject"
                   type="text"
                   placeholder="Sobre o que você gostaria de falar?"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="font-medium">
+                <Label htmlFor="message" className="font-medium">
                   Mensagem
-                </label>
+                </Label>
                 <Textarea
+                  required
                   id="message"
+                  name="message"
                   placeholder="Digite sua mensagem aqui..."
                   rows={5}
                 />

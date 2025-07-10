@@ -1,6 +1,6 @@
-import { getUser } from "@/hooks/use-user";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+// import { getUser } from "@/hooks/use-user";
+// import { createClient } from "@/utils/supabase/server";
+// import { redirect } from "next/navigation";
 
 export default async function PrivateLayout({
   children,
@@ -17,7 +17,12 @@ export default async function PrivateLayout({
   //     .eq("id", user.id)
   //     .single();
 
-  //   if (error || !subscription || (subscription.stripe_subscription_status !== 'active' && subscription.stripe_subscription_status !== 'trialing')) {
+  //   if (
+  //     error ||
+  //     !subscription ||
+  //     (subscription.stripe_subscription_status !== "active" &&
+  //       subscription.stripe_subscription_status !== "trialing")
+  //   ) {
   //     redirect("/subscribe");
   //   }
   // }

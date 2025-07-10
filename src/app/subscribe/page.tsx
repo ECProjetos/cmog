@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -30,9 +37,6 @@ export default function SubscribePage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center">
-            <p className="font-bold text-blue-800 dark:text-blue-300">
-              Plano Selecionado: Acesso Total
-            </p>
             <p className="text-3xl font-extrabold text-blue-900 dark:text-blue-200 mt-2">
               R$19,99/mês
             </p>
@@ -51,6 +55,11 @@ export default function SubscribePage() {
               Sua assinatura será renovada automaticamente todos os meses, mas
               você pode cancelar a qualquer momento através do seu painel de
               configurações.
+            </p>
+            <p>
+              Ao clicar em &quot;Iniciar meu teste gratuito&quot;, você sera
+              redirecionado(a) para o Stripe, onde poderá inserir suas
+              informações de pagamento.
             </p>
           </div>
           <div className="flex items-center space-x-2 pt-4">
