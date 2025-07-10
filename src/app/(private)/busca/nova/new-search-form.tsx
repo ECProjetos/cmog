@@ -273,37 +273,65 @@ export default function SearchForm({
             <Button
               type="button"
               variant="outline"
-              onClick={() => form.setValue("states", STATES_BY_REGION.norte)}
+              onClick={() => {
+                const current = form.getValues("states") || [];
+                const merged = Array.from(
+                  new Set([...current, ...STATES_BY_REGION.norte])
+                );
+                form.setValue("states", merged);
+              }}
             >
               Norte
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => form.setValue("states", STATES_BY_REGION.nordeste)}
+              onClick={() => {
+                const current = form.getValues("states") || [];
+                const merged = Array.from(
+                  new Set([...current, ...STATES_BY_REGION.nordeste])
+                );
+                form.setValue("states", merged);
+              }}
             >
               Nordeste
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() =>
-                form.setValue("states", STATES_BY_REGION.centroOeste)
-              }
+              onClick={() => {
+                const current = form.getValues("states") || [];
+                const merged = Array.from(
+                  new Set([...current, ...STATES_BY_REGION.centroOeste])
+                );
+                form.setValue("states", merged);
+              }}
             >
               Centro-Oeste
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => form.setValue("states", STATES_BY_REGION.sudeste)}
+              onClick={() => {
+                const current = form.getValues("states") || [];
+                const merged = Array.from(
+                  new Set([...current, ...STATES_BY_REGION.sudeste])
+                );
+                form.setValue("states", merged);
+              }}
             >
               Sudeste
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => form.setValue("states", STATES_BY_REGION.sul)}
+              onClick={() => {
+                const current = form.getValues("states") || [];
+                const merged = Array.from(
+                  new Set([...current, ...STATES_BY_REGION.sul])
+                );
+                form.setValue("states", merged);
+              }}
             >
               Sul
             </Button>
