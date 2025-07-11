@@ -30,7 +30,7 @@ export default async function handler(
 
       // Update the user's profile in Supabase
       await supabase
-        .from("users")
+        .from("users_profiles")
         .update({
           stripe_customer_id: customer.id,
           stripe_subscription_id: subscription.id,

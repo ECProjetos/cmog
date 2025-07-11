@@ -13,7 +13,7 @@ export default async function handler(
       const supabase = await createClient();
 
       const { data: user, error } = await supabase
-        .from("users")
+        .from("users_profiles")
         .select("stripe_customer_id")
         .eq("id", userId)
         .single();

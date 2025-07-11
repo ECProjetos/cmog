@@ -12,7 +12,7 @@ export default async function PrivateLayout({
 
   if (user) {
     const { data: subscription, error } = await supabase
-      .from("users")
+      .from("users_profiles")
       .select("stripe_subscription_status")
       .eq("id", user.id)
       .single();
