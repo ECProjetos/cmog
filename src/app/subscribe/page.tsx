@@ -16,7 +16,7 @@ import Link from "next/link";
 
 export default function SubscribePage() {
   const [agreed, setAgreed] = useState(false);
-  const paymentLink = "https://buy.stripe.com/test_aFa14p2widaR3Vnc1rgQE00";
+  const paymentLink = "https://buy.stripe.com/8x24gy9vT2bP4EtfRE2VG00";
 
   const handleRedirect = () => {
     if (agreed) {

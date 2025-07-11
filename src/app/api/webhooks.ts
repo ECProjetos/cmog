@@ -39,8 +39,8 @@ export default async function handler(
 
     try {
       event = stripe.webhooks.constructEvent(buf, signature, webhookSecret);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
@@ -50,7 +50,7 @@ export default async function handler(
     switch (event.type) {
       case "customer.subscription.deleted":
         await supabase
-          .from("users")
+          .from("users_profiles")
           .update({
             stripe_subscription_status: "canceled",
           })
@@ -58,7 +58,7 @@ export default async function handler(
         break;
       case "customer.subscription.updated":
         await supabase
-          .from("users")
+          .from("users_profiles")
           .update({
             stripe_subscription_status: event.data.object.status,
           })
@@ -72,14 +72,14 @@ export default async function handler(
 
         if (customerEmail && stripeSubscriptionId) {
           const { data: user, error } = await supabase
-            .from("users")
+            .from("users_profiles")
             .select("id")
             .eq("email", customerEmail)
             .single();
 
           if (user) {
             await supabase
-              .from("users")
+              .from("users_profiles")
               .update({
                 stripe_customer_id: stripeCustomerId,
                 stripe_subscription_id: stripeSubscriptionId,
