@@ -29,7 +29,7 @@ export default function HowWorks() {
           </div>
           <div className="w-full md:w-[45%] lg:w-[40%] max-w-md">
             <img
-              src="/lps/new-search.gif"
+              src="/saas.gif"
               alt="saas animation"
               className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />
@@ -58,7 +58,7 @@ export default function HowWorks() {
           </div>
           <div className="w-full md:w-[45%] lg:w-[40%] max-w-md">
             <img
-              src="/lps/new-search.gif"
+              src="/saas.gif"
               alt="saas animation"
               className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />
@@ -87,7 +87,7 @@ export default function HowWorks() {
           </div>
           <div className="w-full md:w-[45%] lg:w-[40%] max-w-md">
             <img
-              src="/lps/status-org.gif"
+              src="/saas.gif"
               alt="saas animation"
               className="w-full h-auto max-h-60 md:max-h-72 rounded-lg object-cover shadow-md"
             />

@@ -1,31 +1,33 @@
-import { getUser } from "@/hooks/use-user";
-import { createClient } from "@/utils/supabase/server";
+import { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function PrivateLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const user = await getUser();
   const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (user) {
-    const { data: subscription, error } = await supabase
-      .from("users_profiles")
-      .select("stripe_subscription_status")
-      .eq("id", user.id)
-      .single();
 
-    if (
-      error ||
-      !subscription ||
-      (subscription.stripe_subscription_status !== "active" &&
-        subscription.stripe_subscription_status !== "trialing")
-    ) {
-      redirect("/subscribe");
-    }
+  const { data: subscription, error: subError } = await supabase
+    .from("users_profiles")
+    .select("stripe_subscription_status")
+    .eq("id", data?.user?.id)
+    .single();
+
+
+  if (
+    subError ||
+    !subscription ||
+    (subscription.stripe_subscription_status !== "active" &&
+      subscription.stripe_subscription_status !== "trialing")
+  ) {
+    redirect("/subscribe");
   }
-
+  if (error || !data?.user) {
+    redirect("/login");
+  }
   return <>{children}</>;
 }
