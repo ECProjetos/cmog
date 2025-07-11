@@ -17,6 +17,7 @@ import Link from "next/link";
 
 export default function SubscribePage() {
   const [agreed, setAgreed] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
 
   const handleRedirect = async () => {
