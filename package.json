@@ -6,8 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "check-types": "tsc --noEmit"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.0",
@@ -46,7 +45,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
-    "resend": "^4.6.0",
     "sonner": "^2.0.3",
     "stripe": "^18.1.0",
     "tailwind-merge": "^3.2.0",
