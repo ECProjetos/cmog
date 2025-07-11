@@ -2,7 +2,6 @@
 
 import Footer from "@/components/footer";
 
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Handshake, Glasses, Lightbulb } from "lucide-react";
 import Image from "next/image";
@@ -105,34 +104,6 @@ export default function SobrePage() {
             </div>
           </div>
         </section>
-
-        {/* <section className="py-20">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            Conheça nossa Liderança
-          </h2>
-          <div className="flex flex-wrap justify-center gap-8">
-            <div className="text-center">
-              <Avatar className="w-32 h-32 mx-auto mb-4">
-                <AvatarImage src="/images/ceo-avatar.png" alt="CEO" />
-                <AvatarFallback>CEO</AvatarFallback>
-              </Avatar>
-              <h3 className="text-xl font-bold">Nome do CEO</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Co-Fundador & CEO
-              </p>
-            </div>
-            <div className="text-center">
-              <Avatar className="w-32 h-32 mx-auto mb-4">
-                <AvatarImage src="/images/cto-avatar.png" alt="CTO" />
-                <AvatarFallback>CTO</AvatarFallback>
-              </Avatar>
-              <h3 className="text-xl font-bold">Nome do CTO</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Co-Fundador & CTO
-              </p>
-            </div>
-          </div>
-        </section> */}
       </main>
       <Footer />
     </>
