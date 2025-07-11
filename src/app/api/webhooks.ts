@@ -66,29 +66,19 @@ export default async function handler(
         break;
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const customerEmail = session.customer_details?.email;
-        const stripeCustomerId = session.customer as string;
+        const userId = session.client_reference_id;
         const stripeSubscriptionId = session.subscription as string;
+        const stripeCustomerId = session.customer as string;
 
-        if (customerEmail && stripeSubscriptionId) {
-          const { data: user, error } = await supabase
+        if (userId && stripeSubscriptionId) {
+          await supabase
             .from("users_profiles")
-            .select("id")
-            .eq("email", customerEmail)
-            .single();
-
-          if (user) {
-            await supabase
-              .from("users_profiles")
-              .update({
-                stripe_customer_id: stripeCustomerId,
-                stripe_subscription_id: stripeSubscriptionId,
-                stripe_subscription_status: "active",
-              })
-              .eq("id", user.id);
-          } else if (error) {
-            console.error("Error fetching user by email:", error);
-          }
+            .update({
+              stripe_customer_id: stripeCustomerId,
+              stripe_subscription_id: stripeSubscriptionId,
+              stripe_subscription_status: "active",
+            })
+            .eq("user_id", userId);
         }
         break;
       }

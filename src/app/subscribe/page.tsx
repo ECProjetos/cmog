@@ -1,5 +1,6 @@
 "use client";
 
+import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +17,27 @@ import Link from "next/link";
 
 export default function SubscribePage() {
   const [agreed, setAgreed] = useState(false);
-  const paymentLink = "https://buy.stripe.com/8x24gy9vT2bP4EtfRE2VG00";
+  const [loading, setLoading] = useState(false);
 
-  const handleRedirect = () => {
+  const handleRedirect = async () => {
     if (agreed) {
-      window.location.href = paymentLink;
+      setLoading(true);
+      try {
+        const response = await fetch("/api/create-checkout-session", {
+          method: "POST",
+        });
+        const { sessionId } = await response.json();
+        const stripe = await loadStripe(
+          process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+        );
+        if (stripe) {
+          await stripe.redirectToCheckout({ sessionId });
+        }
+      } catch (error) {
+        console.error("Error redirecting to checkout:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
