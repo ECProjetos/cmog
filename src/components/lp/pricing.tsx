@@ -2,18 +2,33 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
-import { redirect } from "next/navigation";
 
 const pricingPlans = [
+  {
+    title: "Free",
+    price: "Gratuito",
+    features: ["2 Consultas p/dia", "Suporte por e-mail", "Acesso básico"],
+    highlight: false,
+  },
   {
     title: "Profissional",
     price: "R$19,99/mês",
     features: [
       "Consultas ilimitados",
       "Monitoramento em tempo real",
-      "Alertas personalizados",
+      "Suporte prioritário",
     ],
     highlight: true,
+  },
+  {
+    title: "Consultoria em licitação",
+    price: "Sob consulta",
+    features: [
+      "Soluções personalizadas",
+      "Integrações avançadas",
+      "Gerente de conta dedicado",
+    ],
+    highlight: false,
   },
 ];
 
@@ -28,8 +43,7 @@ export default function PricingSection() {
         </p>
       </div>
 
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"> */}
-      <div className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto justify-center items-center">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {pricingPlans.map((plan, idx) => (
           <motion.div
             key={plan.title}
@@ -58,7 +72,6 @@ export default function PricingSection() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => redirect("/register")}
                   variant={plan.highlight ? "default" : "outline"}
                   className="w-full mt-4"
                 >
