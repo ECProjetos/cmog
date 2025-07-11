@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -45,7 +45,7 @@ export default function Footer() {
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4" /> contato@cmog.com.br
             </li>
-            {/* <li className="flex gap-4 mt-4">
+            <li className="flex gap-4 mt-4">
               <a href="#" aria-label="Facebook">
                 <Facebook className="w-4 h-4 hover:text-primary" />
               </a>
@@ -55,7 +55,7 @@ export default function Footer() {
               <a href="#" aria-label="LinkedIn">
                 <Linkedin className="w-4 h-4 hover:text-primary" />
               </a>
-            </li> */}
+            </li>
           </ul>
         </div>
       </div>
