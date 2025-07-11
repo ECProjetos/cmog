@@ -11,7 +11,7 @@ export default async function PrivateLayout({
   const { data, error } = await supabase.auth.getUser();
 
   const { data: subscription, error: subError } = await supabase
-    .from("users")
+    .from("")
     .select("stripe_subscription_status")
     .eq("id", data?.user?.id)
     .single();
