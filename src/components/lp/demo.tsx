@@ -17,7 +17,7 @@ const Demo: React.FC = () => {
       </h2>
       <div className="flex justify-center items-center h-[300px] w-full max-w-[600px] mx-auto rounded-lg overflow-hidden shadow-md bg-neutral-100 mt-8">
         <img
-          src="/saas.gif"
+          src="/lps/new-search.gif"
           alt="Demo Gif"
           className="w-full h-full object-cover"
         />

@@ -11,7 +11,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "@/components/modle-toggle";
@@ -49,25 +49,46 @@ const components = [
     description:
       "Acompanhe todo o ciclo da licitação, da descoberta à entrega da proposta.",
   },
-  {
-    title: "Feito para Pequenas Empresas",
-    href: "/empresas",
-    description: "Interface simples, poderosa e pensada para produtividade.",
-  },
-  {
-    title: "Painel com Indicadores",
-    href: "/indicadores",
-    description:
-      "Visualize métricas e indicadores para decisões mais estratégicas.",
-  },
+  // {
+  //   title: "Feito para Pequenas Empresas",
+  //   href: "/empresas",
+  //   description: "Interface simples, poderosa e pensada para produtividade.",
+  // },
+  // {
+  //   title: "Painel com Indicadores",
+  //   href: "/indicadores",
+  //   description:
+  //     "Visualize métricas e indicadores para decisões mais estratégicas.",
+  // },
 ];
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const user = useUserStore((state) => state.user); // <-- Pegando o user diretamente da global store
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    document.addEventListener("scroll", handleScroll);
+    return () => {
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm dark:bg-zinc-950 transition-all">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm shadow-md"
+          : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:justify-between md:items-center">
         {/* MOBILE HEADER */}
         <div className="flex w-full justify-between items-center md:hidden">
@@ -185,11 +206,11 @@ export default function NavBar() {
                     tecnologia de busca avançada.
                   </ListItem>
                   <ListItem
-                    href="/indicadores"
-                    title="Indicadores de Desempenho"
+                    href="/organizacao-estrategica"
+                    title="Organização Estratégica"
                   >
-                    Acompanhe o desempenho de suas propostas e melhore sua
-                    estratégia de participação em licitações.
+                    Organize suas licitações em pastas, adicione observações e
+                    acompanhe o status de cada proposta.
                   </ListItem>
                 </ul>
               </NavigationMenuContent>

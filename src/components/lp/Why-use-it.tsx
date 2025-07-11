@@ -38,7 +38,6 @@ export const projects = [
       "Receba alertas das licitações que realmente importam para o seu negócio.",
     link: "/alertas",
     icon: BellRing,
-    commingSoon: true,
   },
   {
     title: "Foco no Sucesso",
@@ -50,14 +49,14 @@ export const projects = [
   {
     title: "Feito para Pequenas Empresas e Escritórios de Licitação",
     description: "Interface simples, poderosa e pensada para produtividade.",
-    link: "/empresas",
+    link: "/",
     icon: Briefcase,
   },
   {
     title: "Painel com Indicadores de Desempenho",
     description:
       "Visualize métricas e indicadores sobre suas licitações salvas, status de propostas e histórico de atuação — tome decisões com mais embasamento.",
-    link: "/indicadores",
+    link: "/#",
     icon: BarChart2,
     commingSoon: true,
   },
