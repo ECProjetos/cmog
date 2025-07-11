@@ -16,7 +16,7 @@ export default function Hero() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative flex flex-col items-center justify-center px-6 md:px-12 text-center gap-6 max-w-4xl mx-auto py-24 mt-16"
+        className="relative flex flex-col items-center justify-center px-6 md:px-12 text-center gap-6 max-w-4xl mx-auto py-24"
       >
         <h1 className="text-3xl md:text-6xl font-semibold tracking-tight dark:text-white leading-tight">
           Encontre Licitações Públicas com Mais Facilidade

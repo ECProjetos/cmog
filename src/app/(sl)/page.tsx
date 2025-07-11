@@ -1,5 +1,7 @@
 "use client";
 
+import NavBar from "@/components/nav-bar";
+
 import Hero from "@/components/lp/hero";
 import HowWorks from "@/components/lp/how-works";
 import { WhyUseIt } from "@/components/lp/Why-use-it";
@@ -11,6 +13,7 @@ export default function HomePage() {
 
   return (
     <>
+      <NavBar/>
       <Hero />
       <Demo />
       <HowWorks />

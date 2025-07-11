@@ -90,6 +90,16 @@ export const FolderDetailColumns = ({
     minSize: 120,
     maxSize: 200,
   },
+
+  {
+    accessorKey: "licitacao.municipios.uf_municipio",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="UF" />
+    ),
+    size: 80,
+    minSize: 60,
+    maxSize: 100,
+  },
   {
     accessorKey: "licitacao.data_abertura_proposta",
     header: ({ column }) => (
