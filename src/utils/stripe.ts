@@ -1,13 +1,21 @@
 import Stripe from 'stripe';
 
+if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error("Missing STRIPE_SECRET_KEY environment variable");
+}
+
+if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    throw new Error("Missing STRIPE_WEBHOOK_SECRET environment variable");
+}
+
 // Initialize Stripe with secret key env vars
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2025-04-30.basil',
 });
 
 //Set price IDs from env varts 
 export const STRIPE_PRICE = {
-    PROFISSIONAL: process.env.STRIPE_PRICE_PROFISSIONAL || '',
+    PROFISSIONAL: process.env.STRIPE_PRICE_PROFISSIONAL,
 }
 
 //create a checkout session for subscription payment
