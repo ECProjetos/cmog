@@ -31,8 +31,9 @@ export async function POST(req: Request) {
       customer_email: user.email,
       subscription_data: {
         trial_period_days: 7,
-        
+
       },
+      allow_promotion_codes: true,
     });
 
     return new NextResponse(JSON.stringify({ sessionId: session.id }), {
