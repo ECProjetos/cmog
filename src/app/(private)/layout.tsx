@@ -9,13 +9,15 @@ export default async function PrivateLayout({
 }) {
   const user = await getUser();
   const supabase = await createClient();
-
+  console.log("User data:", user);
   if (user) {
     const { data: subscription, error } = await supabase
       .from("users_profiles")
       .select("stripe_subscription_status")
-      .eq("id", user.id)
+      .eq("user_id", user.id)
       .single();
+
+    console.log("Subscription data:", subscription);
 
     if (
       error ||
