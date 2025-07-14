@@ -28,8 +28,10 @@ export async function POST(req: Request) {
       success_url: `${req.headers.get("origin")}/minhas-licitacoes`,
       cancel_url: `${req.headers.get("origin")}/subscribe`,
       client_reference_id: user.id,
+      customer_email: user.email,
       subscription_data: {
         trial_period_days: 7,
+        
       },
     });
 
