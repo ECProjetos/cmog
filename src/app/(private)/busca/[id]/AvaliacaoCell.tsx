@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { updateAvaliacaoLicitacao } from "./actions";
+import { useRouter } from "next/navigation";
 
 interface AvaliacaoCellProps {
   buscaId: string;
@@ -16,6 +17,7 @@ export const AvaliacaoCell = ({
 }: AvaliacaoCellProps) => {
   const [avaliacao, setAvaliacao] = useState(avaliacaoInicial);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setAvaliacao(avaliacaoInicial);
@@ -31,7 +33,8 @@ export const AvaliacaoCell = ({
     );
 
     if (result.success) {
-      setAvaliacao(novaAvaliacao);
+      setAvaliacao(novaAvaliacao); // otimista, mantém o visual atual
+      router.refresh(); // re-render do Server Component com dados atualizados
     } else {
       alert(`Erro ao atualizar avaliação: ${result.error}`);
     }
