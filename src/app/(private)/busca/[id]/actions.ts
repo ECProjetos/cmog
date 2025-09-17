@@ -111,60 +111,18 @@ export async function getLicitacoesByBusca(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<{ data?: any[]; error?: string }> {
   const supabase = await createClient();
-  const today = new Date();
 
   // 1) Carrega todos os registros da junção
   const { data, error } = await supabase
-    .from("buscas_licitacoes")
-    .select(
-      `
-        avaliacao,
-        licitacao:licitacoes (
-          id_licitacao,
-          comprador,
-          data_abertura_proposta,
-          hora_abertura_proposta,
-          url,
-          tipo_licitacao,
-          objeto,
-          municipios (
-            nome_municipio,
-            uf_municipio
-          ),
-          itens (
-            id_item,
-            ds_item,
-            qt_itens,
-            vl_unitario_estimado
-          )
-        )
-      `
-    )
+    .from("vw_licitacoes_abertas")
+    .select("*")
     .eq("id_busca", buscaId);
 
   if (error) {
     return { error: error.message };
   }
 
-  // 2) Normaliza licitacao (array ou objeto) e filtra por data
-  const normalized = (data ?? []).map((r) => {
-    const licObj = Array.isArray(r.licitacao)
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (r.licitacao[0] as any)
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (r.licitacao as any);
-    return { avaliacao: r.avaliacao, ...licObj };
-  });
-
-  const result = normalized
-    .filter((item) => typeof item.data_abertura_proposta === "string")
-    .filter((item) => {
-      const [dd, mm, yyyy] = item.data_abertura_proposta.split("/");
-      const dt = new Date(+yyyy, +mm - 1, +dd);
-      return dt > today;
-    });
-
-  return { data: result };
+  return { data: data };
 }
 
 export async function saveLicitacao(licitacao_id: string, folder_id: string) {
