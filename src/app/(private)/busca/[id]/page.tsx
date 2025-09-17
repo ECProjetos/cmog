@@ -17,9 +17,10 @@ export default async function DetalhesBuscaPage({ params }: PageProps) {
     .select("*")
     .eq("id_busca", id)
     .single();
-
+  console.log("BUSCAA", busca);
   const licitacoes = await getLicitacoesByBusca(busca.id_busca);
   if (!busca) return <div>Busca não encontrada</div>;
 
+  console.log(licitacoes);
   return <DetalhesBusca busca={busca} licitacoes={licitacoes.data ?? []} />;
 }
